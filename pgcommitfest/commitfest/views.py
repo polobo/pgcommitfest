@@ -188,7 +188,7 @@ def activity(request, cfid=None, rss=None):
             {
                 "commitfest": cf,
                 "activity": activity,
-                "title": cf and "Commitfest activity" or "Global Commitfest activity",
+                "title": cf and "Commitfest Activity" or "Global Commitfest Activity",
                 "rss_alternate": cf
                 and "/{0}/activity.rss/".format(cf.id)
                 or "/activity.rss/",
