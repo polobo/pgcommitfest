@@ -528,3 +528,23 @@ class CfbotTask(models.Model):
     status = models.TextField(choices=STATUS_CHOICES, null=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+# Workflow provides access to the elements required to support
+# the workflow this application is built for.  These elements exist
+# independent of what the user is presently seeing on their page.
+class Workflow(models.Model):
+    # At most a single Open CommitFest is allowed and this function returns it.
+    def open_cf():
+        cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_OPEN))
+        return cfs[0] if len(cfs) > 0 else None
+
+    # At most a single Future CommitFest is allowed and this function returns it.
+    def future_cf():
+        cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_FUTURE))
+        return cfs[0] if len(cfs) > 0 else None
+
+    # At most a single In Progress CommitFest is allowed and this function returns it.
+    def progress_cf():
+        cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_INPROGRESS))
+        return cfs[0] if len(cfs) > 0 else None
+

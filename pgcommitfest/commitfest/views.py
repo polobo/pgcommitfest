@@ -42,6 +42,7 @@ from .models import (
     Patch,
     PatchHistory,
     PatchOnCommitFest,
+    Workflow
 )
 
 
@@ -708,6 +709,11 @@ def patch(request, patchid):
                 {"title": cf.title, "href": "/%s/" % cf.pk},
             ],
             "userprofile": getattr(request.user, "userprofile", UserProfile()),
+            "workflow": {
+                "open": Workflow.open_cf(),
+                "future": Workflow.future_cf(),
+                "progress": Workflow.progress_cf(),
+            }
         },
     )
 

@@ -26,6 +26,24 @@
     </ul>
    </div>
 
+   {%if workflow.open %}
+    <a class="btn">Open CF</a>
+   {%else%}
+    <a class="btn">No Open CF</a>
+   {%endif%}
+
+   {%if workflow.future %}
+    <a class="btn">Future CF</a>
+   {%else%}
+    <a class="btn">No Future CF</a>
+   {%endif%}
+
+   {%if workflow.progress %}
+    <a class="btn">In Progress CF</a>
+   {%else%}
+    <a class="btn">No In Progress CF</a>
+   {%endif%}
+
    {%if request.user.is_staff%}
     <div class="btn-group">
      <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Send private mail <span class="caret"></span></a>
