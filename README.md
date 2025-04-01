@@ -17,8 +17,11 @@ This is a Django 4.2 application backed by PostgreSQL and running on Python 3.x.
 First, prepare your development environment by installing pip, virtualenv, and postgresql-server-dev-X.Y.
 
 ```bash
-sudo apt install python-pip postgresql-server-dev-14
+sudo apt install python-pip python#.#-venv postgresql-server-dev-#
 ```
+
+(For PostgreSQL, all that is required is libpq.so.5 for psycopg2, which
+will traverse LD_LIBRARY_PATH to find.)
 
 Next, configure your local environment with virtualenv and install local dependencies.
 
