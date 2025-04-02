@@ -548,3 +548,76 @@ class Workflow(models.Model):
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_INPROGRESS))
         return cfs[0] if len(cfs) > 0 else None
 
+    def getCommitfest(cfid):
+        if (cfid is None or cfid == ""):
+            return None
+        try:
+            int_cfid = int(cfid)
+            cfs = list(CommitFest.objects.filter(id=int_cfid))
+            if len(cfs) > 0:
+                return cfs[0]
+            else:
+                return None
+        except ValueError:
+            return None
+
+    # The rule surrounding patches is they may only be in one active
+    # commitfest at a time.  The transition function takes a patch
+    # open in one commitfest and associates it, with the same status,
+    # in a new commitfest; then makes it inactive in the original.
+    def transitionPatch(poc, target_cf, by_user):
+        if (not poc.is_open):
+            raise Exception("Can only transition an open PoCF")
+
+        if (poc.commitfest.id == target_cf.id):
+            raise Exception("Cannot transition to the same commitfest")
+
+        new_poc = Workflow.createNewPOC(
+            poc.patch,
+            target_cf,
+            poc.status,
+            by_user)
+
+        Workflow.updatePOCStatus(
+            poc,
+            PatchOnCommitFest.STATUS_NEXT,
+            by_user)
+
+        return new_poc
+
+    def createNewPOC(patch, commitfest, initial_status, by_user):
+        poc, created = PatchOnCommitFest.objects.update_or_create(
+            patch=patch,
+            commitfest=commitfest,
+            defaults = dict(
+                enterdate=datetime.now(),
+                status=initial_status,
+            ),
+        )
+        poc.save()
+        poc.patch.set_modified()
+        poc.patch.save()
+
+        PatchHistory(
+            patch=poc.patch, by=by_user,
+            what="{} patch on commitfest {}".format(
+                "New" if created else "Updated",
+                commitfest.name)
+        ).save_and_notify()
+
+        return poc
+
+    def updatePOCStatus(poc, new_status, by_user, by_cfbot=False):
+        if (poc.status == new_status):
+            return
+
+        poc.status = new_status
+        poc.patch.set_modified()
+        poc.patch.save()
+        poc.save()
+        PatchHistory(
+            patch=poc.patch, by=by_user, by_cfbot=by_cfbot,
+            what="New status: %s" % poc.statusstring
+        ).save_and_notify()
+
+        return True

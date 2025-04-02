@@ -27,21 +27,20 @@
    </div>
 
    {%if workflow.open %}
-    <a class="btn">Open CF</a>
-   {%else%}
-    <a class="btn">No Open CF</a>
+    <a class="btn btn-default"
+       href="transition/?tocfid={{workflow.open.id}}"
+       onclick="return verify_transition()">
+    Move to: {{workflow.open.name}}</a>
    {%endif%}
 
    {%if workflow.future %}
-    <a class="btn">Future CF</a>
-   {%else%}
-    <a class="btn">No Future CF</a>
+    <a class="btn btn-default">
+    Move to: {{workflow.future.name}}</a>
    {%endif%}
 
    {%if workflow.progress %}
-    <a class="btn">In Progress CF</a>
-   {%else%}
-    <a class="btn">No In Progress CF</a>
+    <a class="btn btn-default">
+    Move to: {{workflow.progress.name}}</a>
    {%endif%}
 
    {%if request.user.is_staff%}

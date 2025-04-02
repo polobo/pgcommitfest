@@ -1000,6 +1000,23 @@ def status(request, patchid, status):
 
     return HttpResponseRedirect("/patch/%s/" % (poc.patch.id))
 
+@login_required
+@transaction.atomic
+def transition(request, patchid):
+    cur_poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
+    target_cf = Workflow.getCommitfest(request.GET.get("tocfid", None))
+    if ((target_cf is None)):
+        messages.error(request, "Unknown commitfest id {}".format(request.GET.get("tocfid", None)))
+        return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
+
+    try:
+        new_poc = Workflow.transitionPatch(cur_poc, target_cf, request.user)
+        messages.info(request, "Transitioned patch to commitfest %s" % new_poc.commitfest.name)
+    except Exception as e:
+        messages.error(request, "Failed to transition patch: {}".format(e))
+        return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
+
+    return HttpResponseRedirect("/patch/%s/" % (new_poc.patch.id))
 
 @login_required
 @transaction.atomic
