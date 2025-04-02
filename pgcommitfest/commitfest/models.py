@@ -613,16 +613,18 @@ class Workflow(models.Model):
 
         PatchHistory(
             patch=poc.patch, by=by_user,
-            what="{} patch in {}".format(
-                "New" if created else "Re-Opened",
+            what="{} in {}".format(
+                poc.statusstring,
                 commitfest.name)
         ).save_and_notify()
 
         return poc
 
+    # Update the status of a PoC
+    # Returns True if the status was changed, False for a same-status no-op.
     def updatePOCStatus(poc, new_status, by_user, by_cfbot=False):
         if (poc.status == new_status):
-            return
+            return False
 
         poc.status = new_status
         poc.leavedate = datetime.now() if not poc.is_open else None
@@ -631,9 +633,10 @@ class Workflow(models.Model):
         poc.save()
         PatchHistory(
             patch=poc.patch, by=by_user, by_cfbot=by_cfbot,
-            what="Changed {} status to {}".format(
+            what="{} in {}".format(
+                poc.statusstring,
                 poc.commitfest.name,
-                poc.statusstring),
+                ),
         ).save_and_notify()
 
         return True

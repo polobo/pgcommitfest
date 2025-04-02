@@ -978,14 +978,7 @@ def comment(request, patchid, what):
 @login_required
 @transaction.atomic
 def status(request, patchid, status):
-    patch = get_object_or_404(Patch.objects.select_related(), pk=patchid)
-    cf = patch.current_commitfest()
-    poc = get_object_or_404(
-        PatchOnCommitFest.objects.select_related(),
-        commitfest__id=cf.id,
-        patch__id=patchid,
-    )
-
+    # Active status only since those can be freely swapped between.
     if status == "review":
         newstatus = PatchOnCommitFest.STATUS_REVIEW
     elif status == "author":
@@ -995,18 +988,16 @@ def status(request, patchid, status):
     else:
         raise Exception("Can't happen")
 
-    if newstatus != poc.status:
-        # Only save it if something actually changed
-        poc.status = newstatus
-        poc.patch.set_modified()
-        poc.patch.save()
-        poc.save()
+    poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
 
-        PatchHistory(
-            patch=poc.patch, by=request.user, what="New status: %s" % poc.statusstring
-        ).save_and_notify()
+    try:
+        if (Workflow.updatePOCStatus(poc, newstatus, request.user)):
+            messages.info(request, "Updated status to %s" % poc.statusstring)
+    except Exception as e:
+        messages.error(request, "Failed to update status of patch: {}".format(e))
 
     return HttpResponseRedirect("/patch/%s/" % (poc.patch.id))
+
 
 @login_required
 @transaction.atomic
