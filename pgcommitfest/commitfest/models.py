@@ -159,7 +159,7 @@ class Patch(models.Model, DiffableModel):
     }
 
     def current_commitfest(self):
-        return self.commitfests.order_by("-startdate").first()
+        return self.commitfests.order_by("-patchoncommitfest__enterdate").first()
 
     def current_patch_on_commitfest(self):
         cf = self.current_commitfest()
@@ -572,15 +572,18 @@ class Workflow(models.Model):
         if (poc.commitfest.id == target_cf.id):
             raise Exception("Cannot transition to the same commitfest")
 
-        new_poc = Workflow.createNewPOC(
-            poc.patch,
-            target_cf,
-            poc.status,
-            by_user)
-
+        existing_status = poc.status
+        # History looks cleaner if we've left the existing
+        # commitfest entry before joining the new one.
         Workflow.updatePOCStatus(
             poc,
             PatchOnCommitFest.STATUS_NEXT,
+            by_user)
+
+        new_poc = Workflow.createNewPOC(
+            poc.patch,
+            target_cf,
+            existing_status,
             by_user)
 
         return new_poc
@@ -592,16 +595,17 @@ class Workflow(models.Model):
             defaults = dict(
                 enterdate=datetime.now(),
                 status=initial_status,
+                leavedate=None,
             ),
         )
-        poc.save()
         poc.patch.set_modified()
         poc.patch.save()
+        poc.save()
 
         PatchHistory(
             patch=poc.patch, by=by_user,
             what="{} patch on commitfest {}".format(
-                "New" if created else "Updated",
+                "New" if created else "Re-Opened",
                 commitfest.name)
         ).save_and_notify()
 
@@ -612,6 +616,8 @@ class Workflow(models.Model):
             return
 
         poc.status = new_status
+        poc.save()
+        poc.leavedate = datetime.now() if not poc.is_open else None
         poc.patch.set_modified()
         poc.patch.save()
         poc.save()

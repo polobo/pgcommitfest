@@ -34,7 +34,9 @@
    {%endif%}
 
    {%if workflow.future %}
-    <a class="btn btn-default">
+    <a class="btn btn-default"
+       href="transition/?tocfid={{workflow.future.id}}"
+       onclick="return verify_transition()">
     Move to: {{workflow.future.name}}</a>
    {%endif%}
 

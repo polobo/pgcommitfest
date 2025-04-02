@@ -659,7 +659,7 @@ def patch(request, patchid):
     patch_commitfests = (
         PatchOnCommitFest.objects.select_related("commitfest")
         .filter(patch=patch)
-        .order_by("-commitfest__startdate")
+        .order_by("-enterdate")
         .all()
     )
     cf = patch_commitfests[0].commitfest
