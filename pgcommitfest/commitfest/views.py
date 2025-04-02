@@ -703,6 +703,7 @@ def patch(request, patchid):
         {
             "cf": cf,
             "patch": patch,
+            "poc": patch_commitfests[0],
             "patch_commitfests": patch_commitfests,
             "cfbot_branch": cfbot_branch,
             "cfbot_tasks": cfbot_tasks,

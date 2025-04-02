@@ -9,6 +9,7 @@
     </ul>
    </div>
 
+   {%if request.user.is_staff%}
    <div class="btn-group">
     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Change Status <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
@@ -21,9 +22,11 @@
      <li role="presentation"><a href="close/reject/" onclick="return verify_reject()">Rejected</a></li>
      <li role="presentation"><a href="close/withdrawn/" onclick="return verify_withdrawn()">Withdrawn</a></li>
      <li role="presentation"><a href="close/feedback/" onclick="return verify_returned()">Returned with feedback</a></li>
+     <li role="presentation"><a href="close/next/?cfid={{cf.id}}" onclick="return verify_next()">Move to next CF</a></li>
      <li role="presentation"><a href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Committed</a></li>
     </ul>
    </div>
+   {%endif%}
 
    {%if request.user.is_staff%}
     <div class="btn-group">
@@ -35,16 +38,28 @@
      </ul>
     </div>
    {%endif%}
-
   </div>
-  <div>
+
+  {%if poc.is_open%}
+  <div><div>Set to:</div>
+     {%if poc.status != poc.STATUS_REVIEW and poc.status != poc.STATUS_COMMITTER %}
+     <div><a class="btn btn-default" href="status/review/">Needs Review</a></div>
+     {%endif%}
+     {%if poc.status != poc.STATUS_AUTHOR %}
+     <div><a class="btn btn-default" href="status/author/">Waiting on Author</a></div>
+     {%endif%}
+     {%if poc.status != poc.STATUS_COMMITTER and poc.status != poc.STATUS_AUTHOR %}
+     <div><a class="btn btn-default" href="status/committer/">Ready for Committer</a></div>
+     {%endif%}
+  </div>
+
+  <div><div>Move to:</div>
 
    {%if not cf.isfuture and workflow.future %}
     <div>
     <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.future.id}}"
-       onclick="return verify_transition()">
-    Move to: {{workflow.future.name}}</a>
+       href="transition/?tocfid={{workflow.future.id}}">
+    {{workflow.future.name}}</a>
     <span>New Feature patches get moved here.</span>
     </div>
    {%endif%}
@@ -52,11 +67,29 @@
    {%if not cf.isopen and workflow.open %}
     <div>
     <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.open.id}}"
-       onclick="return verify_transition()">
-    Move to: {{workflow.open.name}}</a>
+       href="transition/?tocfid={{workflow.open.id}}">
+    {{workflow.open.name}}</a>
     <span>Back-Patch qualified patches get moved here.</span>
     </div>
    {%endif%}
 
+   {%if not cf.isinprogress and workflow.progress and request.user.is_staff %}
+    <div>
+    <a class="btn btn-default"
+       href="transition/?tocfid={{workflow.progress.id}}">
+    {{workflow.progress.name}}</a>
+    <span>Back-Patch qualified patches get moved here.</span>
+    </div>
+   {%endif%}
+  <br/>
+  <div class="btn-group">
+   <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Close Patch <span class="caret"></span></a>
+   <ul class="dropdown-menu" role="menu">
+    <li role="presentation"><a href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Committed</a></li>
+    <li role="presentation"><a href="close/withdrawn/" onclick="return verify_withdrawn()">Withdrawn</a></li>
+    <li role="presentation"><a href="close/feedback/" onclick="return verify_returned()">Returned with feedback</a></li>
+    <li role="presentation"><a href="close/reject/" onclick="return verify_reject()">Rejected</a></li>
+   </ul>
+  </div>
+  {%endif%}
   </div>
