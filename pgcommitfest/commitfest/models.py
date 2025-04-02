@@ -75,6 +75,15 @@ class CommitFest(models.Model):
     def isopen(self):
         return self.status == self.STATUS_OPEN
 
+    def isfuture(self):
+        return self.status == self.STATUS_FUTURE
+
+    def isinprogress(self):
+        return self.status == self.STATUS_INPROGRESS
+
+    def isclosed(self):
+        return self.status == self.STATUS_CLOSED
+
     def __str__(self):
         return self.name
 
@@ -604,7 +613,7 @@ class Workflow(models.Model):
 
         PatchHistory(
             patch=poc.patch, by=by_user,
-            what="{} patch on commitfest {}".format(
+            what="{} patch in {}".format(
                 "New" if created else "Re-Opened",
                 commitfest.name)
         ).save_and_notify()
@@ -616,14 +625,15 @@ class Workflow(models.Model):
             return
 
         poc.status = new_status
-        poc.save()
         poc.leavedate = datetime.now() if not poc.is_open else None
         poc.patch.set_modified()
         poc.patch.save()
         poc.save()
         PatchHistory(
             patch=poc.patch, by=by_user, by_cfbot=by_cfbot,
-            what="New status: %s" % poc.statusstring
+            what="Changed {} status to {}".format(
+                poc.commitfest.name,
+                poc.statusstring),
         ).save_and_notify()
 
         return True

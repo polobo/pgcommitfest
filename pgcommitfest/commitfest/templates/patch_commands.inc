@@ -26,21 +26,21 @@
     </ul>
    </div>
 
-   {%if workflow.open %}
+   {%if not cf.isopen and workflow.open %}
     <a class="btn btn-default"
        href="transition/?tocfid={{workflow.open.id}}"
        onclick="return verify_transition()">
     Move to: {{workflow.open.name}}</a>
    {%endif%}
 
-   {%if workflow.future %}
+   {%if not cf.isfuture and workflow.future %}
     <a class="btn btn-default"
        href="transition/?tocfid={{workflow.future.id}}"
        onclick="return verify_transition()">
     Move to: {{workflow.future.name}}</a>
    {%endif%}
 
-   {%if workflow.progress %}
+   {%if not cf.isinprogress and workflow.progress %}
     <a class="btn btn-default">
     Move to: {{workflow.progress.name}}</a>
    {%endif%}
