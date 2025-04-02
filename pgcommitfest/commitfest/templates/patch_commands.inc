@@ -21,29 +21,9 @@
      <li role="presentation"><a href="close/reject/" onclick="return verify_reject()">Rejected</a></li>
      <li role="presentation"><a href="close/withdrawn/" onclick="return verify_withdrawn()">Withdrawn</a></li>
      <li role="presentation"><a href="close/feedback/" onclick="return verify_returned()">Returned with feedback</a></li>
-     <li role="presentation"><a href="close/next/?cfid={{cf.id}}" onclick="return verify_next()">Move to next CF</a></li>
      <li role="presentation"><a href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Committed</a></li>
     </ul>
    </div>
-
-   {%if not cf.isopen and workflow.open %}
-    <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.open.id}}"
-       onclick="return verify_transition()">
-    Move to: {{workflow.open.name}}</a>
-   {%endif%}
-
-   {%if not cf.isfuture and workflow.future %}
-    <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.future.id}}"
-       onclick="return verify_transition()">
-    Move to: {{workflow.future.name}}</a>
-   {%endif%}
-
-   {%if not cf.isinprogress and workflow.progress %}
-    <a class="btn btn-default">
-    Move to: {{workflow.progress.name}}</a>
-   {%endif%}
 
    {%if request.user.is_staff%}
     <div class="btn-group">
@@ -53,6 +33,29 @@
       <li><a href="send_email/?reviewers={{patch.id}}">Send mail to reviewers</a></li>
       <li><a href="send_email/?authors={{patch.id}}&reviewers={{patch.id}}">Send mail to authors and reviewers</a></li>
      </ul>
+    </div>
+   {%endif%}
+
+  </div>
+  <div>
+
+   {%if not cf.isfuture and workflow.future %}
+    <div>
+    <a class="btn btn-default"
+       href="transition/?tocfid={{workflow.future.id}}"
+       onclick="return verify_transition()">
+    Move to: {{workflow.future.name}}</a>
+    <span>New Feature patches get moved here.</span>
+    </div>
+   {%endif%}
+
+   {%if not cf.isopen and workflow.open %}
+    <div>
+    <a class="btn btn-default"
+       href="transition/?tocfid={{workflow.open.id}}"
+       onclick="return verify_transition()">
+    Move to: {{workflow.open.name}}</a>
+    <span>Back-Patch qualified patches get moved here.</span>
     </div>
    {%endif%}
 
