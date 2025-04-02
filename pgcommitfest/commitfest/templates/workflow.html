@@ -1,0 +1,213 @@
+{%extends "base.html"%}
+{%block contents%}
+<h2>Key Concepts</h2>
+<h3>The Commitfest Workflow</h3>
+<p>
+ Committing Patches is fundamentally constrained by Reviewer and Committer time.
+ The Commitfest workflow guides the direction of these people by providing two
+ separate states: "In a Commitfest" (Active) and "Out of a Commitfest" (Interlude).
+ The former state exists when there is an "In Progress" Commitfest.
+ "Future" Commitfests represent the next "In a Commitfest" period.
+ At the end of the Active period the "In Progress" Commitfest is closed and an
+ "Open" Commitfest is created (Interlude).  At the end of the Interlude period
+ the existing "Open" Commitfest is closed, the existing "Future" Commitfest is
+ changed to "In Progress", and a new "Future" Commitfest is created.
+</p>
+<p>
+ A Patch is always associated with Commitfests, the joint concept being named
+ "Patch on Commitfest" (PoC)  There is always one primary PoC; as well as
+ zero or more visited PoCs.  PoCs are unique and retain the timestamps of the
+ last time the Patch was Moved to/from the Commitfest.  There is a history Log
+ for describing the entire journey of a Patch.
+</p>
+<p>
+ The Interlude periods give Reviewers and Committers a chance to work
+ on getting Patches in the "Waiting on Author" state into "Review".  However,
+ commits do not simply halt during these periods.  High-priority patches, such
+ as bug fixes, have their own home during these periods - the "Open" Commitfest.
+ Additionally, the April-June Interlude is special; during this period we are
+ in feature freeze and the "Open" Interlude Commitfest is where open items, or
+ other upcoming release patches, go while any features that missed feature freeze
+ are moved to the July "Future" Commitfest - at which point master has branched
+ off the upcoming release and re-opened for new features.
+</p>
+<p>
+ In practice, the above means that at any given moment there is always a
+ "Future" Commitfest, as well as either an "In Progress" Commitfest or an
+ "Open" Commitfest, depending on whether we are in an Active or Interlude period.
+ "Future" and "In Progress" Commitfests are named according to the year-month
+ of the covered period, while "Open" Interlude names reflect only the year,
+ and are named YYYY-'I'[A-E] (e.g., 2025-IC) with 'IB' happening during feature
+ freeze.
+</p>
+<h3>Patches</h3>
+<h4>Overview</h4>
+<p>
+ Patches are the basic unit of work in the Commitfest workflow.  They are moved
+ around between various Commitfests (PoC - see above) during their lifetime to
+ reflect how they interact with the focus of the community during each time period.
+ This movement, combined with the fact that a patch may only have a single meaningful
+ status, means that only one of the patch's PoCs can have a state that isn't
+ "Moved".  While a patch's status is derived from its primary PoC everything else
+ is attached to the patch itself.
+</p>
+<h4>Authors, Reviewers, and Committers</h4>
+<p>
+ Especially in open source projects, attribution for work is important.  Git
+ commit messages include author and reviewer attributions (among others) and
+ inherently identify the committer.  To aid the committer in properly recording
+ attributions in the commit message record Authors and Reviewers on the Patch.
+</p>
+<p>
+ Additionally, the Commitfest application uses this information to provide
+ user-specific reporting and notifications.
+</p>
+<h4>Threads</h4>
+<p>
+ The actual content of a patch does not existing within the Commitfest application
+ (more-or-less); instead, the patch file submission and review process is all done
+ on the -hackers mailing list.  Threads are the means by which the Commitfest
+ is made aware of these files and can incorporate into its reporting information
+ pertaining to them.
+</p>
+<h3>Commitfests</h3>
+<h4>Overview</h4>
+<p>
+ Commitfests are just a collection of Patches.  The Workflow described above
+ explains the purpose of these collections and defines which Patches belong in
+ in which collection.  One key constraint the described workflow imposes is that
+ among the statuses listed below at most one Commitfest can be in each of them
+ at any given time (except for "Closed").  This allows for implementing movement
+ of a Patch to be keyed to Commitfest status type without the need for further
+ disambiguation.
+</p>
+<h4>In Progress</h4>
+<p>
+ An Active (see Workflow above) period where no new features should be added
+ and the goal is to get as many "Review" patches "Committed" as possible.
+</p>
+<h4>Future</h4>
+<p>
+ The next Active (see Workflow above) period.
+ Any patch not exempted to be added to the "In Progress" or "Open" Commitfests
+ can always be added here.
+</p>
+<h4>Open</h4>
+<p>
+ An Interlude (see Workflow above) period, exempt patches (high-priority and
+ bug fixes typically) can be added here instead of the "Future" Commitfest.
+</p>
+<h4>Closed</h4>
+<p>
+ Both "In Progress" and "Open" Commitfests ultimately are "Closed" ("Future"
+ ones always go through "In Progress") when the period they cover has passed.
+ Closing a Commitfest does not impact its related PoCs; though no new PoCs can
+ be created for a "Closed" Commitfest.
+</p>
+<h3>Patches on Commitfests (PoC)</h3>
+<h4>Overview</h4>
+<p>
+ PoCs are the central concept of the Commitfest workflow.  When you are viewing
+ a Patch you are always implicitly acting within its primary PoC.  The key
+ property of a PoC is its state, the possible values of which are:
+</p>
+<h4>Active</h4>
+<p>
+ A Patch is active if, in its primary PoC, it is in one of the following states:
+ <ul>
+  <li>Waiting on Author</li>
+  <li>Review Needed</li>
+  <li>Ready for Committer</li>
+ </ul>
+ These correspond to the three people-related fields of the Patch and indicate
+ whose effort is presently needed.  Of course, a patch may be in a state for
+ which no person is assigned; in which case the patch is advertising itself as
+ needing that kind of attention.
+</p>
+<h4>Inactive</h4>
+<p>
+ A Patch is inactive if, in its primary PoC, it is in one of the following states:
+ <ul>
+  <li>Committed</li>
+  <li>Returned With Feedback</li>
+  <li>Withdrawn</li>
+  <li>Rejected</li>
+ </ul>
+ A Committed patch is one whose files have been committed to the repository.
+ A Withdrawn patch is one where the author(s) have decided to no longer pursue
+ working on the patch and have proactively communicated that intent through
+ updating the PoC to this state.
+</p>
+<p>
+ Returned With Feedback indicates that the patch, as presented, is not acceptable
+ and the Thread should be ended.  A new Thread and Patch should be created once
+ the provided feedback has been taken into consideration and a new patch created.
+ Consider setting the PoC to "Waiting on Author" and then moving the Patch to
+ the "Future" Commitfest instead.
+</p>
+<p>
+ A Rejected patch has the same effect as Withdrawn but communicates that the
+ community, not the author, made the status change.  This should only be used
+ when it is clear neither Returned With Feedback nor Withdrawn are appropriate.
+</p>
+<h5>Moved</h5>
+<p>
+ Moved PoCs are a side-effect of having Commitfests, and volume.  Many Active
+ Patches cannot be gotten to within a Commitfest.  In order to keep them visible
+ they must be moved to another Commitfest, creating a new PoC with the same
+ state.  The PoC they were in is then updated to "Moved" to indicate this
+ administrative action.
+</p>
+<h5>Is Abandoned</h5>
+<p>
+ This predicate returns true if the PoC state is in the set of Active states
+ but the Commitfest is "Closed".  Conceptually this is the same as
+ Withdrawn, but by inaction.
+</p>
+<h3>History</h3>
+<p>
+ Textual event log for a patch.
+</p>
+<h3>CFBot</h3>
+<p>
+ The CFBot is continuous integration (CI) infrastructure that uses Threads
+ to retrieve patch files, builds and tests them, and posts the results to
+ the Patch.  Only Active PoCs are tested.
+</p>
+<h3>Administrative Actions</h3>
+<p>
+ Protections put in place to guide the described workflow can be bypassed
+ by those with the appropriate permissions.  Exercising these elevanted
+ permisions is called an Administrative Action, or administratively performed.
+</p>
+<p>
+ In particular, to encourage committers to put bug fixes and other high-priority
+ items into the In Progress Commitfest doing so is possible if done administratively.
+</p>
+
+<h2>The Flows</h2>
+<h3>Interludes</h3>
+<p>
+ New features get added to the Future Commitfest while bugs and other high-priority
+ patches get added to the Open Commitfest.  There is no In Progress Commitfest
+ at this time.
+</p>
+<h3>Active Commitfest</h3>
+<p>
+ Any remaining PoCs in the Open Commitfest (should be none/few) are administratively
+ moved to the Future Commitfest which is then updated to In Progress, preventing
+ new patches from being non-administratively added.  Close the Open Commitfest.
+ Create a new Future Commitfest.  The goal here is to clear out the Active
+ section of the Commitfest by either making the PoCs Inactive or Moving the
+ Patch to the the Future Commitfest.
+</p>
+<p>
+ There is no Open Commitfest during the Active period.  Patches can be
+ administratively moved to In Progress from Future as needed.
+</p>
+<p>
+ At the end of the Commitfest, Close it.  Create the new Interlude Commitfest.
+ Administratively move qualified Patches to the Open Commitfest.  Abandoned PoCs
+ are to be moved to the Future Commitfest by their author.
+</p>
+{%endblock%}
