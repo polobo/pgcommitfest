@@ -1,7 +1,12 @@
 {%extends "base.html"%}
 {%load commitfest%}
 {%block contents%}
- {%include "patch_commands.inc"%}
+ {%include "patch_administrative.inc"%}
+ {%if poc.is_open %}
+  {%include "patch_commands.inc"%}
+ {%else%}
+  <div>Patch is Closed.  Administrative Actions Permitted Only.</div>
+ {%endif%}
  <table class="table table-bordered">
   <tbody>
    <tr>
@@ -197,9 +202,11 @@
  </tbody>
  </table>
 
+{%if poc.is_open %}
  <div class="dropup" >
   {%include "patch_commands.inc"%}
  </div>
+{%endif%}
 
 {%comment%}commit dialog{%endcomment%}
  <div class="modal fade" id="commitModal" role="dialog">
