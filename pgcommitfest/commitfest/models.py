@@ -570,32 +570,6 @@ class Workflow(models.Model):
         except ValueError:
             return None
 
-    # The rule surrounding patches is they may only be in one active
-    # commitfest at a time.  The transition function takes a patch
-    # open in one commitfest and associates it, with the same status,
-    # in a new commitfest; then makes it inactive in the original.
-    def transitionPatch(poc, target_cf, by_user):
-        if (not poc.is_open):
-            raise Exception("Can only transition an open PoCF")
-
-        if (poc.commitfest.id == target_cf.id):
-            raise Exception("Cannot transition to the same commitfest")
-
-        existing_status = poc.status
-        # History looks cleaner if we've left the existing
-        # commitfest entry before joining the new one.
-        Workflow.updatePOCStatus(
-            poc,
-            PatchOnCommitFest.STATUS_NEXT,
-            by_user)
-
-        new_poc = Workflow.createNewPOC(
-            poc.patch,
-            target_cf,
-            existing_status,
-            by_user)
-
-        return new_poc
 
     def createNewPOC(patch, commitfest, initial_status, by_user):
         poc, created = PatchOnCommitFest.objects.update_or_create(
@@ -620,13 +594,102 @@ class Workflow(models.Model):
 
         return poc
 
+    # The rule surrounding patches is they may only be in one active
+    # commitfest at a time.  The transition function takes a patch
+    # open in one commitfest and associates it, with the same status,
+    # in a new commitfest; then makes it inactive in the original.
+    def transitionPatch(poc, target_cf, by_user):
+        Workflow.userCanTransitionPatch(poc, target_cf, by_user)
+
+        existing_status = poc.status
+
+        # History looks cleaner if we've left the existing
+        # commitfest entry before joining the new one.  Plus,
+        # not allowed to change non-current commitfest status
+        # and once the new POC is created it becomes current.
+        Workflow.updatePOCStatus(
+            poc,
+            PatchOnCommitFest.STATUS_NEXT,
+            by_user)
+
+        new_poc = Workflow.createNewPOC(
+            poc.patch,
+            target_cf,
+            existing_status,
+            by_user)
+
+        return new_poc
+
+    def userCanTransitionPatch(poc, target_cf, user):
+        # Policies not allowed to be broken by anyone.
+
+        # Prevent changes to non-current commitfest for the patch
+        # Meaning, change status to Moved before/during transitioning
+        if poc.commitfest != poc.patch.current_commitfest():
+            raise Exception("PoC commitfest is not patch's current commitfest.")
+
+        # The UI should be preventing people from trying to perform no-op requests
+        if poc.commitfest.id == target_cf.id:
+            raise Exception("Cannot transition to the same commitfest.")
+
+        # This one is arguable but facilitates treating non-open status as final
+        # A determined staff member can always change the status first.
+        if poc.is_closed:
+            raise Exception("Cannot transition a closed patch.")
+
+        # We trust privileged users to make informed choices
+        if user.is_staff:
+            return
+
+        if target_cf.isclosed:
+            raise Exception("Cannot transition to a closed commitfest.")
+
+        if target_cf.isinprogress:
+            raise Exception("Cannot transition to an in-progress commitfest.")
+
+        # Prevent users from moving closed patches, or moving open ones to
+        # non-open, non-future commitfests.  The else clause should be a
+        # can't happen.
+        if (poc.is_open and (target_cf.isopen or target_cf.isfuture)):
+            pass
+        else:
+            # Default deny policy basis
+            raise Exception("Transition not permitted.")
+
+    def userCanChangePOCStatus(poc, new_status, user):
+        # Policies not allowed to be broken by anyone.
+
+        # Prevent changes to non-current commitfest for the patch
+        # Meaning, change status to Moved before/during transitioning
+        if poc.commitfest != poc.patch.current_commitfest():
+            raise Exception("PoC commitfest is not patch's current commitfest.")
+
+        # The UI should be preventing people from trying to perform no-op requests
+        if poc.status == new_status:
+            raise Exception("Cannot change to the same status.")
+
+        # We trust privileged users to make informed choices
+        if user.is_staff:
+            return
+
+        # Prevent users from modifying closed patches
+        # The else clause should be considered a can't happen
+        if poc.is_open:
+            pass
+        else:
+            raise Exception("Cannot change status of closed patch.")
+
+
     # Update the status of a PoC
     # Creates a new history entry
     # Emits notifications.
     # Returns True if the status was changed, False for a same-status no-op.
     def updatePOCStatus(poc, new_status, by_user):
+        # XXX Workflow disallows this no-op but not quite ready to enforce it.
         if (poc.status == new_status):
             return False
+
+        Workflow.userCanChangePOCStatus(poc, new_status, by_user)
 
         poc.status = new_status
         poc.leavedate = datetime.now() if not poc.is_open else None
