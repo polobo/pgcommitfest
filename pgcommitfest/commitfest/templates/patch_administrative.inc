@@ -1,5 +1,4 @@
 <div style="margin-bottom:5px;">
- <a class="btn btn-default" href="edit/">Edit</a>
 
  <div class="btn-group">
   <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Comment/Review <span class="caret"></span></a>

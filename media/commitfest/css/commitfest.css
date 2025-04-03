@@ -91,3 +91,7 @@ div.form-group div.controls input.threadpick-input {
 .search-bar {
     display: inline-block;
 }
+
+.workflow table.table {
+    width: auto;
+}

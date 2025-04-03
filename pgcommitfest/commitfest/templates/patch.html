@@ -10,14 +10,6 @@
  <table class="table table-bordered">
   <tbody>
    <tr>
-    <th>ID</th>
-    <td><a href="/patch/{{patch.id}}">{{patch.id}}</a></td>
-   </tr>
-   <tr>
-    <th>Title</th>
-    <td>{{patch.name}}</td>
-   </tr>
-   <tr>
     <th>CI (CFBot)</th>
     <td>
      {%if not cfbot_branch %}
@@ -70,7 +62,7 @@
    </tr>
    <tr>
     <th>Topic</th>
-    <td>{{patch.topic}}</td>
+    <td>{{patch.topic}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
    </tr>
    <tr>
     <th>Created</th>
@@ -93,11 +85,11 @@
    </tr>
    <tr>
     <th>Target version</th>
-    <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}</td>
+    <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
    </tr>
    <tr>
     <th>Authors</th>
-    <td>{{patch.authors_string}}</td>
+    <td>{{patch.authors_string}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
    </tr>
    <tr>
     <th>Reviewers</th>
@@ -111,10 +103,15 @@
    </tr>
    <tr>
     <th>Links</th>
-    {%if patch.wikilink%}
-     <a href="{{patch.wikilink}}">Wiki</a>{%endif%}{%if patch.gitlink%}
+    <td>
+     {%if patch.wikilink%}
+      <a href="{{patch.wikilink}}">Wiki</a>
+     {%endif%}
+     {%if patch.gitlink%}
       <a href="{{patch.gitlink}}">Git</a>
-     {%endif%}</td>
+     {%endif%}
+     <a class="btn btn-default pull-right" href="edit/">Edit</a>
+    </td>
   </tr>
   <tr>
    <th>Emails</th>
@@ -198,6 +195,14 @@
      <a href="{{is_subscribed|yesno:"unsubscribe,subscribe"}}/" class="btn btn-default">{{is_subscribed|yesno:"Unsubscribe from patch update emails,Subscribe to patch update emails"}}</a>
     {%endif%}
    </td>
+  </tr>
+  <tr>
+   <th>Title</th>
+   <td>{{patch.name}}</td>
+  </tr>
+  <tr>
+   <th>ID</th>
+   <td><a href="/patch/{{patch.id}}">{{patch.id}}</a></td>
   </tr>
  </tbody>
  </table>
