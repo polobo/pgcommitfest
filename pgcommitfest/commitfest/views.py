@@ -1005,6 +1005,23 @@ def status(request, patchid, status):
 def transition(request, patchid):
     cur_poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
     target_cf = Workflow.getCommitfest(request.GET.get("tocfid", None))
+    # XXX: Add a 'mycfid' parameter to the URL in order to check for concurrent activity
+    # resulting in the second move action seeing a different primary cf than expected.
+    #    try:
+    #    request_cfid = int(request.GET.get("cfid", ""))
+    #except ValueError:
+    #    # int() failed, ignore
+    #    request_cfid = None
+    #if request_cfid is not None and request_cfid != poc.commitfest.id:
+    # The cfid parameter is only added to the /next/ link. That's the only
+    # close operation where two people pressing the button at the same time
+    # can have unintended effects.
+    #messages.error(
+    #    request,
+    #    "The patch was moved to a new commitfest by someone else. Please double check if you still want to retry this operation.",
+    #)
+    #return HttpResponseRedirect("/%s/%s/" % (cf.id, patch.id))
+
     if ((target_cf is None)):
         messages.error(request, "Unknown commitfest id {}".format(request.GET.get("tocfid", None)))
         return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
@@ -1021,149 +1038,32 @@ def transition(request, patchid):
 @login_required
 @transaction.atomic
 def close(request, patchid, status):
-    patch = get_object_or_404(Patch.objects.select_related(), pk=patchid)
-    cf = patch.current_commitfest()
+    poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
 
-    try:
-        request_cfid = int(request.GET.get("cfid", ""))
-    except ValueError:
-        # int() failed, ignore
-        request_cfid = None
-
-    if request_cfid is not None and request_cfid != cf.id:
-        # The cfid parameter is only added to the /next/ link. That's the only
-        # close operation where two people pressing the button at the same time
-        # can have unintended effects.
-        messages.error(
-            request,
-            "The patch was moved to a new commitfest by someone else. Please double check if you still want to retry this operation.",
-        )
-        return HttpResponseRedirect("/%s/%s/" % (cf.id, patch.id))
-
-    poc = get_object_or_404(
-        PatchOnCommitFest.objects.select_related(),
-        commitfest__id=cf.id,
-        patch__id=patchid,
-    )
-
-    poc.leavedate = datetime.now()
-
-    # We know the status can't be one of the ones below, since we
-    # have checked that we're not closed yet. Therefor, we don't
-    # need to check if the individual status has changed.
+    # Inactive statuses only, except Next, which is handled by transition()
     if status == "reject":
-        poc.status = PatchOnCommitFest.STATUS_REJECTED
+        newstatus = PatchOnCommitFest.STATUS_REJECTED
     elif status == "withdrawn":
-        poc.status = PatchOnCommitFest.STATUS_WITHDRAWN
+        newstatus = PatchOnCommitFest.STATUS_WITHDRAWN
     elif status == "feedback":
-        poc.status = PatchOnCommitFest.STATUS_RETURNED
-    elif status == "next":
-        # Only some patch statuses can actually be moved.
-        if poc.status in (
-            PatchOnCommitFest.STATUS_COMMITTED,
-            PatchOnCommitFest.STATUS_NEXT,
-            PatchOnCommitFest.STATUS_RETURNED,
-            PatchOnCommitFest.STATUS_REJECTED,
-        ):
-            # Can't be moved!
-            messages.error(
-                request,
-                "A patch in status {0} cannot be moved to next commitfest.".format(
-                    poc.statusstring
-                ),
-            )
-            return HttpResponseRedirect("/%s/%s/" % (poc.commitfest.id, poc.patch.id))
-        elif poc.status in (
-            PatchOnCommitFest.STATUS_REVIEW,
-            PatchOnCommitFest.STATUS_AUTHOR,
-            PatchOnCommitFest.STATUS_COMMITTER,
-        ):
-            # This one can be moved
-            pass
-        else:
-            messages.error(request, "Invalid existing patch status")
-
-        oldstatus = poc.status
-
-        poc.status = PatchOnCommitFest.STATUS_NEXT
-        # Figure out the commitfest to actually put it on
-        newcf = CommitFest.objects.filter(status=CommitFest.STATUS_OPEN)
-        if len(newcf) == 0:
-            # Ok, there is no open CF at all. Let's see if there is a
-            # future one.
-            newcf = CommitFest.objects.filter(status=CommitFest.STATUS_FUTURE)
-            if len(newcf) == 0:
-                messages.error(request, "No open and no future commitfest exists!")
-                return HttpResponseRedirect(
-                    "/%s/%s/" % (poc.commitfest.id, poc.patch.id)
-                )
-            elif len(newcf) != 1:
-                messages.error(
-                    request, "No open and multiple future commitfests exist!"
-                )
-                return HttpResponseRedirect(
-                    "/%s/%s/" % (poc.commitfest.id, poc.patch.id)
-                )
-        elif len(newcf) != 1:
-            messages.error(request, "Multiple open commitfests exists!")
-            return HttpResponseRedirect("/%s/%s/" % (poc.commitfest.id, poc.patch.id))
-        elif newcf[0] == poc.commitfest:
-            # The current open CF is the same one that we are already on.
-            # In this case, try to see if there is a future CF we can
-            # move it to.
-            newcf = CommitFest.objects.filter(status=CommitFest.STATUS_FUTURE)
-            if len(newcf) == 0:
-                messages.error(
-                    request,
-                    "Cannot move patch to the same commitfest, and no future commitfests exist!",
-                )
-                return HttpResponseRedirect(
-                    "/%s/%s/" % (poc.commitfest.id, poc.patch.id)
-                )
-            elif len(newcf) != 1:
-                messages.error(
-                    request,
-                    "Cannot move patch to the same commitfest, and multiple future commitfests exist!",
-                )
-                return HttpResponseRedirect(
-                    "/%s/%s/" % (poc.commitfest.id, poc.patch.id)
-                )
-        # Create a mapping to the new commitfest that we are bouncing
-        # this patch to.
-        newpoc = PatchOnCommitFest(
-            patch=poc.patch,
-            commitfest=newcf[0],
-            status=oldstatus,
-            enterdate=datetime.now(),
-        )
-        newpoc.save()
+        newstatus = PatchOnCommitFest.STATUS_RETURNED
     elif status == "committed":
         committer = get_object_or_404(Committer, user__username=request.GET["c"])
-        if committer != poc.patch.committer:
-            # Committer changed!
-            prevcommitter = poc.patch.committer
-            poc.patch.committer = committer
-            PatchHistory(
-                patch=poc.patch,
-                by=request.user,
-                what="Changed committer to %s" % committer,
-            ).save_and_notify(prevcommitter=prevcommitter)
-        poc.status = PatchOnCommitFest.STATUS_COMMITTED
+        newstatus = PatchOnCommitFest.STATUS_COMMITTED
     else:
         raise Exception("Can't happen")
 
-    poc.patch.set_modified()
-    poc.patch.save()
-    poc.save()
+    try:
+        if (committer):
+            Workflow.setCommitter(poc, committer, request.user)
+            messages.info(request, "Committed by %s" % committer.user)
 
-    PatchHistory(
-        patch=poc.patch,
-        by=request.user,
-        what="Closed in commitfest %s with status: %s"
-        % (poc.commitfest, poc.statusstring),
-    ).save_and_notify()
+        if (Workflow.updatePOCStatus(poc, newstatus, request.user)):
+            messages.info(request, "Closed.  Updated status to %s" % poc.statusstring)
+    except Exception as e:
+        messages.error(request, "Failed to close patch: {}".format(e))
 
-    return HttpResponseRedirect("/%s/%s/" % (poc.commitfest.id, poc.patch.id))
+    return HttpResponseRedirect("/patch/%s/" % poc.patch.id)
 
 
 @login_required
@@ -1195,33 +1095,28 @@ def reviewer(request, patchid, status):
 @login_required
 @transaction.atomic
 def committer(request, patchid, status):
-    patch = get_object_or_404(Patch, pk=patchid)
+    poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
 
-    committer = list(Committer.objects.filter(user=request.user, active=True))
-    if len(committer) == 0:
+    find_me = list(Committer.objects.filter(user=request.user, active=True))
+    if len(find_me) == 0:
         return HttpResponseForbidden("Only committers can do that!")
-    committer = committer[0]
+    me = find_me[0]
 
-    is_committer = committer == patch.committer
+    # At this point it doesn't matter who the existing committer, if any, is.
+    # If someone else is one we are permitted to become the new one, then
+    # remove ourselves.  So removing them is acceptable, and desireable for admin.
+    # So we just need to know whether we are leaving the patch with ourselves
+    # as the commiter, or None.
+    if status == "become":
+        new_committer = me
+    elif status == "remove":
+        new_committer = None
 
-    prevcommitter = patch.committer
-    if status == "become" and not is_committer:
-        patch.committer = committer
-        patch.set_modified()
-        PatchHistory(
-            patch=patch,
-            by=request.user,
-            what="Added %s as committer" % request.user.username,
-        ).save_and_notify(prevcommitter=prevcommitter)
-    elif status == "remove" and is_committer:
-        patch.committer = None
-        patch.set_modified()
-        PatchHistory(
-            patch=patch,
-            by=request.user,
-            what="Removed %s from committers" % request.user.username,
-        ).save_and_notify(prevcommitter=prevcommitter)
-    patch.save()
+    # We could ignore a no-op become...but we expect the application to
+    # prevent such things on this particular interface.
+    if (not Workflow.setCommitter(poc, new_committer, request.user)):
+        raise Exception("Not expecting a no-op: toggling committer")
+
     return HttpResponseRedirect("../../")
 
 

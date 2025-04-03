@@ -640,3 +640,30 @@ class Workflow(models.Model):
         ).save_and_notify()
 
         return True
+
+    # Sets the value of the committer for the patch
+    # Creates a new history entry
+    # Emits notifications.
+    def setCommitter(poc, committer, by_user):
+        if (poc.patch.committer == committer):
+            return False
+
+        prevcommitter = poc.patch.committer
+        poc.patch.committer = committer
+        poc.patch.set_modified()
+        poc.patch.save()
+        poc.save()
+
+        if committer is None:
+            msg = "Removed {} as committer in {}".format(prevcommitter.fullname, poc.commitfest.name)
+        elif prevcommitter is None:
+            msg = "Set {} as committer in {}".format(poc.patch.committer.fullname, poc.commitfest.name)
+        else:
+            msg = "Changed to {} as committer in {}".format(poc.patch.committer.fullname, poc.commitfest.name)
+
+        PatchHistory(
+            patch=poc.patch, by=by_user,
+            what=msg,
+        ).save_and_notify(prevcommitter=prevcommitter)
+
+        return True

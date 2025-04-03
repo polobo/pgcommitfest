@@ -91,5 +91,7 @@
     <li role="presentation"><a href="close/reject/" onclick="return verify_reject()">Rejected</a></li>
    </ul>
   </div>
+  {%else%}
+  <div>Patch is Closed.  Administrative Actions Permitted Only.</div>
   {%endif%}
   </div>
