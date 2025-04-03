@@ -53,34 +53,47 @@
      {%endif%}
   </div>
 
+  {% if not is_author %}
+   <div>Review:</div>
+   <a class="btn btn-default" href="comment/">Comment</a>
+   <a class="btn btn-default" href="review/">Review</a>
+  {%endif%}
+
   <div><div>Move to:</div>
 
    {%if not cf.isfuture and workflow.future %}
+    {%if is_author or request.user.is_staff %}
     <div>
     <a class="btn btn-default"
        href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.future.id}}">
     {{workflow.future.name}}</a>
     <span>New Feature patches get moved here.</span>
     </div>
+    {%endif%}
    {%endif%}
 
    {%if not cf.isopen and workflow.open %}
+    {%if is_committer or request.user.is_staff %}
     <div>
     <a class="btn btn-default"
        href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.open.id}}">
     {{workflow.open.name}}</a>
     <span>Back-Patch qualified patches get moved here.</span>
     </div>
+    {%endif%}
    {%endif%}
 
-   {%if not cf.isinprogress and workflow.progress and request.user.is_staff %}
+   {%if not cf.isinprogress and workflow.progress %}
+    {%if is_committer or request.user.is_staff %}
     <div>
     <a class="btn btn-default"
        href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.progress.id}}">
     {{workflow.progress.name}}</a>
     <span>Back-Patch qualified patches get moved here.</span>
     </div>
+    {%endif%}
    {%endif%}
+
   {%if is_committer or is_author %}
   <div>Resolution:</div>
   <div>
