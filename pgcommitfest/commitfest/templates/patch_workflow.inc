@@ -1,8 +1,9 @@
+{%load commitfest%}
 <div class="workflow">
  <table class="table table-bordered">
  <thead>
   <tr>
-  <th>Change To</th>
+  <th>Assign To</th>
   <th>Annotate</th>
   <th>Resolve</th>
   <th>Move To</th>
@@ -66,6 +67,41 @@
     {{workflow.progress.name}}</a>
    {%endif%}
    {%endif%}
+  </td>
+  </tr>
+  <tr>
+  <!-- Change -->
+  <td>
+   {{ patch.authors_string }}
+  </td>
+  <!-- Annotate -->
+  <td>
+
+    <div>{{ patch.reviewers_string }}</div>
+    <div><a href="reviewer/{{is_reviewer|yesno:"remove,become"}}/" class="btn btn-default">{{is_reviewer|yesno:"Remove from reviewers,Become reviewer"}}</a></div>
+
+  </td>
+  <!-- Resolve -->
+  <td>
+{%if patch.committer%}<div>{{patch.committer.fullname}}</div>{%endif%}
+     {%if is_committer%}<div><a href="committer/{{is_this_committer|yesno:"remove,become"}}/" class="btn btn-default">{{is_this_committer|yesno:"Unclaim as committer,Claim as committer"}}</a></div>{%endif%}
+  </td>
+  <!-- Move -->
+  <td>
+   <div>
+    <span class="label label-{{poc.commitfest.status|patchstatuslabel}}">{{poc.commitfest.statusstring}}</span>
+    <span class="label label-{{poc.status|patchstatuslabel}}">{{poc.statusstring}}</span>
+    <span><a href="edit/">Version</a>: </span> <span class="label label-default">{%if patch.targetversion%}{{patch.targetversion}}{%else%}N/A{%endif%}</span>
+    {%if user.is_authenticated%}
+     <span class="pull-right">Updates: <a href="{{is_subscribed|yesno:"unsubscribe,subscribe"}}/" class="btn btn-default">{{is_subscribed|yesno:"Unsubscribe,Subscribe"}}</a></span>
+    {%endif%}
+   </div>
+   <div>
+    <span><a href="edit/">Topic</a>: </span></span> <span>{{ patch.topic }}</span>
+   </div>
+   <div>
+    <span>Last Modified:</span> <span>{{patch.modified}} ({% cfwhen patch.modified %})</span>
+   </div>
   </td>
   </tr>
  </tbody>

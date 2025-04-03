@@ -10,6 +10,61 @@
  <table class="table table-bordered">
   <tbody>
    <tr>
+    <th>Emails</th>
+    <td>
+     {%if user.is_authenticated%}
+      <div style="float:right"><button class="btn btn-default" onclick="attachThread({{cf.id}},{{patch.id}})">Attach thread</button></div>
+     {%else%}
+      <div style="float:right"><button class="btn btn-default" onclick="location.href='/account/login/?next=/{{cf.id}}/{{patch.id}}/%3Fattachthreadnow'">Attach thread</button></div>
+     {%endif%}
+     <dl>
+      {%for t in patch.mailthread_set.all%}
+       <dt><a href="https://www.postgresql.org/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
+       <dd>
+        First at <a href="https://www.postgresql.org/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
+        Latest at <a href="https://www.postgresql.org/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
+        {%for ta in t.mailthreadattachment_set.all%}
+         {%if forloop.first%}
+          Latest attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
+          <div id="att{{t.pk}}" class="collapse">
+         {%endif%}
+         &nbsp;&nbsp;&nbsp;&nbsp;Attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} (Patch: {{ta.ispatch|yesno:"Yes,No,Pending check"}})<br/>
+         {%if forloop.last%}</div>{%endif%}
+        {%endfor%}
+        <div>
+         {%for a in t.mailthreadannotation_set.all%}
+          {%if forloop.first%}
+           <h4>Annotations</h4>
+           <table class="table table-bordered table-striped table-condensed small">
+            <thead>
+             <tr>
+              <th>When</th>
+              <th>Who</th>
+              <th>Mail</th>
+              <th>Annotation</th>
+             </tr>
+            </thead>
+            <tbody>
+          {%endif%}
+          <tr>
+           <td>{{a.date}}</td>
+           <td style="white-space: nowrap">{{a.user_string}}</td>
+           <td style="white-space: nowrap">From {{a.mailauthor}}<br/>at <a href="https://www.postgresql.org/message-id/{{a.msgid}}">{{a.maildate}}</a></td>
+           <td width="99%">{{a.annotationtext}} <button type="button" class="close" title="Delete this annotation" onclick="deleteAnnotation({{a.id}})">&times;</button></td>
+          </tr>
+          {%if forloop.last%}
+           </body>
+           </table>
+          {%endif%}
+         {%endfor%}
+         {%if user.is_authenticated%}<button class="btn btn-xs btn-default" onclick="addAnnotation({{t.id}})">Add annotation</button>{%endif%}
+        </div>
+       </dd>
+      {%endfor%}
+     </dl>
+    </td>
+   </tr>
+   <tr>
     <th>CI (CFBot)</th>
     <td>
      {%if not cfbot_branch %}
@@ -61,47 +116,6 @@
     {%endif%}
    </tr>
    <tr>
-    <th>Topic</th>
-    <td>{{patch.topic}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
-   </tr>
-   <tr>
-    <th>Created</th>
-    <td>{{patch.created}}</td>
-   </tr>
-   <tr>
-    <th style="white-space: nowrap;">Last modified</th>
-    <td>{{patch.modified}} ({% cfwhen patch.modified %})</td>
-   </tr>
-   <tr>
-    <th style="white-space: nowrap;">Latest email</th>
-    <td>{%if patch.lastmail%}{{patch.lastmail}} ({% cfwhen patch.lastmail %}){%endif%}</td>
-   </tr>
-   <tr>
-    <th>Status</th>
-    <td>{%for c in patch_commitfests %}
-     <div style="margin-bottom: 3px;"><a href="/{{c.commitfest.id}}/">{{c.commitfest}}</a>: <span class="label label-{{c.status|patchstatuslabel}}">{{c.statusstring}}</span></div>
-    {%endfor%}
-    </td>
-   </tr>
-   <tr>
-    <th>Target version</th>
-    <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
-   </tr>
-   <tr>
-    <th>Authors</th>
-    <td>{{patch.authors_string}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
-   </tr>
-   <tr>
-    <th>Reviewers</th>
-    <td>{{patch.reviewers_string}}<a href="reviewer/{{is_reviewer|yesno:"remove,become"}}/" class="btn btn-default pull-right">{{is_reviewer|yesno:"Remove from reviewers,Become reviewer"}}</a></td>
-   </tr>
-   <tr>
-    <th>Committer</th>
-    <td>{%if patch.committer%}{{patch.committer.fullname}}{%endif%}
-     {%if is_committer%}<a href="committer/{{is_this_committer|yesno:"remove,become"}}/" class="btn btn-default pull-right">{{is_this_committer|yesno:"Unclaim as committer,Claim as committer"}}</a>{%endif%}
-    </td>
-   </tr>
-   <tr>
     <th>Links</th>
     <td>
      {%if patch.wikilink%}
@@ -114,61 +128,10 @@
     </td>
   </tr>
   <tr>
-   <th>Emails</th>
-   <td>
-    {%if user.is_authenticated%}
-     <div style="float:right"><button class="btn btn-default" onclick="attachThread({{cf.id}},{{patch.id}})">Attach thread</button></div>
-    {%else%}
-     <div style="float:right"><button class="btn btn-default" onclick="location.href='/account/login/?next=/{{cf.id}}/{{patch.id}}/%3Fattachthreadnow'">Attach thread</button></div>
-    {%endif%}
-    <dl>
-     {%for t in patch.mailthread_set.all%}
-      <dt><a href="https://www.postgresql.org/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
-      <dd>
-       First at <a href="https://www.postgresql.org/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
-       Latest at <a href="https://www.postgresql.org/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
-       {%for ta in t.mailthreadattachment_set.all%}
-        {%if forloop.first%}
-         Latest attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
-         <div id="att{{t.pk}}" class="collapse">
-        {%endif%}
-        &nbsp;&nbsp;&nbsp;&nbsp;Attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} (Patch: {{ta.ispatch|yesno:"Yes,No,Pending check"}})<br/>
-        {%if forloop.last%}</div>{%endif%}
-       {%endfor%}
-       <div>
-        {%for a in t.mailthreadannotation_set.all%}
-         {%if forloop.first%}
-          <h4>Annotations</h4>
-          <table class="table table-bordered table-striped table-condensed small">
-           <thead>
-            <tr>
-             <th>When</th>
-             <th>Who</th>
-             <th>Mail</th>
-             <th>Annotation</th>
-            </tr>
-           </thead>
-           <tbody>
-         {%endif%}
-         <tr>
-          <td>{{a.date}}</td>
-          <td style="white-space: nowrap">{{a.user_string}}</td>
-          <td style="white-space: nowrap">From {{a.mailauthor}}<br/>at <a href="https://www.postgresql.org/message-id/{{a.msgid}}">{{a.maildate}}</a></td>
-          <td width="99%">{{a.annotationtext}} <button type="button" class="close" title="Delete this annotation" onclick="deleteAnnotation({{a.id}})">&times;</button></td>
-         </tr>
-         {%if forloop.last%}
-          </body>
-          </table>
-         {%endif%}
-        {%endfor%}
-        {%if user.is_authenticated%}<button class="btn btn-xs btn-default" onclick="addAnnotation({{t.id}})">Add annotation</button>{%endif%}
-       </div>
-      </dd>
-     {%endfor%}
-    </dl>
-   </td>
-  </tr>
-  <tr>
+  </tbody>
+ </table>
+ <table class="table table-bordered">
+  <tbody>
    <th>History</th>
    <td>
     <div style="max-height: 200px; overflow-y: scroll;">
@@ -196,9 +159,54 @@
     {%endif%}
    </td>
   </tr>
+  </tbody>
+  </table>
+  <table class="table table-bordered">
+   <tbody>
+    <tr>
+     <th>Status</th>
+     <td>{%for c in patch_commitfests %}
+      <div style="margin-bottom: 3px;"><a href="/{{c.commitfest.id}}/">{{c.commitfest}}</a>: <span class="label label-{{c.status|patchstatuslabel}}">{{c.statusstring}}</span></div>
+     {%endfor%}
+     </td>
+    </tr>
+   <tr>
+    <th>Authors</th>
+    <td>{{patch.authors_string}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
+   </tr>
+   <tr>
+    <th>Reviewers</th>
+    <td>{{patch.reviewers_string}}<a href="reviewer/{{is_reviewer|yesno:"remove,become"}}/" class="btn btn-default pull-right">{{is_reviewer|yesno:"Remove from reviewers,Become reviewer"}}</a></td>
+   </tr>
+   <tr>
+    <th>Committer</th>
+    <td>{%if patch.committer%}{{patch.committer.fullname}}{%endif%}
+     {%if is_committer%}<a href="committer/{{is_this_committer|yesno:"remove,become"}}/" class="btn btn-default pull-right">{{is_this_committer|yesno:"Unclaim as committer,Claim as committer"}}</a>{%endif%}
+    </td>
+   </tr>
   <tr>
    <th>Title</th>
    <td>{{patch.name}}</td>
+  </tr>
+  <tr>
+   <th>Created</th>
+   <td>{{patch.created}}</td>
+  </tr>
+  <tr>
+   <th style="white-space: nowrap;">Last modified</th>
+   <td>{{patch.modified}} ({% cfwhen patch.modified %})</td>
+  </tr>
+  <tr>
+   <th>Topic</th>
+   <td>{{patch.topic}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
+  </tr>
+  <tr>
+   <th>Target version</th>
+   <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
+  </tr>
+  <tr>
+   <th style="white-space: nowrap;">Latest email</th>
+   <td>{%if patch.lastmail%}{{patch.lastmail}} ({% cfwhen patch.lastmail %}){%endif%}</td>
   </tr>
   <tr>
    <th>ID</th>
