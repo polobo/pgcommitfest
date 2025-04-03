@@ -58,7 +58,7 @@
    {%if not cf.isfuture and workflow.future %}
     <div>
     <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.future.id}}">
+       href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.future.id}}">
     {{workflow.future.name}}</a>
     <span>New Feature patches get moved here.</span>
     </div>
@@ -67,7 +67,7 @@
    {%if not cf.isopen and workflow.open %}
     <div>
     <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.open.id}}">
+       href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.open.id}}">
     {{workflow.open.name}}</a>
     <span>Back-Patch qualified patches get moved here.</span>
     </div>
@@ -76,7 +76,7 @@
    {%if not cf.isinprogress and workflow.progress and request.user.is_staff %}
     <div>
     <a class="btn btn-default"
-       href="transition/?tocfid={{workflow.progress.id}}">
+       href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.progress.id}}">
     {{workflow.progress.name}}</a>
     <span>Back-Patch qualified patches get moved here.</span>
     </div>

@@ -721,7 +721,7 @@ def patch(request, patchid):
             "workflow": {
                 "open": Workflow.open_cf(),
                 "future": Workflow.future_cf(),
-                "progress": Workflow.progress_cf(),
+                "progress": Workflow.inprogress_cf(),
             }
         },
     )
@@ -1003,27 +1003,22 @@ def status(request, patchid, status):
 @login_required
 @transaction.atomic
 def transition(request, patchid):
-    cur_poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
-    target_cf = Workflow.getCommitfest(request.GET.get("tocfid", None))
-    # XXX: Add a 'mycfid' parameter to the URL in order to check for concurrent activity
-    # resulting in the second move action seeing a different primary cf than expected.
-    #    try:
-    #    request_cfid = int(request.GET.get("cfid", ""))
-    #except ValueError:
-    #    # int() failed, ignore
-    #    request_cfid = None
-    #if request_cfid is not None and request_cfid != poc.commitfest.id:
-    # The cfid parameter is only added to the /next/ link. That's the only
-    # close operation where two people pressing the button at the same time
-    # can have unintended effects.
-    #messages.error(
-    #    request,
-    #    "The patch was moved to a new commitfest by someone else. Please double check if you still want to retry this operation.",
-    #)
-    #return HttpResponseRedirect("/%s/%s/" % (cf.id, patch.id))
+    from_cf = Workflow.getCommitfest(request.GET.get("fromcfid", None))
 
-    if ((target_cf is None)):
-        messages.error(request, "Unknown commitfest id {}".format(request.GET.get("tocfid", None)))
+    if from_cf is None:
+        messages.error(request, "Unknown from commitfest id {}".format(request.GET.get("fromcfid", None)))
+        return HttpResponseRedirect("/patch/%s/" % (patchid))
+
+    cur_poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
+
+    if from_cf != cur_poc.commitfest:
+        messages.error(request, "Transition aborted, Redirect performed.  Commitfest for patch already changed.")
+        return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
+
+    target_cf = Workflow.getCommitfest(request.GET.get("tocfid", None))
+
+    if target_cf is None:
+        messages.error(request, "Unknown to commitfest id {}".format(request.GET.get("tocfid", None)))
         return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
 
     try:
@@ -1034,6 +1029,7 @@ def transition(request, patchid):
         return HttpResponseRedirect("/patch/%s/" % (cur_poc.patch.id))
 
     return HttpResponseRedirect("/patch/%s/" % (new_poc.patch.id))
+
 
 @login_required
 @transaction.atomic

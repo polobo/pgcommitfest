@@ -545,17 +545,17 @@ class Workflow(models.Model):
     # At most a single Open CommitFest is allowed and this function returns it.
     def open_cf():
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_OPEN))
-        return cfs[0] if len(cfs) > 0 else None
+        return cfs[0] if len(cfs) == 1 else None
 
     # At most a single Future CommitFest is allowed and this function returns it.
     def future_cf():
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_FUTURE))
-        return cfs[0] if len(cfs) > 0 else None
+        return cfs[0] if len(cfs) == 1 else None
 
     # At most a single In Progress CommitFest is allowed and this function returns it.
-    def progress_cf():
+    def inprogress_cf():
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_INPROGRESS))
-        return cfs[0] if len(cfs) > 0 else None
+        return cfs[0] if len(cfs) == 1 else None
 
     def getCommitfest(cfid):
         if (cfid is None or cfid == ""):
@@ -563,7 +563,7 @@ class Workflow(models.Model):
         try:
             int_cfid = int(cfid)
             cfs = list(CommitFest.objects.filter(id=int_cfid))
-            if len(cfs) > 0:
+            if len(cfs) == 1:
                 return cfs[0]
             else:
                 return None
