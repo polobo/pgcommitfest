@@ -81,16 +81,18 @@
     <span>Back-Patch qualified patches get moved here.</span>
     </div>
    {%endif%}
-  <br/>
-  <div class="btn-group">
-   <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Close Patch <span class="caret"></span></a>
-   <ul class="dropdown-menu" role="menu">
-    <li role="presentation"><a href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Committed</a></li>
-    <li role="presentation"><a href="close/withdrawn/" onclick="return verify_withdrawn()">Withdrawn</a></li>
-    <li role="presentation"><a href="close/feedback/" onclick="return verify_returned()">Returned with feedback</a></li>
-    <li role="presentation"><a href="close/reject/" onclick="return verify_reject()">Rejected</a></li>
-   </ul>
+  {%if is_committer or is_author %}
+  <div>Resolution:</div>
+  <div>
+   {%if is_committer %}
+    <a class="btn btn-default" href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Commit</a>
+    <a class="btn btn-default" href="close/reject/" onclick="return verify_reject()">Reject</a>
+   {%endif%}
+   {%if is_author %}
+    <a class="btn btn-default" href="close/withdrawn/" onclick="return verify_withdrawn()">Withdraw</a>
+   {%endif%}
   </div>
+  {%endif%}
   {%else%}
   <div>Patch is Closed.  Administrative Actions Permitted Only.</div>
   {%endif%}

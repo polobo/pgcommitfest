@@ -557,6 +557,22 @@ class Workflow(models.Model):
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_INPROGRESS))
         return cfs[0] if len(cfs) == 1 else None
 
+    def isCommitter(user, patch):
+        all_committers = Committer.objects.filter(active=True).order_by(
+            "user__last_name", "user__first_name"
+        )
+        if not user or not patch:
+            return False, False, all_committers
+
+        committer = [c for c in all_committers if c.user == user]
+        if len(committer) == 1:
+            is_committer = True
+            is_this_committer = committer[0] == patch.committer
+        else:
+            is_committer = is_this_committer = False
+        return is_committer, is_this_committer, all_committers
+
+
     def getCommitfest(cfid):
         if (cfid is None or cfid == ""):
             return None
@@ -671,6 +687,22 @@ class Workflow(models.Model):
         # We trust privileged users to make informed choices
         if user.is_staff:
             return
+
+        is_committer = Workflow.isCommitter(user, poc.patch)
+
+        # XXX Not sure if we want to tighten this up to is_this_committer
+        # with only the is_staff exemption
+        if new_status == PatchOnCommitFest.STATUS_COMMITTED and not is_committer:
+            raise Exception("Only a committer can set status to committed.")
+
+        if new_status == PatchOnCommitFest.STATUS_REJECTED and not is_committer:
+            raise Exception("Only a committer can set status to rejected.")
+
+        if new_status == PatchOnCommitFest.STATUS_RETURNED and not is_committer:
+            raise Exception("Only a committer can set status to returned.")
+
+        if new_status == PatchOnCommitFest.STATUS_WITHDRAWN and not user in poc.patch.authors.all():
+            raise Exception("Only the author can set status to withdrawn.")
 
         # Prevent users from modifying closed patches
         # The else clause should be considered a can't happen

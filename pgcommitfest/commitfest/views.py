@@ -672,28 +672,19 @@ def patch(request, patchid):
     )
     cf = patch_commitfests[0].commitfest
 
-    committers = Committer.objects.filter(active=True).order_by(
-        "user__last_name", "user__first_name"
-    )
-
     cfbot_branch = getattr(patch, "cfbot_branch", None)
     cfbot_tasks = patch.cfbot_tasks.order_by("position") if cfbot_branch else []
 
     # XXX: this creates a session, so find a smarter way. Probably handle
     # it in the callback and just ask the user then?
     if request.user.is_authenticated:
-        committer = [c for c in committers if c.user == request.user]
-        if len(committer) > 0:
-            is_committer = True
-            is_this_committer = committer[0] == patch.committer
-        else:
-            is_committer = is_this_committer = False
-
+        is_committer, is_this_committer, all_committers = Workflow.isCommitter(request.user, patch)
+        is_author = request.user in patch.authors.all()
         is_reviewer = request.user in patch.reviewers.all()
         is_subscribed = patch.subscribers.filter(id=request.user.id).exists()
     else:
-        is_committer = False
-        is_this_committer = False
+        is_committer, is_this_committer, all_committers = Workflow.isCommitter(None, None)
+        is_author = False
         is_reviewer = False
         is_subscribed = False
 
@@ -707,11 +698,12 @@ def patch(request, patchid):
             "patch_commitfests": patch_commitfests,
             "cfbot_branch": cfbot_branch,
             "cfbot_tasks": cfbot_tasks,
+            "is_author": is_author,
             "is_committer": is_committer,
             "is_this_committer": is_this_committer,
             "is_reviewer": is_reviewer,
             "is_subscribed": is_subscribed,
-            "committers": committers,
+            "committers": all_committers,
             "attachnow": "attachthreadnow" in request.GET,
             "title": patch.name,
             "breadcrumbs": [
@@ -1035,7 +1027,7 @@ def transition(request, patchid):
 @transaction.atomic
 def close(request, patchid, status):
     poc = get_object_or_404(Patch.objects.select_related(), pk=patchid).current_patch_on_commitfest()
-
+    committer = None
     # Inactive statuses only, except Next, which is handled by transition()
     if status == "reject":
         newstatus = PatchOnCommitFest.STATUS_REJECTED
