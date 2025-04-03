@@ -621,8 +621,10 @@ class Workflow(models.Model):
         return poc
 
     # Update the status of a PoC
+    # Creates a new history entry
+    # Emits notifications.
     # Returns True if the status was changed, False for a same-status no-op.
-    def updatePOCStatus(poc, new_status, by_user, by_cfbot=False):
+    def updatePOCStatus(poc, new_status, by_user):
         if (poc.status == new_status):
             return False
 
@@ -632,7 +634,7 @@ class Workflow(models.Model):
         poc.patch.save()
         poc.save()
         PatchHistory(
-            patch=poc.patch, by=by_user, by_cfbot=by_cfbot,
+            patch=poc.patch, by=by_user,
             what="{} in {}".format(
                 poc.statusstring,
                 poc.commitfest.name,
@@ -644,6 +646,7 @@ class Workflow(models.Model):
     # Sets the value of the committer for the patch
     # Creates a new history entry
     # Emits notifications.
+    # Returns True if the committer was changed, False for a same-committer no-op.
     def setCommitter(poc, committer, by_user):
         if (poc.patch.committer == committer):
             return False
