@@ -42,18 +42,17 @@
      </div>
     {%endif%}
    {%endif%}
-  </div>
 
-  {%if not cf.isinprogress and workflow.progress %}
-   {%if is_committer or request.user.is_staff %}
-    <div>
-     <a class="btn btn-default"
-        href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.progress.id}}">
-     {{workflow.progress.name}}</a>
-     <span>Back-Patch qualified patches get moved here.</span>
-    </div>
+   {%if not cf.isinprogress and workflow.progress %}
+    {%if is_committer or request.user.is_staff %}
+     <div>
+      <a class="btn btn-default"
+         href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.progress.id}}">
+      {{workflow.progress.name}}</a>
+      <span>Back-Patch qualified patches get moved here.</span>
+     </div>
+    {%endif%}
    {%endif%}
-  {%endif%}
 
   {%if is_committer or is_author %}
    <div>Resolution:</div>
