@@ -7,19 +7,15 @@
  {%else%}
   <div>Patch is Closed.  Administrative Actions Permitted Only.</div>
  {%endif%}
+ <div class="workflow">
  <table class="table table-bordered">
   <tbody>
    <tr>
     <th>Emails</th>
     <td>
-     {%if user.is_authenticated%}
-      <div style="float:right"><button class="btn btn-default" onclick="attachThread({{cf.id}},{{patch.id}})">Attach thread</button></div>
-     {%else%}
-      <div style="float:right"><button class="btn btn-default" onclick="location.href='/account/login/?next=/{{cf.id}}/{{patch.id}}/%3Fattachthreadnow'">Attach thread</button></div>
-     {%endif%}
      <dl>
       {%for t in patch.mailthread_set.all%}
-       <dt><a href="https://www.postgresql.org/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
+       <dt style="white-space: nowrap;"><a href="https://www.postgresql.org/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
        <dd>
         First at <a href="https://www.postgresql.org/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
         Latest at <a href="https://www.postgresql.org/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
@@ -58,6 +54,11 @@
           {%endif%}
          {%endfor%}
          {%if user.is_authenticated%}<button class="btn btn-xs btn-default" onclick="addAnnotation({{t.id}})">Add annotation</button>{%endif%}
+         {%if user.is_authenticated%}
+          <div><button class="btn btn-default" onclick="attachThread({{cf.id}},{{patch.id}})">Attach thread</button></div>
+         {%else%}
+          <div><button class="btn btn-default" onclick="location.href='/account/login/?next=/{{cf.id}}/{{patch.id}}/%3Fattachthreadnow'">Attach New Thread</button></div>
+         {%endif%}
         </div>
        </dd>
       {%endfor%}
@@ -65,7 +66,7 @@
     </td>
    </tr>
    <tr>
-    <th>CI (CFBot)</th>
+    <th>CFBot Status</th>
     <td>
      {%if not cfbot_branch %}
       <span class="label label-default">Not processed</span></a>
@@ -102,7 +103,7 @@
    </td>
   </tr>
   <tr>
-   <th>Stats (from CFBot)</th>
+   <th>CFBot Calculations</th>
    <td>
     {%if cfbot_branch and cfbot_branch.commit_id %}
      {%if cfbot_branch.version %}
@@ -130,7 +131,12 @@
   <tr>
   </tbody>
  </table>
- <table class="table table-bordered">
+</div>
+<div>
+ <button class="btn btn-default" data-toggle="collapse" data-target="#history-table">Toggle History Table</button>
+ <button class="btn btn-default" data-toggle="collapse" data-target="#keyvalue-table">Toggle Key-Value Table</button>
+</div>
+<table id="history-table" class="table table-bordered">
   <tbody>
    <th>History</th>
    <td>
@@ -161,8 +167,26 @@
   </tr>
   </tbody>
   </table>
-  <table class="table table-bordered">
+
+
+  <table id="keyvalue-table" class="table table-bordered">
    <tbody>
+    <tr>
+     <th>ID</th>
+     <td><a href="/patch/{{patch.id}}">{{patch.id}}</a></td>
+    </tr>
+    <tr>
+     <th>Title</th>
+     <td>{{patch.name}}</td>
+    </tr>
+    <tr>
+     <th>Topic</th>
+     <td>{{patch.topic}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
+    </tr>
+    <tr>
+     <th>Target version</th>
+     <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
+    </tr>
     <tr>
      <th>Status</th>
      <td>{%for c in patch_commitfests %}
@@ -185,10 +209,6 @@
     </td>
    </tr>
   <tr>
-   <th>Title</th>
-   <td>{{patch.name}}</td>
-  </tr>
-  <tr>
    <th>Created</th>
    <td>{{patch.created}}</td>
   </tr>
@@ -197,29 +217,12 @@
    <td>{{patch.modified}} ({% cfwhen patch.modified %})</td>
   </tr>
   <tr>
-   <th>Topic</th>
-   <td>{{patch.topic}}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
-  </tr>
-  <tr>
-   <th>Target version</th>
-   <td>{%if patch.targetversion%}<span class="label label-default">{{patch.targetversion}}</span>{%endif%}<a class="btn btn-default pull-right" href="edit/">Edit</a></td>
-  </tr>
-  <tr>
    <th style="white-space: nowrap;">Latest email</th>
    <td>{%if patch.lastmail%}{{patch.lastmail}} ({% cfwhen patch.lastmail %}){%endif%}</td>
   </tr>
-  <tr>
-   <th>ID</th>
-   <td><a href="/patch/{{patch.id}}">{{patch.id}}</a></td>
-  </tr>
+
  </tbody>
  </table>
-
-{%if poc.is_open %}
- <div class="dropup" >
-  {%include "patch_commands.inc"%}
- </div>
-{%endif%}
 
 {%comment%}commit dialog{%endcomment%}
  <div class="modal fade" id="commitModal" role="dialog">
