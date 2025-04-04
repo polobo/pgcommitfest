@@ -72,19 +72,21 @@
   <tr>
   <!-- Change -->
   <td>
-   {{ patch.authors_string }}
+   {%for author in authors %}
+    <div>{{author.first_name}} {{author.last_name}}</div>
+   {%endfor%}
   </td>
   <!-- Annotate -->
   <td>
-
-    <div>{{ patch.reviewers_string }}</div>
-    <div><a href="reviewer/{{is_reviewer|yesno:"remove,become"}}/" class="btn btn-default">{{is_reviewer|yesno:"Remove from reviewers,Become reviewer"}}</a></div>
-
+   {%for reviewer in reviewers %}
+    <div>{{reviewer.first_name}} {{reviewer.last_name}}</div>
+   {%endfor%}
+   <div><a href="reviewer/{{is_reviewer|yesno:"remove,become"}}/" class="btn btn-default">{{is_reviewer|yesno:"Remove from reviewers,Become reviewer"}}</a></div>
   </td>
   <!-- Resolve -->
   <td>
-{%if patch.committer%}<div>{{patch.committer.fullname}}</div>{%endif%}
-     {%if is_committer%}<div><a href="committer/{{is_this_committer|yesno:"remove,become"}}/" class="btn btn-default">{{is_this_committer|yesno:"Unclaim as committer,Claim as committer"}}</a></div>{%endif%}
+   {%if patch.committer%}<div>{{patch.committer.fullname}}</div>{%endif%}
+   {%if is_committer%}<div><a href="committer/{{is_this_committer|yesno:"remove,become"}}/" class="btn btn-default">{{is_this_committer|yesno:"Unclaim as committer,Claim as committer"}}</a></div>{%endif%}
   </td>
   <!-- Move -->
   <td>

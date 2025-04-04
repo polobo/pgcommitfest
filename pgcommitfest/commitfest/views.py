@@ -704,6 +704,8 @@ def patch(request, patchid):
             "is_reviewer": is_reviewer,
             "is_subscribed": is_subscribed,
             "committers": all_committers,
+            "authors": patch.authors.all(),
+            "reviewers": patch.reviewers.all(),
             "attachnow": "attachthreadnow" in request.GET,
             "title": patch.name,
             "breadcrumbs": [
