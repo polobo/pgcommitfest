@@ -2,11 +2,7 @@
 {%load commitfest%}
 {%block contents%}
  {%include "patch_administrative.inc"%}
- {%if poc.is_open %}
-  {%include "patch_workflow.inc"%}
- {%else%}
-  <div>Patch is Closed.  Administrative Actions Permitted Only.</div>
- {%endif%}
+ {%include "patch_workflow.inc"%}
  <div class="workflow">
  <table class="table table-bordered">
   <tbody>
