@@ -61,6 +61,16 @@
     }
 },
 {
+    "model": "commitfest.commitfest",
+    "pk": 5,
+    "fields": {
+        "name": "Drafts",
+        "status": 5,
+        "startdate": "2025-01-01",
+        "enddate": null
+    }
+},
+{
     "model": "commitfest.topic",
     "pk": 1,
     "fields": {

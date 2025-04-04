@@ -25,7 +25,7 @@
  <h3>List of commitfests</h3>
  <ul>
   {%for c in commitfests%}
-   <li><a href="/{{c.id}}/">{{c}}</a> ({{c.statusstring}}{%if c.startdate%} - {{c.periodstring}}{%endif%})</li>
+   <li><a href="/{{c.id}}/">{{c}}</a> ({{c.statusstring}}{%if not c.isparked%} - {{c.periodstring}}{%endif%})</li>
   {%endfor%}
  </ul>
  <br/>

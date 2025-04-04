@@ -38,17 +38,20 @@ class CommitFest(models.Model):
     STATUS_OPEN = 2
     STATUS_INPROGRESS = 3
     STATUS_CLOSED = 4
+    STATUS_PARKED = 5
     _STATUS_CHOICES = (
         (STATUS_FUTURE, "Future"),
         (STATUS_OPEN, "Open"),
         (STATUS_INPROGRESS, "In Progress"),
         (STATUS_CLOSED, "Closed"),
+        (STATUS_PARKED, "Parked"),
     )
     _STATUS_LABELS = (
         (STATUS_FUTURE, "default"),
         (STATUS_OPEN, "info"),
         (STATUS_INPROGRESS, "success"),
         (STATUS_CLOSED, "danger"),
+        (STATUS_PARKED, "default"),
     )
     name = models.CharField(max_length=100, blank=False, null=False, unique=True)
     status = models.IntegerField(
@@ -65,6 +68,8 @@ class CommitFest(models.Model):
     def periodstring(self):
         if self.startdate and self.enddate:
             return "{0} - {1}".format(self.startdate, self.enddate)
+        elif self.startdate:
+            return "{0} and onward".format(self.startdate)
         return ""
 
     @property
@@ -83,6 +88,9 @@ class CommitFest(models.Model):
 
     def isclosed(self):
         return self.status == self.STATUS_CLOSED
+
+    def isparked(self):
+        return self.status == self.STATUS_PARKED
 
     def __str__(self):
         return self.name
@@ -555,6 +563,11 @@ class Workflow(models.Model):
     # At most a single In Progress CommitFest is allowed and this function returns it.
     def inprogress_cf():
         cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_INPROGRESS))
+        return cfs[0] if len(cfs) == 1 else None
+
+    # At most a single Parked CommitFest is allowed and this function returns it.
+    def parked_cf():
+        cfs = list(CommitFest.objects.filter(status=CommitFest.STATUS_PARKED))
         return cfs[0] if len(cfs) == 1 else None
 
     def isCommitter(user, patch):

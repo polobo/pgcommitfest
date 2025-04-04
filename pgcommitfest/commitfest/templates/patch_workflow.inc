@@ -67,6 +67,14 @@
     {{workflow.progress.name}}</a>
    {%endif%}
    {%endif%}
+
+   {%if not cf.isparked and workflow.parked %}
+   {%if is_author or request.user.is_staff %}
+    <a class="btn btn-default"
+     href="transition/?fromcfid={{poc.commitfest.id}}&tocfid={{workflow.parked.id}}">
+    {{workflow.parked.name}}</a>
+   {%endif%}
+   {%endif%}
   </td>
   </tr>
   <tr>
