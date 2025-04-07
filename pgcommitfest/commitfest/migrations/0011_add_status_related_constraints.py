@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
         migrations.RunSQL("""
 CREATE UNIQUE INDEX cf_enforce_maxoneopen_idx
 ON commitfest_commitfest (status)
-WHERE status not in (4);
+WHERE status not in (1,4);
 """),
         migrations.RunSQL("""
 CREATE UNIQUE INDEX poc_enforce_maxoneoutcome_idx
