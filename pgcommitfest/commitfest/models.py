@@ -43,7 +43,7 @@ class CommitFest(models.Model):
     _STATUS_CHOICES = (
         (STATUS_FUTURE, "Future"),
         (STATUS_OPEN, "Open"),
-        (STATUS_INPROGRESS, "Ongoing"),
+        (STATUS_INPROGRESS, "In Progress"),
         (STATUS_CLOSED, "Closed"),
         (STATUS_PARKED, "Drafts"),
     )

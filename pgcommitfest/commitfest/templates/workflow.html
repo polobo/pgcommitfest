@@ -9,7 +9,7 @@
   Thus the worflow broadly separates patches into "drafts" and
   "potentially committable".  The former go onto the "Drafts v19" commitfest
   while the later are initially placed into the open commitfest, which is
-  eventually converted into the ongoing commitfest.
+  eventually converted into the in progress commitfest.
   Second, they can be awaiting changes,
   awaiting guidance, awaiting review, or waiting to be committed (status).
   The workflow uses commitfests and patch status in combination to communicate
@@ -22,7 +22,7 @@
   <ul>
    <li>Drafts - annual, drafts for new features</li>
    <li>Open - scheduled, proposed new features</li>
-   <li>Ongoing - scheduled, review and commit new features</li>
+   <li>In Progress - scheduled, review and commit new features</li>
   </ul>
   There are three active categories of patch status covering the four statuses.
   <ul>
@@ -46,13 +46,13 @@
   with the committer patch status category already set.
  </p>
  <p>
-  The open and ongoing bins are the ones that strictly comprise a commitfest.
+  The open and in progress bins are the ones that strictly comprise a commitfest.
   The open bin always exists and new features ready for review and commit go
-  here.  At scheduled points, the open bin becomes an ongoing bin and a new
+  here.  At scheduled points, the open bin becomes an in progress bin and a new
   open bin is created (possibly by reclassifying an existing future bin).
  </p>
  <p>
-  The ongoing bin only exists during an active commitfest period, during which
+  The in progress bin only exists during an active commitfest period, during which
   no new patches should be added and the community reviewers and committers are
   encouraged to focus on reviews and commits.  At the end of the scheduled period
   the bin is closed.  This is only bin that is not present at all times.
@@ -184,7 +184,7 @@
   of a patch to be keyed to commitfest status type without the need for further
   disambiguation.
  </p>
- <h4>Ongoing</h4>
+ <h4>In Progress</h4>
  <p>
   An Active (see Workflow above) period where no new features should be added
   and the goal is to get as many review"patches committed as possible.
@@ -193,7 +193,7 @@
  <p>
   Patches ready for final review and commit, according to the author, are placed
   in the current open commitfest.  Upon the scheduled start date it is manually
-  updated to be an ongoing commitfest, at which point no new patches should be
+  updated to be an in progress commitfest, at which point no new patches should be
   added.
  </p>
  <h4>Future</h4>
@@ -202,7 +202,7 @@
   of each cycle the planned commitfest periods are decided and communicated to
   the community via the creation of future commitfests.  While classified as
   future these commitfests are not permitted to associated with any patches.
-  Their classification is changed to open as each prior ongoing commitfest
+  Their classification is changed to open as each prior in progress commitfest
   closes.
  </p>
  <h4>Drafts</h4>
@@ -220,8 +220,8 @@
  </p>
  <h4>Closed</h4>
  <p>
-  Drafts and ongoing commitfests are closed (open ones
-  always go through ongoing) when the period they cover has passed.
+  Drafts and in progress commitfests are closed (open ones
+  always go through in progress) when the period they cover has passed.
   Closing a commitfest does not impact its related PoCs; though no new PoCs can
   be created for a closed commitfest.
  </p>
