@@ -3,6 +3,7 @@ from django.urls import re_path
 
 import pgcommitfest.auth
 import pgcommitfest.commitfest.ajax as ajax
+import pgcommitfest.commitfest.apiv1 as apiv1
 import pgcommitfest.commitfest.lookups as lookups
 import pgcommitfest.commitfest.reports as reports
 import pgcommitfest.commitfest.views as views
@@ -15,6 +16,7 @@ admin.autodiscover()
 
 urlpatterns = [
     re_path(r"^$", views.home),
+    re_path(r"^api/v1/commitfest/open$", apiv1.open_cfs),
     re_path(r"^workflow/$", views.workflow),
     re_path(r"^me/$", views.me),
     re_path(r"^archive/$", views.archive),

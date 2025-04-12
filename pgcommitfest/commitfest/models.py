@@ -93,6 +93,15 @@ class CommitFest(models.Model):
     def isparked(self):
         return self.status == self.STATUS_PARKED
 
+    def json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "status": self.statusstring,
+            "startdate": self.startdate.isoformat(),
+            "enddate": self.enddate.isoformat(),
+        }
+
     def __str__(self):
         return self.name
 
