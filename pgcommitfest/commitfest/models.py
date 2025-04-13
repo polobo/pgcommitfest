@@ -830,10 +830,11 @@ class Workflow(models.Model):
         curs.execute(
             f"""-- Query Open PoCs for Given CF --
 SELECT
-    p.id,
+    p.id AS patch_id,
     cf.id AS commitfest_id,
-    p.name,
-    poc.status AS status,
+    p.name AS patch_name,
+    poc.status AS poc_status,
+    cf.status AS cf_status,
     coalesce(authors.list, array[]::text[]) AS authors,
     p.lastmail AS last_email_time,
     COALESCE(threads.list, '[]'::jsonb) AS threads_json
@@ -854,18 +855,25 @@ LEFT JOIN LATERAL (
             'thread_id', mt.id,
             'latest_message_timestamp', mt.latestmessage,
             'latest_message_identifier', mt.latestmsgid,
-            'patch_messages', COALESCE(tas_agg.attachments_list, '[]'::jsonb)
-        )) AS list
+            'patch_messages', COALESCE(tas_agg.msg_json, '[]'::jsonb)
+        ) ORDER BY tas_agg.message_date DESC) AS list
+        -- when multiple threads exists the first provides the most
+        -- recent patch message.
     FROM commitfest_mailthread AS mt
     JOIN commitfest_mailthread_patches AS mtp ON mt.id = mtp.mailthread_id
     LEFT JOIN LATERAL (
-        SELECT jsonb_agg(fileagg.attachments ORDER BY message_date DESC) AS attachments_list
+        SELECT
+            fileagg.message_id,
+            fileagg.message_date,
+            jsonb_agg(fileagg.msg_with_patches ORDER BY fileagg.message_date DESC) AS msg_json
         FROM (
-            SELECT tas.message_date,
+            SELECT
+                tas.message_id,
+                tas.message_date,
                 jsonb_build_object(
                     'message_id', tas.message_id,
                     'message_date', tas.message_date,
-                    'attach_files', jsonb_agg(
+                    'attached_files', jsonb_agg(
                         jsonb_build_object(
                             'threadattach_id', tas.mta_id,
                             'attachment_filename', tas.attachment_filename,
@@ -873,7 +881,7 @@ LEFT JOIN LATERAL (
                         )
                         ORDER BY tas.attachment_filename
                     )
-                ) AS attachments
+                ) AS msg_with_patches
             FROM (
                 SELECT
                     mta.messageid AS message_id,
@@ -888,7 +896,10 @@ LEFT JOIN LATERAL (
                     AND mta.ispatch
             ) AS tas
             GROUP BY message_id, message_date
+            ORDER BY message_date DESC, message_id ASC
+            LIMIT 2 -- only return the two most recent patch-containing message on the thread
         ) AS fileagg
+        GROUP BY message_id, message_date
     ) AS tas_agg ON true
     WHERE mtp.patch_id = p.id
 ) AS threads ON true

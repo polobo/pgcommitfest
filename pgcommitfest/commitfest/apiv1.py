@@ -15,7 +15,7 @@ from .models import (
 
 def datetime_serializer(obj):
     if isinstance(obj, datetime):
-        return obj.isoformat()
+        return obj.strftime("%Y-%m-%dT%H:%M:%S%z")
     raise TypeError("Type not serializable")
 
 def apiResponse(request, payload, status=200, content_type="application/json"):
