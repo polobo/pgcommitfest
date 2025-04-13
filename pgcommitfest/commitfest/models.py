@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import connection
 
 from datetime import datetime
+import json
 
 from pgcommitfest.userprofile.models import UserProfile
 
@@ -834,17 +835,63 @@ SELECT
     p.name,
     poc.status AS status,
     coalesce(authors.list, array[]::text[]) AS authors,
-    p.lastmail AS last_email_time
+    p.lastmail AS last_email_time,
+    COALESCE(threads.list, '[]'::jsonb) AS threads_json
 FROM commitfest_commitfest AS cf
 JOIN commitfest_patchoncommitfest poc ON poc.commitfest_id = cf.id
 JOIN commitfest_patch p ON p.id = poc.patch_id
-JOIN LATERAL (
+LEFT JOIN LATERAL (
     SELECT
         array_agg(u.username) AS list
     FROM commitfest_patch_authors AS pa
     JOIN auth_user AS u ON u.id = pa.user_id
     WHERE pa.patch_id = p.id
 ) AS authors ON true
+LEFT JOIN LATERAL (
+    SELECT
+        jsonb_agg(jsonb_build_object(
+            'patch_id', p.id,
+            'thread_id', mt.id,
+            'latest_message_timestamp', mt.latestmessage,
+            'latest_message_identifier', mt.latestmsgid,
+            'patch_messages', COALESCE(tas_agg.attachments_list, '[]'::jsonb)
+        )) AS list
+    FROM commitfest_mailthread AS mt
+    JOIN commitfest_mailthread_patches AS mtp ON mt.id = mtp.mailthread_id
+    LEFT JOIN LATERAL (
+        SELECT jsonb_agg(fileagg.attachments ORDER BY message_date DESC) AS attachments_list
+        FROM (
+            SELECT tas.message_date,
+                jsonb_build_object(
+                    'message_id', tas.message_id,
+                    'message_date', tas.message_date,
+                    'attach_files', jsonb_agg(
+                        jsonb_build_object(
+                            'threadattach_id', tas.mta_id,
+                            'attachment_filename', tas.attachment_filename,
+                            'attachment_id', tas.attachment_id
+                        )
+                        ORDER BY tas.attachment_filename
+                    )
+                ) AS attachments
+            FROM (
+                SELECT
+                    mta.messageid AS message_id,
+                    mta.date AS message_date,
+                    mta.filename AS attachment_filename,
+                    mta.attachmentid AS attachment_id,
+                    mta.id AS mta_id
+                FROM commitfest_mailthread AS mt
+                JOIN commitfest_mailthread_patches AS mtp ON mt.id = mtp.mailthread_id
+                JOIN commitfest_mailthreadattachment AS mta ON mt.id = mta.mailthread_id
+                WHERE mtp.patch_id = p.id
+                    AND mta.ispatch
+            ) AS tas
+            GROUP BY message_id, message_date
+        ) AS fileagg
+    ) AS tas_agg ON true
+    WHERE mtp.patch_id = p.id
+) AS threads ON true
 WHERE cf.id = %(cfid)s AND poc.status IN (1,2,3)
 ORDER BY p.id ASC
 """,
@@ -853,4 +900,9 @@ ORDER BY p.id ASC
         patch_list = [
             dict(zip([col[0] for col in curs.description], row)) for row in curs.fetchall()
         ]
+        for patch in patch_list:
+            arr = json.loads(patch["threads_json"])
+            patch["threads"] = arr
+            del patch["threads_json"]
+
         return patch_list

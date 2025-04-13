@@ -263,7 +263,7 @@
         "authors": [6,3],
         "reviewers": [7,1],
         "subscribers": [],
-        "mailthread_set": []
+        "mailthread_set": [8]
     }
 },
 {
@@ -670,6 +670,33 @@
         "latestauthor": "test@test.com",
         "latestsubject": "Re: Old BufferDesc refcount in PrintBufferDescs and PrintPinnedBufs",
         "latestmsgid": "example@message-31"
+    }
+},
+{
+    "model": "commitfest.mailthread",
+    "pk": 8,
+    "fields": {
+        "messageid": "dgj-example@message-08",
+        "subject": "Test DGJ Multi-Author and Reviewer",
+        "firstmessage": "2025-02-01T00:00",
+        "firstauthor": "test@test.com",
+        "latestmessage": "2025-02-01T00:00",
+        "latestauthor": "test@test.com",
+        "latestsubject": "Test DGJ Multi-Author and Reviewer",
+        "latestmsgid": "dgj-example@message-08"
+    }
+},
+{
+    "model": "commitfest.mailthreadattachment",
+    "pk": 8,
+    "fields": {
+        "messageid": "dgj-example@message-08",
+        "attachmentid": 1,
+        "filename": "v1-0001-content.patch",
+        "date": "2025-02-01T00:00",
+        "author": "test@test.com",
+        "ispatch": true,
+        "mailthread_id": 8
     }
 },
 {
