@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.db import connection
 
 from datetime import datetime
 
@@ -819,3 +820,37 @@ class Workflow(models.Model):
         ).save_and_notify(prevcommitter=prevcommitter)
 
         return True
+
+    def getOpenPoCs(cf):
+        if not cf:
+            return []
+        # Let's not overload the poor django ORM
+        curs = connection.cursor()
+        curs.execute(
+            f"""-- Query Open PoCs for Given CF --
+SELECT
+    p.id,
+    cf.id AS commitfest_id,
+    p.name,
+    poc.status AS status,
+    coalesce(authors.list, array[]::text[]) AS authors,
+    p.lastmail AS last_email_time
+FROM commitfest_commitfest AS cf
+JOIN commitfest_patchoncommitfest poc ON poc.commitfest_id = cf.id
+JOIN commitfest_patch p ON p.id = poc.patch_id
+JOIN LATERAL (
+    SELECT
+        array_agg(u.username) AS list
+    FROM commitfest_patch_authors AS pa
+    JOIN auth_user AS u ON u.id = pa.user_id
+    WHERE pa.patch_id = p.id
+) AS authors ON true
+WHERE cf.id = %(cfid)s AND poc.status IN (1,2,3)
+ORDER BY p.id ASC
+""",
+        {"cfid": cf.id}
+        )
+        patch_list = [
+            dict(zip([col[0] for col in curs.description], row)) for row in curs.fetchall()
+        ]
+        return patch_list

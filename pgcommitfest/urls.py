@@ -17,6 +17,7 @@ admin.autodiscover()
 urlpatterns = [
     re_path(r"^$", views.home),
     re_path(r"^api/v1/commitfest/open$", apiv1.open_cfs),
+    re_path(r"^api/v1/commitfest/(?P<commitfest_id>\d+)$", apiv1.cf_patches),
     re_path(r"^workflow/$", views.workflow),
     re_path(r"^me/$", views.me),
     re_path(r"^archive/$", views.archive),
