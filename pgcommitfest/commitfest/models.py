@@ -313,7 +313,7 @@ class PatchOnCommitFest(models.Model):
         return self.status == self.STATUS_COMMITTED
 
     @property
-    def is_committer(self):
+    def needs_committer(self):
         return self.status == self.STATUS_COMMITTER
 
     @property

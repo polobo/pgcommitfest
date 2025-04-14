@@ -4,10 +4,9 @@
  <h3>The Commitfest Workflow</h3>
  <p>
   The commitfest workflow is a model for patch writing management.  The workflow
-  is designed to manage new feature patches.  Bug fixes are typically handled
-  without the overhead of creating patches in the Commitfest application.
-  Thus the worflow broadly separates patches into "drafts" and
-  "potentially committable".  The former go onto the "Drafts v19" commitfest
+  is predominately designed to manage new feature patches.
+  Thus the workflow broadly separates patches into "drafts" and
+  "potentially committable".  The former go onto the "Drafts PG19" commitfest
   while the later are initially placed into the open commitfest, which is
   eventually converted into the in progress commitfest.
   Second, they can be awaiting changes,
@@ -61,7 +60,7 @@
   The workflow is designed with the release cycle in mind, in particular
   the start of the annual feature freeze period.  At this time the drafts
   bin is closed and a new one is created.  If the feature freeze is for
-  version 18 then the new drafts bin is called "Drafts v19".
+  version 18 then the new drafts bin is called "Drafts PG19".
  </p>
  <h3>Patches on Commitfests (PoC)</h3>
  <h4>Overview</h4>
@@ -129,7 +128,7 @@
   state.  The PoC they were moved from is updated to "Moved" to indicate this
   flow-of-time action.
  </p>
- <h4>Is Abandoned</h4>
+ <h4>Is Ignored</h4>
  <p>
   This check returns true if the PoC state is in the set of active states
   but the commitfest is closed.  Conceptually, this is the same as
@@ -140,7 +139,7 @@
   Not every patch that is committed stays that way.  The Workflow doesn't have
   any statuses for this, though the user interface does provide an action that
   a committer can invoke.  Upon doing so the PoC status is updated to
-  author.  The history flow of commited followed by author indictes a probable
+  author.  The history flow of committed followed by author indicates a probable
   revert.
  </p>
  <h3>Patches</h3>
@@ -167,7 +166,7 @@
  </p>
  <h4>Threads</h4>
  <p>
-  The actual content of a patch does not existing within the commitfest application
+  The actual content of a patch does not exist within the commitfest application
   (more-or-less); instead, the patch file submission and review process is all done
   on the -hackers mailing list.  Threads are the means by which the commitfest
   is made aware of these files and can incorporate information pertaining to them
@@ -209,8 +208,8 @@
  <p>
   The commitfest setup as drafts is used to hold patches that are not intended
   to be formally reviewed and committed.  Another term is "work-in-progress" (WIP).
-  Within the Workflow, at the start of the v18 feature freeze, the existing
-  "Draft v18" commitfest is closed and a new "Draft v19" commitfest is created.
+  Within the Workflow, at the start of the PG18 feature freeze, the existing
+  "Draft PG18" commitfest is closed and a new "Draft PG19" commitfest is created.
   This allows for a fresh start coinciding with the project release cycle.
   And while commits cannot accumulate within a drafts commitfest, withdrawn and
   rejected patches would and so having a truly never-closing commitfest is not

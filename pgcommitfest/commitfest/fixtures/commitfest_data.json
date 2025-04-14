@@ -64,7 +64,7 @@
     "model": "commitfest.commitfest",
     "pk": 5,
     "fields": {
-        "name": "Drafts v18",
+        "name": "Drafts PG19",
         "status": 5,
         "startdate": "2024-09-01",
         "enddate": "2025-08-31"

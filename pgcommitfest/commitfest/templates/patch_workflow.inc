@@ -33,7 +33,7 @@
      <td>
       {%if is_committer or is_author %}
        {%if is_committer and poc.is_open %}
-        {%if not poc.isparked and poc.is_committer %}
+        {%if not poc.isparked and poc.needs_committer %}
          <a class="btn btn-default" href="close/committed/" onclick="return flagCommitted({%if patch.committer%}'{{patch.committer}}'{%elif is_committer%}'{{user.username}}'{%else%}null{%endif%})">Commit</a>
         {%endif%}
         <a class="btn btn-default" href="close/reject/" onclick="return verify_reject()">Reject</a>
