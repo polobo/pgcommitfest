@@ -37,6 +37,8 @@ urlpatterns = [
     re_path(r"^api/test/cfbot/clear_branch_history$", apiv1.clear_branch_history),
     # displays an empty cfbot_queue.html page which then loads via endpoints
     re_path(r"^cfbot_queue/$", views.cfbot_queue),
+    re_path(r"^workflow/$", views.workflow),
+    re_path(r"^workflow-reference/$", views.workflow_reference),
     re_path(r"^me/$", views.me),
     re_path(r"^archive/$", views.archive),
     re_path(r"^activity(?P<rss>\.rss)?/", views.activity),
