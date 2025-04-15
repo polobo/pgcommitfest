@@ -178,22 +178,22 @@ def describe_changes(current_state, current_month_state):
     """
     changes = []
     all_values = set(current_state.values()).union(current_month_state.values())
-    for value in all_values:
-        if value is None: continue
+    sorted_values = sorted(value for value in all_values if value is not None)
+    for value in sorted_values:
         state_was = next((k for k, v in current_state.items() if v == value), None)
         state_become = next((k for k, v in current_month_state.items() if v == value), None)
         if state_was and state_become and state_was != state_become:
             # moved within the workflow - just needs a status update to the new one
-            changes.append({"action": state_become, "name": value})
+            changes.append({"name": value, "action": "Status Change", "status": state_become})
         elif state_was == state_become:
             # no change needed
-            changes.append({"action": "No Change", "name": value})
+            changes.append({"name": value, "action": "No Change", "status": state_become})
         elif state_was and not state_become:
             # moved out of the workflow - needs to be closed
-            changes.append({"action": "Closed", "name": value})
+            changes.append({"name": value, "action": "Close", "status": "closed"})
         elif not state_was and state_become:
             # moved into the workflow - needs to be opened
-            changes.append({"action": state_become, "name": value})
+            changes.append({"name": value, "action": "Create", "status": state_become})
         else:
             # this should not happen
             changes.append({"action": "Error", "name": f"Unexpected state: {state_was} vs {state_become} for {value}"})
@@ -264,7 +264,29 @@ def test_update_workflow_state():
 
     print("All test cases passed!")
 
+def print_change_summary(year):
+    """
+    Print the change summary for the months February to December.
+    """
+    schedule = parse_schedule_table(year)
+    months = list(schedule.keys())
+
+    for i in range(1, len(months)):  # Start from February (index 1)
+        current_month = months[i]
+        prior_month = months[i - 1]
+
+        current_month_state = schedule[current_month]
+        prior_month_state = schedule[prior_month]
+
+        changes = describe_changes(prior_month_state, current_month_state)
+
+        print(f"Change Summary for {current_month} (compared to {prior_month}):")
+        print(json.dumps(changes, indent=2))
+        print("-" * 40)
+
 # Example usage
 if __name__ == "__main__":
     given_date = datetime.date(2025, 3, 15)  # Example date
     test_update_workflow_state()
+    given_year = 2025  # Example year
+    print_change_summary(given_year)
