@@ -266,17 +266,23 @@ def test_update_workflow_state():
 
 def print_change_summary(year):
     """
-    Print the change summary for the months February to December.
+    Print the change summary for the months December to January in reverse order.
+    Adjust the year for January to look at the previous December.
     """
     schedule = parse_schedule_table(year)
+    prior_year_schedule = parse_schedule_table(year - 1)
     months = list(schedule.keys())
 
-    for i in range(1, len(months)):  # Start from February (index 1)
+    for i in range(len(months) - 1, -1, -1):  # Start from December (last index) to January (index 0)
         current_month = months[i]
-        prior_month = months[i - 1]
+        if i > 0:
+            prior_month = months[i - 1]
+            prior_month_state = schedule[prior_month]
+        else:  # For January, use December from the prior year
+            prior_month = "December"
+            prior_month_state = prior_year_schedule[prior_month]
 
         current_month_state = schedule[current_month]
-        prior_month_state = schedule[prior_month]
 
         changes = describe_changes(prior_month_state, current_month_state)
 
