@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 """
   <table id="workflow-schedule-table" border="1">
    <thead>
@@ -170,6 +171,35 @@ def test_workflow_state(current_state, date):
     else:
         return current_month_state, "Workflow state does not match the current or prior month."
 
+def describe_changes(current_state, current_month_state):
+    """
+    Describe the changes needed to align the current state with the current month's state.
+    Reverse 'name' and 'action' so that the values in current_state become the keys in the changes array objects.
+    """
+    changes = []
+    all_values = set(current_state.values()).union(current_month_state.values())
+    for value in all_values:
+        if value is None: continue
+        state_was = next((k for k, v in current_state.items() if v == value), None)
+        state_become = next((k for k, v in current_month_state.items() if v == value), None)
+        if state_was and state_become and state_was != state_become:
+            # moved within the workflow - just needs a status update to the new one
+            changes.append({"action": state_become, "name": value})
+        elif state_was == state_become:
+            # no change needed
+            changes.append({"action": "No Change", "name": value})
+        elif state_was and not state_become:
+            # moved out of the workflow - needs to be closed
+            changes.append({"action": "Closed", "name": value})
+        elif not state_was and state_become:
+            # moved into the workflow - needs to be opened
+            changes.append({"action": state_become, "name": value})
+        else:
+            # this should not happen
+            changes.append({"action": "Error", "name": f"Unexpected state: {state_was} vs {state_become} for {value}"})
+
+    return changes
+
 def test_update_workflow_state():
     """
     Test cases for test_workflow_state function.
@@ -227,6 +257,8 @@ def test_update_workflow_state():
             print(f"Details for test case {i}:")
             print(f"  Current Month State: {current_month_state}")
             print(f"  Current State: {current_state}")
+            changes = describe_changes(current_state, current_month_state)
+            print(f"  Change Summary: \n" + json.dumps(changes, indent=2))
 
         assert actual_output == expected, f"Test case {i} failed: Expected '{expected}', got '{actual_output}'"
 
