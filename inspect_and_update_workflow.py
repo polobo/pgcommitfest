@@ -182,22 +182,24 @@ def describe_changes(current_state, current_month_state):
     for value in sorted_values:
         state_was = next((k for k, v in current_state.items() if v == value), None)
         state_become = next((k for k, v in current_month_state.items() if v == value), None)
-        if state_was and state_become and state_was != state_become:
-            # moved within the workflow - just needs a status update to the new one
-            changes.append({"name": value, "action": "Status Change", "status": state_become})
-        elif state_was == state_become:
-            # no change needed
-            changes.append({"name": value, "action": "No Change", "status": state_become})
+        if state_was == state_become:
+            # 0 - No change needed
+            changes.append({"name": value, "action": "0 - No Change", "status": state_become})
         elif state_was and not state_become:
-            # moved out of the workflow - needs to be closed
-            changes.append({"name": value, "action": "Close", "status": "closed"})
+            # 1 - Moved out of the workflow - needs to be closed
+            changes.append({"name": value, "action": "1 - Close", "status": "closed"})
+        elif state_was and state_become and state_was != state_become:
+            # 2 - Moved within the workflow - just needs a status update to the new one
+            changes.append({"name": value, "action": "2 - Status Change", "status": state_become})
         elif not state_was and state_become:
-            # moved into the workflow - needs to be opened
-            changes.append({"name": value, "action": "Create", "status": state_become})
+            # 3 - Moved into the workflow - needs to be opened
+            changes.append({"name": value, "action": "3 - Create", "status": state_become})
         else:
-            # this should not happen
+            # This should not happen
             changes.append({"action": "Error", "name": f"Unexpected state: {state_was} vs {state_become} for {value}"})
 
+    # Sort the changes list by the action key
+    changes.sort(key=lambda x: x["action"])
     return changes
 
 def test_update_workflow_state():
@@ -266,14 +268,14 @@ def test_update_workflow_state():
 
 def print_change_summary(year):
     """
-    Print the change summary for the months December to January in reverse order.
+    Print the change summary for the months January to December in forward order.
     Adjust the year for January to look at the previous December.
     """
     schedule = parse_schedule_table(year)
     prior_year_schedule = parse_schedule_table(year - 1)
     months = list(schedule.keys())
 
-    for i in range(len(months) - 1, -1, -1):  # Start from December (last index) to January (index 0)
+    for i in range(len(months)):  # Start from January (index 0) to December (last index)
         current_month = months[i]
         if i > 0:
             prior_month = months[i - 1]
