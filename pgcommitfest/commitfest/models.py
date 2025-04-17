@@ -180,6 +180,14 @@ class Patch(models.Model, DiffableModel):
     # that's attached to this message.
     lastmail = models.DateTimeField(blank=True, null=True)
 
+    # Pointer to the threadid/messageid containing the most recent patchset
+    patchset_messageid = models.CharField(
+        max_length=1000, blank=False, null=True, db_index=False
+    )
+    # Cache the timestamp of the patchset message to easily determine
+    # whether a new patchset message should replace it.
+    patchset_messagedate = models.DateTimeField(blank=True, null=True)
+
     map_manytomany_for_diff = {
         "authors": "authors_string",
         "reviewers": "reviewers_string",
@@ -430,10 +438,11 @@ class MailThread(models.Model):
     latestauthor = models.CharField(max_length=500, null=False, blank=False)
     latestsubject = models.CharField(max_length=500, null=False, blank=False)
     latestmsgid = models.CharField(max_length=1000, null=False, blank=False)
+    patchsetmsgid = models.CharField(max_length=1000, null=True, blank=False)
 
     def most_recent_patch_message_attachments(self):
-        """Retrieve attachments for the most recent message in the thread."""
-        attachments = self.mailthreadattachment_set.order_by('-date', '-messageid', 'filename')
+        """Retrieve attachments for the most recent message, with patches, in the thread."""
+        attachments = self.mailthreadattachment_set.order_by('-date', '-messageid', 'ispatch', 'filename')
         most_recent_messageid = None
         most_recent_attachments = []
 
@@ -449,6 +458,9 @@ class MailThread(models.Model):
                     most_recent_attachments.append(attachment)
                 else:
                     break
+
+        if not any(attachment.ispatch for attachment in most_recent_attachments):
+            most_recent_attachments.clear()
 
         return most_recent_attachments
 
@@ -469,9 +481,10 @@ class MailThreadAttachment(models.Model):
     date = models.DateTimeField(null=False, blank=False)
     author = models.CharField(max_length=500, null=False, blank=False)
     ispatch = models.BooleanField(null=True)
+    contenttype = models.CharField(max_length=1000, null=True, blank=False)
 
     class Meta:
-        ordering = ("-date", "attachmentid")
+        ordering = ("-date", "messageid", "ispatch", "filename", "attachmentid")
         unique_together = (
             (
                 "mailthread",
