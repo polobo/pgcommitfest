@@ -739,6 +739,7 @@ def patch(request, patchid):
                 "inprogress": Workflow.inprogress_cf(),
                 "parked": Workflow.parked_cf(),
             },
+            "settings": settings,
         },
     )
 
