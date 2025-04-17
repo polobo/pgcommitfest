@@ -183,22 +183,29 @@ def deleteAnnotation(request):
     return "OK"
 
 
-def parse_and_add_attachments(threadinfo, mailthread):
+def parse_and_add_attachments(threadinfo, mailthread, patch, user):
     for t in threadinfo:
-        if len(t["atts"]):
+        for a in t["atts"]:
             # One or more attachments. For now, we're only actually going
             # to store and process the first one, even though the API gets
             # us all of them.
-            MailThreadAttachment.objects.get_or_create(
+            mta, created = MailThreadAttachment.objects.get_or_create(
                 mailthread=mailthread,
                 messageid=t["msgid"],
+                attachmentid=a["id"],
                 defaults={
                     "date": t["date"],
                     "author": t["from"],
-                    "attachmentid": t["atts"][0]["id"],
-                    "filename": t["atts"][0]["name"],
+                    "filename": a["name"],
+                    "ispatch": a["is_patch"],
                 },
             )
+            PatchHistory(
+                patch=patch, by=user, what="Linked attachment %s %s" % (a["id"], 'created' if created else 'gotten')
+            ).save_and_notify()
+        PatchHistory(
+                patch=patch, by=user, what="Linked Message %s" % t["msgid"]
+        ).save_and_notify()
         # In theory we should remove objects if they don't have an
         # attachment, but how could that ever happen? Ignore for now.
 
@@ -249,7 +256,7 @@ def doAttachThread(cf, patch, msgid, user):
         m.save()
         m.patches.add(patch)
         m.save()
-        parse_and_add_attachments(r, m)
+        parse_and_add_attachments(r, m, patch, user)
 
     PatchHistory(
         patch=patch, by=user, what="Attached mail thread %s" % r[0]["msgid"]

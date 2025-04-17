@@ -125,12 +125,14 @@
       <dd>
        First at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
        Latest at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
-       {%for ta in t.mailthreadattachment_set.all%}
+       {%for ta in t.most_recent_message_attachments %}
         {%if forloop.first%}
-         Latest attachment (<a href="{{settings.ARCHIVES_BASE}}/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
+         Latest attachment at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
          <div id="att{{t.pk}}" class="collapse">
         {%endif%}
-        &nbsp;&nbsp;&nbsp;&nbsp;Attachment (<a href="{{settings.ARCHIVES_BASE}}/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} (Patch: {{ta.ispatch|yesno:"Yes,No,Pending check"}})<br/>
+        {%if True %}
+        &nbsp;&nbsp;&nbsp;&nbsp;{{ta.ispatch|yesno:"Patch,File,Unknown"}} <a href="{{settings.ARCHIVES_BASE}}/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a><br/>
+        {%endif%}
         {%if forloop.last%}</div>{%endif%}
        {%endfor%}
        <div>
