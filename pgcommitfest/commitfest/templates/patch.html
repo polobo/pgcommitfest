@@ -123,11 +123,11 @@
      {%for t in patch.mailthread_set.all%}
       <dt><a href="{{settings.ARCHIVES_BASE}}/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
       <dd>
-       First at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
-       Latest at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
-       {%for ta in t.most_recent_message_attachments %}
+       First message at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
+       Latest message at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
+       {%for ta in t.most_recent_patch_message_attachments %}
         {%if forloop.first%}
-         Latest attachment at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
+       Latest files at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
          <div id="att{{t.pk}}" class="collapse">
         {%endif%}
         {%if True %}

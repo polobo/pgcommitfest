@@ -431,7 +431,7 @@ class MailThread(models.Model):
     latestsubject = models.CharField(max_length=500, null=False, blank=False)
     latestmsgid = models.CharField(max_length=1000, null=False, blank=False)
 
-    def most_recent_message_attachments(self):
+    def most_recent_patch_message_attachments(self):
         """Retrieve attachments for the most recent message in the thread."""
         attachments = self.mailthreadattachment_set.order_by('-date', '-messageid', 'filename')
         most_recent_messageid = None
@@ -443,7 +443,12 @@ class MailThread(models.Model):
             if attachment.messageid == most_recent_messageid:
                 most_recent_attachments.append(attachment)
             else:
-                break
+                if not any(attachment.ispatch for attachment in most_recent_attachments):
+                    most_recent_attachments.clear()
+                    most_recent_messageid = attachment.messageid
+                    most_recent_attachments.append(attachment)
+                else:
+                    break
 
         return most_recent_attachments
 
