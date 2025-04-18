@@ -165,3 +165,14 @@ def update_task_status(request, task_id):
     task.status = new_status
     task.save()
     return apiResponse(request, {"message": f"Task {task_id} status updated to {new_status}."})
+
+
+def process_build_tasks(request, branch_id):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
+
+
+
+    return apiResponse(request, {"message": f"Build tasks for branch {branch.branch_name} are being processed."})

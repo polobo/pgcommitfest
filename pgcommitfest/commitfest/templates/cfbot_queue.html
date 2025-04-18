@@ -2,6 +2,13 @@
 {% block contents %}
 <div id="response-message" style="margin-bottom: 20px; color: green;"> </div> <!-- Response message -->
 
+<div>
+    <strong>Selected Branch ID:</strong> <span id="selected-branch-id">None</span>
+</div>
+<div>
+    <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
+</div>
+
 <div>CI Branches</div>
 <table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
     <thead>
@@ -61,6 +68,8 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        let selectedBranchId = null;
+
         // Fetch and populate the CI Branches table
         fetch("/api/v1/cfbot/branches")
             .then(response => response.json())
@@ -187,6 +196,35 @@
                     console.error("Error:", error);
                 });
         }
+
+        document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
+            const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+            if (selectedBranchId === "None") {
+                alert("Please select a branch first.");
+                return;
+            }
+
+            fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_build_tasks`, {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while processing build tasks.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
+        });
     });
 
     function highlightRow(row) {
@@ -194,6 +232,11 @@
         const rows = document.querySelectorAll("#ci-branches-table tbody tr");
         rows.forEach(r => r.classList.remove("selected-row"));
         row.classList.add("selected-row");
+
+        // Update the selected branch ID in the label
+        const branchId = row.getAttribute("data-branch-id");
+        document.getElementById("selected-branch-id").textContent = branchId || "None";
+        document.getElementById("process-build-tasks-btn").disabled = false;
     }
 </script>
 
