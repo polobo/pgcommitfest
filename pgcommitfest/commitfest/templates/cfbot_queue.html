@@ -1,5 +1,135 @@
 {% extends "base.html" %}
 {% block contents %}
+<div>CI Branches</div>
+<table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+        <tr>
+            <th>Patch ID</th>
+            <th>Branch ID</th>
+            <th>Branch Name</th>
+            <th>Commit ID</th>
+            <th>Apply URL</th>
+            <th>Status</th>
+            <th>Needs Rebase Since</th>
+            <th>Failing Since</th>
+            <th>Created</th>
+            <th>Modified</th>
+            <th>Task Count</th> <!-- New column -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+</table>
+
+<div>CFBot Tasks</div>
+<table border="1" id="cfbot-tasks-table" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+        <tr>
+            <th>Task ID</th>
+            <th>Task Name</th>
+            <th>Patch ID</th>
+            <th>Branch ID</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Modified</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Fetch and populate the CI Branches table
+        fetch("/api/v1/cfbot/branches")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const tableBody = document.getElementById("ci-branches-table").getElementsByTagName("tbody")[0];
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.branches.forEach(branch => {
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-branch-id", branch.branch_id);
+                    row.innerHTML = `
+                        <td>${branch.patch_id}</td>
+                        <td>${branch.branch_id}</td>
+                        <td>${branch.branch_name}</td>
+                        <td>${branch.commit_id || ""}</td>
+                        <td><a href="${branch.apply_url}" target="_blank">${branch.apply_url}</a></td>
+                        <td>${branch.status}</td>
+                        <td>${branch.needs_rebase_since || ""}</td>
+                        <td>${branch.failing_since || ""}</td>
+                        <td>${branch.created}</td>
+                        <td>${branch.modified}</td>
+                        <td>${branch.task_count || 0}</td> <!-- Display task count -->
+                    `;
+                    row.addEventListener("click", function () {
+                        highlightRow(this);
+                        fetchTasksForBranch(branch.branch_id);
+                    });
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    function fetchTasksForBranch(branchId) {
+        // Fetch tasks for the selected branch
+        fetch(`/api/v1/cfbot/tasks?branch_id=${branchId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const tableBody = document.getElementById("cfbot-tasks-table").getElementsByTagName("tbody")[0];
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.tasks.forEach(task => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${task.task_id}</td>
+                        <td>${task.task_name}</td>
+                        <td>${task.patch_id}</td>
+                        <td>${task.branch_id}</td>
+                        <td>${task.position}</td>
+                        <td>${task.status}</td>
+                        <td>${task.created}</td>
+                        <td>${task.modified}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+    function highlightRow(row) {
+        // Highlight the selected row and remove highlight from others
+        const rows = document.querySelectorAll("#ci-branches-table tbody tr");
+        rows.forEach(r => r.classList.remove("selected-row"));
+        row.classList.add("selected-row");
+    }
+</script>
+
+<style>
+    .selected-row {
+        background-color: #d3d3d3;
+    }
+</style>
+
+<div>
+    <button id="add-data-btn">Add Made-Up Data</button>
+</div>
+
 <div>Queue table - ringed</div>
 <h2>{{ queue.name }} ( {{ queue.current_queue_item }} )</h2>
 
@@ -8,7 +138,7 @@
     <button id="peek-btn">Peek</button>
 </div>
 
-<div style="display: flex; gap: 20px;">
+<div id="queue" style="display: flex; gap: 20px;">
     <div style="flex: 70%;">
         <table border="1" id="queue-table" style="width: 100%;">
             <thead>
@@ -111,6 +241,68 @@
 
     document.getElementById("peek-btn").addEventListener("click", function () {
         performPeek();
+    });
+
+    document.getElementById("add-data-btn").addEventListener("click", function () {
+        fetch("/api/v1/cfbot/get_and_move")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const patchId = data.returned.patch_id;
+                branchId = patchId
+                // Prepare made-up data for the cfbot_notify endpoint
+                const payload = {
+                    shared_secret: "INSECURE", // Replace with the actual shared secret
+                    branch_status: {
+                        submission_id: patchId,
+                        branch_id: branchId,
+                        branch_name: `branch_${patchId}`,
+                        commit_id: `commit_${Math.random().toString(36).substring(2, 8)}`,
+                        apply_url: `http://example.com/apply/${patchId}`,
+                        status: "testing",
+                        created: new Date().toISOString(),
+                        modified: new Date().toISOString(),
+                        version: "v0",
+                        patch_count: Math.floor(Math.random() * 10),
+                        first_additions: Math.floor(Math.random() * 100),
+                        first_deletions: Math.floor(Math.random() * 50),
+                        all_additions: Math.floor(Math.random() * 200),
+                        all_deletions: Math.floor(Math.random() * 100),
+                    },
+                    task_status: {
+                        task_id: `task_${Math.random().toString(36).substring(2, 8)}`,
+                        task_name: `Task for patch ${patchId}`,
+                        patch_id: patchId,
+                        branch_id: branchId,
+                        position: 1,
+                        status: "CREATED",
+                        created: new Date().toISOString(),
+                        modified: new Date().toISOString(),
+                    },
+                };
+
+                // Send the payload to the cfbot_notify endpoint
+                fetch("/cfbot_notify/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Made-up data sent to cfbot_notify.");
+                        } else {
+                            console.error("Failed to send data to cfbot_notify.");
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            })
+            .catch(error => console.error("Error:", error));
     });
 
     function performPeek() {

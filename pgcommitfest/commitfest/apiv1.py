@@ -9,6 +9,8 @@ from .models import (
     Workflow,
     CfbotQueue,
     CfbotQueueItem,
+    CfbotBranch,  # Add this import
+    CfbotTask,  # Add this import
 )
 
 
@@ -106,3 +108,43 @@ def cfbot_peek(request):
 
     payload = build_item_object(item, is_current=item.id == queue.current_queue_item)
     return apiResponse(request, payload)
+
+
+def cfbot_branches(request):
+    branches = CfbotBranch.objects.all()
+    branch_list = [
+        {
+            "patch_id": branch.patch_id,
+            "branch_id": branch.branch_id,
+            "branch_name": branch.branch_name,
+            "commit_id": branch.commit_id,
+            "apply_url": branch.apply_url,
+            "status": branch.status,
+            "needs_rebase_since": branch.needs_rebase_since,
+            "failing_since": branch.failing_since,
+            "created": branch.created,
+            "modified": branch.modified,
+            "task_count": CfbotTask.objects.filter(branch_id=branch.branch_id).count(),  # Add task count
+        }
+        for branch in branches
+    ]
+    return apiResponse(request, {"branches": branch_list})
+
+
+def cfbot_tasks(request):
+    branch_id = request.GET.get("branch_id")
+    tasks = CfbotTask.objects.filter(branch_id=branch_id) if branch_id else CfbotTask.objects.all()
+    task_list = [
+        {
+            "task_id": task.task_id,
+            "task_name": task.task_name,
+            "patch_id": task.patch_id,
+            "branch_id": task.branch_id,
+            "position": task.position,
+            "status": task.status,
+            "created": task.created,
+            "modified": task.modified,
+        }
+        for task in tasks
+    ]
+    return apiResponse(request, {"tasks": task_list})
