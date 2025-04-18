@@ -58,11 +58,23 @@ class TestCfbotQueue(unittest.TestCase):
         ps2 = self.queue.insert_item(patch_id=2, message_id="msg2")
         ps3 = self.queue.insert_item(patch_id=3, message_id="msg3")
         self.assertEqual(self.queue.current_queue_item, ps1.pk)
-        ni = self.queue.next_item()
+        ni = self.queue.get_and_move()
         self.assertEqual(ni.pk, ps1.pk)
+        self.assertIsNotNone(ni.processed_date)
         self.assertEqual(self.queue.current_queue_item, ps3.pk)
         self.queue.remove_item(ps3.pk)
         self.assertEqual(self.queue.current_queue_item, ps2.pk)
+        ni = self.queue.get_and_move()
+        self.assertEqual(self.queue.current_queue_item, ps1.pk)
+
+    def test_leave_data_for_display(self):
+        ps1 = self.queue.insert_item(patch_id=1, message_id="msg1")
+        ps2 = self.queue.insert_item(patch_id=2, message_id="msg2")
+        ps3 = self.queue.insert_item(patch_id=3, message_id="msg3")
+        ps4 = self.queue.insert_item(patch_id=4, message_id="msg4")
+        ps5 = self.queue.insert_item(patch_id=5, message_id="msg5")
+        self.queue.get_and_move()
+        self.queue.get_and_move()
 
 if __name__ == "__main__":
     unittest.main()

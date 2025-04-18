@@ -659,7 +659,7 @@ class CfbotQueue(models.Model):
 
                 return new_item
 
-    def next_item(self):
+    def get_and_move(self):
         """
         Move the current_queue_item to the next linked list ID, wrapping back to the front if ll_next is None.
         """
@@ -678,7 +678,14 @@ class CfbotQueue(models.Model):
             self.current_queue_item = first_item.pk if first_item.pk else None
 
         self.save()
-        return current_item
+        # XXX: works for now but unclear if this is mixing responsibilities.
+        # Will become more clear as we flesh out the API.
+        if current_item.ignore_date:
+            return self.get_and_move()
+        else:
+            current_item.processed_date = datetime.now()
+            current_item.save()
+            return current_item
 
     def get_first_item(self):
         # Return the first item in the queue where ll_prev is None

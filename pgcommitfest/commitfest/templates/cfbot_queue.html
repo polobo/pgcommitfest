@@ -1,4 +1,35 @@
-{%extends "base.html"%}
-{%block contents%}
+{% extends "base.html" %}
+{% block contents %}
 <div>Queue table - ringed</div>
-{%endblock%}
+<h2>{{ queue.name }}</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Current</th>
+            <th>Patch ID</th>
+            <th>Message ID</th>
+            <th>Processed Date</th>
+            <th>Ignore Date</th>
+            <th>ll_prev</th>
+            <th>ll_next</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in queuetable %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{% if item.is_current %}✔{% endif %}</td>
+            <td>{{ item.patch_id }}</td>
+            <td>{{ item.message_id }}</td>
+            <td>{{ item.processed_date }}</td>
+            <td>{{ item.ignore_date }}</td>
+            <td>{{ item.ll_prev }}</td>
+            <td>{{ item.ll_next }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

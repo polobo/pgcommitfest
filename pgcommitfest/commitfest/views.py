@@ -36,6 +36,7 @@ from .forms import (
 )
 from .models import (
     CfbotBranch,
+    CfbotQueue,
     CommitFest,
     Committer,
     MailThread,
@@ -1326,19 +1327,32 @@ def send_email(request, cfid):
 
 @login_required
 def cfbot_queue(request):
-    # This is a simple view that just returns the cfbot queue.  It doesn't
-    # do any processing of the queue, that's done in cfbot_task.py.
-    # The cfbot queue is a list of patches that are waiting for cfbot to
-    # process them.  This is not the same as the cfbot status, which is
-    # a list of patches that are currently being processed by cfbot.
-    # The cfbot queue is a list of patches that are waiting for cfbot to
-    # process them.  This is not the same as the cfbot status, which is
-    # a list of patches that are currently being processed by cfbot.
+    # Get the queue
+    queue = CfbotQueue.objects.all().first()
+    queuetable = []
+
+    if queue:
+        current_item = queue.get_first_item()
+        while current_item:
+            queuetable.append({
+                "id": current_item.id,
+                "is_current": current_item.id == queue.current_queue_item,
+                "patch_id": current_item.patch_id,
+                "message_id": current_item.message_id,
+                "processed_date": current_item.processed_date,
+                "ignore_date": current_item.ignore_date,
+                "ll_prev": current_item.ll_prev,
+                "ll_next": current_item.ll_next,
+            })
+            current_item = queue.items.filter(id=current_item.ll_next).first()
+
     return render(
         request,
         "cfbot_queue.html",
         {
             "title": "CFBot Queue",
+            "queue": queue,
+            "queuetable": queuetable,
         },
     )
 
