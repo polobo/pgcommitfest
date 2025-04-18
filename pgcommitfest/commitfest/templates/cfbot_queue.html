@@ -66,6 +66,67 @@
     <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
 </div>
 
+<div>
+    <button id="add-data-btn">Add Made-Up Data</button>
+</div>
+
+<div>Queue table - ringed</div>
+<h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> )</h2>
+
+<div>
+    <button id="get-and-move-btn">Get and Move</button>
+    <button id="peek-btn">Peek</button>
+</div>
+
+<div id="queue" style="display: flex; gap: 20px;">
+    <div style="flex: 70%;">
+        <table border="1" id="queue-table" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Current</th>
+                    <th>Patch ID</th>
+                    <th>Message ID</th>
+                    <th>Processed Date</th>
+                    <th>Ignore Date</th>
+                    <th>ll_prev</th>
+                    <th>ll_next</th>
+                    <th>Attachments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+            </tbody>
+        </table>
+    </div>
+    <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+        <h3>Details</h3>
+        <div id="json-keys">
+            <strong>ID:</strong> <span id="json-id"></span><br>
+            <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
+            <strong>Message ID:</strong> <span id="json-message-id"></span><br>
+            <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
+            <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
+            <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
+            <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
+            <strong>Attachments:</strong>
+            <ul id="json-attachments">
+                <!-- Attachment list will be dynamically populated -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .selected-row {
+        background-color: #d3d3d3;
+    }
+
+    .selected-task-row {
+        background-color: #add8e6;
+    }
+</style>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let selectedBranchId = null;
@@ -225,6 +286,40 @@
                     console.error("Error:", error);
                 });
         });
+
+        document.getElementById("get-and-move-btn").addEventListener("click", function () {
+            fetch("/api/v1/cfbot/get_and_move")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    // Update the JSON display with the returned data
+                    const returned = data.returned;
+                    updateJsonDisplay(returned);
+
+                    // Replace the row of the returned item in the table
+                    const returnedRow = document.querySelector(`[data-id='${returned.id}']`);
+                    if (returnedRow) {
+                        returnedRow.innerHTML = generateRowHTML(returned);
+                        returnedRow.classList.remove("current-row");
+                    }
+
+                    // Update the table with the new current data
+                    const newcurrent = data.newcurrent;
+                    const currentId = document.querySelector(".current-row")?.getAttribute("data-id");
+                    if (currentId) {
+                        remove_current(currentId);
+                    }
+                    add_current(newcurrent.id);
+
+                    // Update the current queue item span
+                    document.getElementById("current-queue-item").textContent = newcurrent.id;
+                })
+                .catch(error => console.error("Error:", error));
+        });
     });
 
     function highlightRow(row) {
@@ -238,70 +333,7 @@
         document.getElementById("selected-branch-id").textContent = branchId || "None";
         document.getElementById("process-build-tasks-btn").disabled = false;
     }
-</script>
 
-<style>
-    .selected-row {
-        background-color: #d3d3d3;
-    }
-
-    .selected-task-row {
-        background-color: #add8e6;
-    }
-</style>
-
-<div>
-    <button id="add-data-btn">Add Made-Up Data</button>
-</div>
-
-<div>Queue table - ringed</div>
-<h2>{{ queue.name }} ( {{ queue.current_queue_item }} )</h2>
-
-<div>
-    <button id="get-and-move-btn">Get and Move</button>
-    <button id="peek-btn">Peek</button>
-</div>
-
-<div id="queue" style="display: flex; gap: 20px;">
-    <div style="flex: 70%;">
-        <table border="1" id="queue-table" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Current</th>
-                    <th>Patch ID</th>
-                    <th>Message ID</th>
-                    <th>Processed Date</th>
-                    <th>Ignore Date</th>
-                    <th>ll_prev</th>
-                    <th>ll_next</th>
-                    <th>Attachments</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Table rows will be dynamically populated via AJAX -->
-            </tbody>
-        </table>
-    </div>
-    <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
-        <h3>Details</h3>
-        <div id="json-keys">
-            <strong>ID:</strong> <span id="json-id"></span><br>
-            <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
-            <strong>Message ID:</strong> <span id="json-message-id"></span><br>
-            <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
-            <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
-            <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
-            <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
-            <strong>Attachments:</strong>
-            <ul id="json-attachments">
-                <!-- Attachment list will be dynamically populated -->
-            </ul>
-        </div>
-    </div>
-</div>
-
-<script>
     // Populate the queue table and perform a peek on page load
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch the queue table
@@ -330,37 +362,6 @@
 
         // Perform a peek to populate the JSON display
         performPeek();
-    });
-
-    document.getElementById("get-and-move-btn").addEventListener("click", function () {
-        fetch("/api/v1/cfbot/get_and_move")
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                // Update the JSON display with the returned data
-                const returned = data.returned;
-                updateJsonDisplay(returned);
-
-                // Replace the row of the returned item in the table
-                const returnedRow = document.querySelector(`[data-id='${returned.id}']`);
-                if (returnedRow) {
-                    returnedRow.innerHTML = generateRowHTML(returned);
-                    returnedRow.classList.remove("current-row");
-                }
-
-                // Update the table with the newcurrent data
-                const newcurrent = data.newcurrent;
-                const currentId = document.querySelector(".current-row")?.getAttribute("data-id");
-                if (currentId) {
-                    remove_current(currentId);
-                }
-                add_current(newcurrent.id);
-            })
-            .catch(error => console.error("Error:", error));
     });
 
     document.getElementById("peek-btn").addEventListener("click", function () {
