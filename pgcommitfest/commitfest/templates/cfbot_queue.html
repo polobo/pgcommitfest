@@ -21,6 +21,7 @@
                     <th>Ignore Date</th>
                     <th>ll_prev</th>
                     <th>ll_next</th>
+                    <th>Attachments</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,10 @@
             <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
             <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
             <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
+            <strong>Attachments:</strong>
+            <ul id="json-attachments">
+                <!-- Attachment list will be dynamically populated -->
+            </ul>
         </div>
     </div>
 </div>
@@ -84,13 +89,7 @@
 
                 // Update the JSON display with the returned data
                 const returned = data.returned;
-                document.getElementById("json-id").textContent = returned.id || "";
-                document.getElementById("json-patch-id").textContent = returned.patch_id || "";
-                document.getElementById("json-message-id").textContent = returned.message_id || "";
-                document.getElementById("json-processed-date").textContent = returned.processed_date || "";
-                document.getElementById("json-ignore-date").textContent = returned.ignore_date || "";
-                document.getElementById("json-ll-prev").textContent = returned.ll_prev || "";
-                document.getElementById("json-ll-next").textContent = returned.ll_next || "";
+                updateJsonDisplay(returned);
 
                 // Replace the row of the returned item in the table
                 const returnedRow = document.querySelector(`[data-id='${returned.id}']`);
@@ -124,13 +123,7 @@
                 }
 
                 // Update the JSON display with the peeked data
-                document.getElementById("json-id").textContent = data.id || "";
-                document.getElementById("json-patch-id").textContent = data.patch_id || "";
-                document.getElementById("json-message-id").textContent = data.message_id || "";
-                document.getElementById("json-processed-date").textContent = data.processed_date || "";
-                document.getElementById("json-ignore-date").textContent = data.ignore_date || "";
-                document.getElementById("json-ll-prev").textContent = data.ll_prev || "";
-                document.getElementById("json-ll-next").textContent = data.ll_next || "";
+                updateJsonDisplay(data);
             })
             .catch(error => console.error("Error:", error));
     }
@@ -145,7 +138,28 @@
             <td>${item.ignore_date || ""}</td>
             <td>${item.ll_prev || ""}</td>
             <td>${item.ll_next || ""}</td>
+            <td>${item.attachments ? item.attachments.length : 0}</td>
         `;
+    }
+
+    function updateJsonDisplay(data) {
+        document.getElementById("json-id").textContent = data.id || "";
+        document.getElementById("json-patch-id").textContent = data.patch_id || "";
+        document.getElementById("json-message-id").textContent = data.message_id || "";
+        document.getElementById("json-processed-date").textContent = data.processed_date || "";
+        document.getElementById("json-ignore-date").textContent = data.ignore_date || "";
+        document.getElementById("json-ll-prev").textContent = data.ll_prev || "";
+        document.getElementById("json-ll-next").textContent = data.ll_next || "";
+
+        const attachmentsList = document.getElementById("json-attachments");
+        attachmentsList.innerHTML = ""; // Clear existing list
+        if (data.attachments && data.attachments.length > 0) {
+            data.attachments.forEach(attachment => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${attachment.filename} (ID: ${attachment.attachment_id})`;
+                attachmentsList.appendChild(listItem);
+            });
+        }
     }
 
     function add_current(id) {

@@ -33,6 +33,23 @@ def optional_as_json(obj):
     return obj.json()
 
 
+def build_item_object(item, is_current):
+    """
+    Build a consistent item object for API responses.
+    """
+    return {
+        "id": item.id,
+        "is_current": is_current,
+        "patch_id": item.patch_id,
+        "message_id": item.message_id,
+        "processed_date": item.processed_date,
+        "ignore_date": item.ignore_date,
+        "ll_prev": item.ll_prev,
+        "ll_next": item.ll_next,
+        "attachments": item.get_attachments(),
+    }
+
+
 def active_commitfests(request):
     payload = {
         "workflow": {
@@ -53,23 +70,10 @@ def cfbot_get_and_move(request):
     if not returned:
         return apiResponse(request, {"error": "No items in the queue"}, status=404)
 
-    payload = {"returned": {
-        "id": returned.id,
-        "patch_id": returned.patch_id,
-        "message_id": returned.message_id,
-        "processed_date": returned.processed_date,  # Already updated
-        "ignore_date": returned.ignore_date,
-        "ll_prev": returned.ll_prev,
-        "ll_next": returned.ll_next,
-    }, "newcurrent": {
-        "id": newcurrent.id,
-        "patch_id": newcurrent.patch_id,
-        "message_id": newcurrent.message_id,
-        "processed_date": newcurrent.processed_date,
-        "ignore_date": newcurrent.ignore_date,
-        "ll_prev": newcurrent.ll_prev,
-        "ll_next": newcurrent.ll_next,
-    }}
+    payload = {
+        "returned": build_item_object(returned, is_current=False),
+        "newcurrent": build_item_object(newcurrent, is_current=True),
+    }
     return apiResponse(request, payload)
 
 
@@ -81,16 +85,11 @@ def cfbot_get_queue(request):
     queuetable = []
     current_item = queue.get_first_item()
     while current_item:
-        queuetable.append({
-            "id": current_item.id,
-            "is_current": current_item.id == queue.current_queue_item,
-            "patch_id": current_item.patch_id,
-            "message_id": current_item.message_id,
-            "processed_date": current_item.processed_date,
-            "ignore_date": current_item.ignore_date,
-            "ll_prev": current_item.ll_prev,
-            "ll_next": current_item.ll_next,
-        })
+        queuetable.append(
+            build_item_object(
+                current_item, is_current=current_item.id == queue.current_queue_item
+            )
+        )
         current_item = queue.items.filter(id=current_item.ll_next).first()
 
     return apiResponse(request, {"queuetable": queuetable})
@@ -105,14 +104,5 @@ def cfbot_peek(request):
     if not item:
         return apiResponse(request, {"error": "No items in the queue"}, status=404)
 
-    payload = {
-        "id": item.id,
-        "is_current": item.id == queue.current_queue_item,
-        "patch_id": item.patch_id,
-        "message_id": item.message_id,
-        "processed_date": item.processed_date,
-        "ignore_date": item.ignore_date,
-        "ll_prev": item.ll_prev,
-        "ll_next": item.ll_next,
-    }
+    payload = build_item_object(item, is_current=item.id == queue.current_queue_item)
     return apiResponse(request, payload)

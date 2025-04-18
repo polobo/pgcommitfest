@@ -728,6 +728,12 @@ class CfbotQueueItem(models.Model):
     ll_prev = models.IntegerField(null=True, blank=False)
     ll_next = models.IntegerField(null=True, blank=False)
 
+    def get_attachments(self):
+        """
+        Return a list of dummy attachments for the queue item.
+        """
+        return [{"attachment_id": 1, "filename": "dummy_file.txt"}]
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
