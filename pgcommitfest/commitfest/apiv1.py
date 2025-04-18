@@ -1,6 +1,8 @@
 from django.http import (
     HttpResponse,
 )
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 import json
 from datetime import datetime
@@ -9,8 +11,8 @@ from .models import (
     Workflow,
     CfbotQueue,
     CfbotQueueItem,
-    CfbotBranch,  # Add this import
-    CfbotTask,  # Add this import
+    CfbotBranch,
+    CfbotTask,
 )
 
 
@@ -124,7 +126,7 @@ def cfbot_branches(request):
             "failing_since": branch.failing_since,
             "created": branch.created,
             "modified": branch.modified,
-            "task_count": CfbotTask.objects.filter(branch_id=branch.branch_id).count(),  # Add task count
+            "task_count": CfbotTask.objects.filter(branch_id=branch.branch_id).count(),
         }
         for branch in branches
     ]
@@ -148,3 +150,18 @@ def cfbot_tasks(request):
         for task in tasks
     ]
     return apiResponse(request, {"tasks": task_list})
+
+
+def update_task_status(request, task_id):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    task = get_object_or_404(CfbotTask, task_id=task_id)
+    new_status = request.GET.get("status")
+
+    if new_status not in dict(CfbotTask.STATUS_CHOICES):
+        return apiResponse(request, {"error": "Invalid status"}, status=400)
+
+    task.status = new_status
+    task.save()
+    return apiResponse(request, {"message": f"Task {task_id} status updated to {new_status}."})

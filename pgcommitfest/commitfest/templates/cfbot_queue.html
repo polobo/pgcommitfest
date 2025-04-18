@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block contents %}
+<div id="response-message" style="margin-bottom: 20px; color: green;"> </div> <!-- Response message -->
+
 <div>CI Branches</div>
 <table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
     <thead>
@@ -41,6 +43,22 @@
     </tbody>
 </table>
 
+<div>
+    <strong>Selected Task ID:</strong> <span id="selected-task-id">None</span>
+</div>
+
+<div>
+    <button class="task-status-btn" data-status="CREATED">Set to Created</button>
+    <button class="task-status-btn" data-status="NEEDS_APPROVAL">Set to Needs Approval</button>
+    <button class="task-status-btn" data-status="TRIGGERED">Set to Triggered</button>
+    <button class="task-status-btn" data-status="EXECUTING">Set to Executing</button>
+    <button class="task-status-btn" data-status="FAILED">Set to Failed</button>
+    <button class="task-status-btn" data-status="COMPLETED">Set to Completed</button>
+    <button class="task-status-btn" data-status="SCHEDULED">Set to Scheduled</button>
+    <button class="task-status-btn" data-status="ABORTED">Set to Aborted</button>
+    <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Fetch and populate the CI Branches table
@@ -79,38 +97,97 @@
                 });
             })
             .catch(error => console.error("Error:", error));
-    });
 
-    function fetchTasksForBranch(branchId) {
-        // Fetch tasks for the selected branch
-        fetch(`/api/v1/cfbot/tasks?branch_id=${branchId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
+        function fetchTasksForBranch(branchId) {
+            // Fetch tasks for the selected branch
+            fetch(`/api/v1/cfbot/tasks?branch_id=${branchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const tableBody = document.getElementById("cfbot-tasks-table").getElementsByTagName("tbody")[0];
+                    tableBody.innerHTML = ""; // Clear existing rows
+
+                    data.tasks.forEach(task => {
+                        const row = document.createElement("tr");
+                        row.setAttribute("data-task-id", task.task_id);
+                        row.innerHTML = `
+                            <td>${task.task_id}</td>
+                            <td>${task.task_name}</td>
+                            <td>${task.patch_id}</td>
+                            <td>${task.branch_id}</td>
+                            <td>${task.position}</td>
+                            <td>${task.status}</td>
+                            <td>${task.created}</td>
+                            <td>${task.modified}</td>
+                        `;
+                        row.addEventListener("click", function () {
+                            highlightTaskRow(this);
+                            updateSelectedTaskId(task.task_id);
+                        });
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function highlightTaskRow(row) {
+            // Highlight the selected task row and remove highlight from others
+            const rows = document.querySelectorAll("#cfbot-tasks-table tbody tr");
+            rows.forEach(r => r.classList.remove("selected-task-row"));
+            row.classList.add("selected-task-row");
+        }
+
+        function updateSelectedTaskId(taskId) {
+            // Update the label with the selected task ID
+            document.getElementById("selected-task-id").textContent = taskId || "None";
+        }
+
+        document.querySelectorAll(".task-status-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                const selectedTaskId = document.getElementById("selected-task-id").textContent;
+                if (selectedTaskId === "None") {
+                    alert("Please select a task first.");
                     return;
                 }
 
-                const tableBody = document.getElementById("cfbot-tasks-table").getElementsByTagName("tbody")[0];
-                tableBody.innerHTML = ""; // Clear existing rows
+                const newStatus = this.getAttribute("data-status");
+                updateTaskStatus(selectedTaskId, newStatus);
+            });
+        });
 
-                data.tasks.forEach(task => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${task.task_id}</td>
-                        <td>${task.task_name}</td>
-                        <td>${task.patch_id}</td>
-                        <td>${task.branch_id}</td>
-                        <td>${task.position}</td>
-                        <td>${task.status}</td>
-                        <td>${task.created}</td>
-                        <td>${task.modified}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+        function updateTaskStatus(taskId, status) {
+            fetch(`/api/v1/cfbot/task/${taskId}/update_status?status=${status}`, {
+                method: "GET",
             })
-            .catch(error => console.error("Error:", error));
-    }
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+
+                    // Optionally, refresh the tasks table
+                    const branchId = document.querySelector(".selected-row")?.getAttribute("data-branch-id");
+                    if (branchId) {
+                        fetchTasksForBranch(branchId);
+                    }
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while updating the task status.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
+        }
+    });
 
     function highlightRow(row) {
         // Highlight the selected row and remove highlight from others
@@ -123,6 +200,10 @@
 <style>
     .selected-row {
         background-color: #d3d3d3;
+    }
+
+    .selected-task-row {
+        background-color: #add8e6;
     }
 </style>
 

@@ -6,6 +6,7 @@ from .apiv1 import (
     cfbot_peek,
     cfbot_branches,
     cfbot_tasks,
+    update_task_status,  # Add this import
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("api/v1/cfbot/peek", cfbot_peek, name="cfbot_peek"),
     path("api/v1/cfbot/branches", cfbot_branches, name="cfbot_branches"),
     path("api/v1/cfbot/tasks", cfbot_tasks, name="cfbot_tasks"),
+    path("api/v1/cfbot/tasks/<str:task_id>/update_status", update_task_status, name="update_task_status"),
 ]
