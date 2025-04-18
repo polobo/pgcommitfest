@@ -664,9 +664,9 @@ class CfbotQueue(models.Model):
         Move the current_queue_item to the next linked list ID, wrapping back to the front if ll_next is None.
         """
         if not self.current_queue_item:
-            return None  # No items in the queue
+            return None, None  # No items in the queue
 
-        current_item = CfbotQueueItem.objects.filter(id=self.current_queue_item).first()
+        current_item = CfbotQueueItem.objects.get(id=self.current_queue_item)
         if not current_item:
             raise ValueError("Current queue item does not exist.")
 
@@ -677,19 +677,31 @@ class CfbotQueue(models.Model):
             first_item = self.get_first_item()
             self.current_queue_item = first_item.pk if first_item.pk else None
 
+        next_item = CfbotQueueItem.objects.get(id=self.current_queue_item)
+
         self.save()
-        # XXX: works for now but unclear if this is mixing responsibilities.
-        # Will become more clear as we flesh out the API.
+
+        # Update the processed_date of the returned item
+        current_item.processed_date = datetime.now()
+        current_item.save()
+
+        # Skip ignored items
         if current_item.ignore_date:
             return self.get_and_move()
         else:
-            current_item.processed_date = datetime.now()
-            current_item.save()
-            return current_item
+            return current_item, next_item
 
     def get_first_item(self):
         # Return the first item in the queue where ll_prev is None
         return self.items.filter(ll_prev__isnull=True).first()
+
+    def peek(self):
+        """
+        Return the current queue item without moving the pointer.
+        """
+        if not self.current_queue_item:
+            return None  # No items in the queue
+        return CfbotQueueItem.objects.get(id=self.current_queue_item)
 
     class Meta:
         constraints = [

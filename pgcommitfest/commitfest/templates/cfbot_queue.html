@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block contents %}
 <div>Queue table - ringed</div>
-<h2>{{ queue.name }}</h2>
+<h2>{{ queue.name }} ( {{ queue.current_queue_item }} )</h2>
 
-<button id="get-and-move-btn">Get and Move</button>
+<div>
+    <button id="get-and-move-btn">Get and Move</button>
+    <button id="peek-btn">Peek</button>
+</div>
 
 <div style="display: flex; gap: 20px;">
     <div style="flex: 70%;">
@@ -40,8 +43,9 @@
 </div>
 
 <script>
-    // Populate the queue table on page load
+    // Populate the queue table and perform a peek on page load
     document.addEventListener("DOMContentLoaded", function () {
+        // Fetch the queue table
         fetch("/api/v1/cfbot/get_queue")
             .then(response => response.json())
             .then(data => {
@@ -56,34 +60,17 @@
                 data.queuetable.forEach(item => {
                     const row = document.createElement("tr");
                     row.setAttribute("data-id", item.id);
-                    row.innerHTML = `
-                        <td>${item.id}</td>
-                        <td>${item.is_current ? "✔" : ""}</td>
-                        <td>${item.patch_id}</td>
-                        <td>${item.message_id}</td>
-                        <td>${item.processed_date || ""}</td>
-                        <td>${item.ignore_date || ""}</td>
-                        <td>${item.ll_prev || ""}</td>
-                        <td>${item.ll_next || ""}</td>
-                    `;
+                    row.innerHTML = generateRowHTML(item);
                     if (item.is_current) {
                         row.classList.add("current-row");
                     }
                     tableBody.appendChild(row);
-
-                    // If the item is current, populate the JSON display
-                    if (item.is_current) {
-                        document.getElementById("json-id").textContent = item.id || "";
-                        document.getElementById("json-patch-id").textContent = item.patch_id || "";
-                        document.getElementById("json-message-id").textContent = item.message_id || "";
-                        document.getElementById("json-processed-date").textContent = item.processed_date || "";
-                        document.getElementById("json-ignore-date").textContent = item.ignore_date || "";
-                        document.getElementById("json-ll-prev").textContent = item.ll_prev || "";
-                        document.getElementById("json-ll-next").textContent = item.ll_next || "";
-                    }
                 });
             })
             .catch(error => console.error("Error:", error));
+
+        // Perform a peek to populate the JSON display
+        performPeek();
     });
 
     document.getElementById("get-and-move-btn").addEventListener("click", function () {
@@ -95,7 +82,48 @@
                     return;
                 }
 
-                // Update the JSON display only
+                // Update the JSON display with the returned data
+                const returned = data.returned;
+                document.getElementById("json-id").textContent = returned.id || "";
+                document.getElementById("json-patch-id").textContent = returned.patch_id || "";
+                document.getElementById("json-message-id").textContent = returned.message_id || "";
+                document.getElementById("json-processed-date").textContent = returned.processed_date || "";
+                document.getElementById("json-ignore-date").textContent = returned.ignore_date || "";
+                document.getElementById("json-ll-prev").textContent = returned.ll_prev || "";
+                document.getElementById("json-ll-next").textContent = returned.ll_next || "";
+
+                // Replace the row of the returned item in the table
+                const returnedRow = document.querySelector(`[data-id='${returned.id}']`);
+                if (returnedRow) {
+                    returnedRow.innerHTML = generateRowHTML(returned);
+                    returnedRow.classList.remove("current-row");
+                }
+
+                // Update the table with the newcurrent data
+                const newcurrent = data.newcurrent;
+                const currentId = document.querySelector(".current-row")?.getAttribute("data-id");
+                if (currentId) {
+                    remove_current(currentId);
+                }
+                add_current(newcurrent.id);
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    document.getElementById("peek-btn").addEventListener("click", function () {
+        performPeek();
+    });
+
+    function performPeek() {
+        fetch("/api/v1/cfbot/peek")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Update the JSON display with the peeked data
                 document.getElementById("json-id").textContent = data.id || "";
                 document.getElementById("json-patch-id").textContent = data.patch_id || "";
                 document.getElementById("json-message-id").textContent = data.message_id || "";
@@ -103,16 +131,22 @@
                 document.getElementById("json-ignore-date").textContent = data.ignore_date || "";
                 document.getElementById("json-ll-prev").textContent = data.ll_prev || "";
                 document.getElementById("json-ll-next").textContent = data.ll_next || "";
-
-                // Update the current row in the table
-                const currentId = document.querySelector(".current-row")?.getAttribute("data-id");
-                if (currentId) {
-                    remove_current(currentId);
-                }
-                add_current(data.id);
             })
             .catch(error => console.error("Error:", error));
-    });
+    }
+
+    function generateRowHTML(item) {
+        return `
+            <td>${item.id}</td>
+            <td>${item.is_current ? "✔" : ""}</td>
+            <td>${item.patch_id}</td>
+            <td>${item.message_id}</td>
+            <td>${item.processed_date || ""}</td>
+            <td>${item.ignore_date || ""}</td>
+            <td>${item.ll_prev || ""}</td>
+            <td>${item.ll_next || ""}</td>
+        `;
+    }
 
     function add_current(id) {
         const row = document.querySelector(`[data-id='${id}']`);

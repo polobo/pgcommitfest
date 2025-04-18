@@ -49,19 +49,27 @@ def cfbot_get_and_move(request):
     if not queue:
         return apiResponse(request, {"error": "No queue found"}, status=404)
 
-    item = queue.get_and_move()
-    if not item:
+    returned, newcurrent = queue.get_and_move()
+    if not returned:
         return apiResponse(request, {"error": "No items in the queue"}, status=404)
 
-    payload = {
-        "id": item.id,
-        "patch_id": item.patch_id,
-        "message_id": item.message_id,
-        "processed_date": item.processed_date,
-        "ignore_date": item.ignore_date,
-        "ll_prev": item.ll_prev,
-        "ll_next": item.ll_next,
-    }
+    payload = {"returned": {
+        "id": returned.id,
+        "patch_id": returned.patch_id,
+        "message_id": returned.message_id,
+        "processed_date": returned.processed_date,  # Already updated
+        "ignore_date": returned.ignore_date,
+        "ll_prev": returned.ll_prev,
+        "ll_next": returned.ll_next,
+    }, "newcurrent": {
+        "id": newcurrent.id,
+        "patch_id": newcurrent.patch_id,
+        "message_id": newcurrent.message_id,
+        "processed_date": newcurrent.processed_date,
+        "ignore_date": newcurrent.ignore_date,
+        "ll_prev": newcurrent.ll_prev,
+        "ll_next": newcurrent.ll_next,
+    }}
     return apiResponse(request, payload)
 
 
@@ -86,3 +94,25 @@ def cfbot_get_queue(request):
         current_item = queue.items.filter(id=current_item.ll_next).first()
 
     return apiResponse(request, {"queuetable": queuetable})
+
+
+def cfbot_peek(request):
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    item = queue.peek()
+    if not item:
+        return apiResponse(request, {"error": "No items in the queue"}, status=404)
+
+    payload = {
+        "id": item.id,
+        "is_current": item.id == queue.current_queue_item,
+        "patch_id": item.patch_id,
+        "message_id": item.message_id,
+        "processed_date": item.processed_date,
+        "ignore_date": item.ignore_date,
+        "ll_prev": item.ll_prev,
+        "ll_next": item.ll_next,
+    }
+    return apiResponse(request, payload)
