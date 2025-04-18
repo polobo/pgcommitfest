@@ -44,6 +44,7 @@ urlpatterns = [
     re_path(r"^lookups/user/$", lookups.userlookup),
     re_path(r"^thread_notify/$", views.thread_notify),
     re_path(r"^cfbot_notify/$", views.cfbot_notify),
+    re_path(r"^cfbot_queue/$", views.cfbot_queue),
     # Legacy email POST route. This can be safely removed in a few days from
     # the first time this is deployed. It's only puprose is not breaking
     # submissions from a previous page lood, during the deploy of the new

@@ -1324,6 +1324,23 @@ def send_email(request, cfid):
         },
     )
 
+@login_required
+def cfbot_queue(request):
+    # This is a simple view that just returns the cfbot queue.  It doesn't
+    # do any processing of the queue, that's done in cfbot_task.py.
+    # The cfbot queue is a list of patches that are waiting for cfbot to
+    # process them.  This is not the same as the cfbot status, which is
+    # a list of patches that are currently being processed by cfbot.
+    # The cfbot queue is a list of patches that are waiting for cfbot to
+    # process them.  This is not the same as the cfbot status, which is
+    # a list of patches that are currently being processed by cfbot.
+    return render(
+        request,
+        "cfbot_queue.html",
+        {
+            "title": "CFBot Queue",
+        },
+    )
 
 @transaction.atomic
 def cfbot_ingest(message):
