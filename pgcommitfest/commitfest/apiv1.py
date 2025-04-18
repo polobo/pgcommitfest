@@ -7,6 +7,8 @@ from datetime import datetime
 
 from .models import (
     Workflow,
+    CfbotQueue,
+    CfbotQueueItem,
 )
 
 
@@ -40,3 +42,47 @@ def active_commitfests(request):
         },
     }
     return apiResponse(request, payload)
+
+
+def cfbot_get_and_move(request):
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    item = queue.get_and_move()
+    if not item:
+        return apiResponse(request, {"error": "No items in the queue"}, status=404)
+
+    payload = {
+        "id": item.id,
+        "patch_id": item.patch_id,
+        "message_id": item.message_id,
+        "processed_date": item.processed_date,
+        "ignore_date": item.ignore_date,
+        "ll_prev": item.ll_prev,
+        "ll_next": item.ll_next,
+    }
+    return apiResponse(request, payload)
+
+
+def cfbot_get_queue(request):
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    queuetable = []
+    current_item = queue.get_first_item()
+    while current_item:
+        queuetable.append({
+            "id": current_item.id,
+            "is_current": current_item.id == queue.current_queue_item,
+            "patch_id": current_item.patch_id,
+            "message_id": current_item.message_id,
+            "processed_date": current_item.processed_date,
+            "ignore_date": current_item.ignore_date,
+            "ll_prev": current_item.ll_prev,
+            "ll_next": current_item.ll_next,
+        })
+        current_item = queue.items.filter(id=current_item.ll_next).first()
+
+    return apiResponse(request, {"queuetable": queuetable})

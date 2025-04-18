@@ -3,33 +3,132 @@
 <div>Queue table - ringed</div>
 <h2>{{ queue.name }}</h2>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Current</th>
-            <th>Patch ID</th>
-            <th>Message ID</th>
-            <th>Processed Date</th>
-            <th>Ignore Date</th>
-            <th>ll_prev</th>
-            <th>ll_next</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in queuetable %}
-        <tr>
-            <td>{{ item.id }}</td>
-            <td>{% if item.is_current %}✔{% endif %}</td>
-            <td>{{ item.patch_id }}</td>
-            <td>{{ item.message_id }}</td>
-            <td>{{ item.processed_date }}</td>
-            <td>{{ item.ignore_date }}</td>
-            <td>{{ item.ll_prev }}</td>
-            <td>{{ item.ll_next }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<button id="get-and-move-btn">Get and Move</button>
+
+<div style="display: flex; gap: 20px;">
+    <div style="flex: 70%;">
+        <table border="1" id="queue-table" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Current</th>
+                    <th>Patch ID</th>
+                    <th>Message ID</th>
+                    <th>Processed Date</th>
+                    <th>Ignore Date</th>
+                    <th>ll_prev</th>
+                    <th>ll_next</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+            </tbody>
+        </table>
+    </div>
+    <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+        <h3>Details</h3>
+        <div id="json-keys">
+            <strong>ID:</strong> <span id="json-id"></span><br>
+            <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
+            <strong>Message ID:</strong> <span id="json-message-id"></span><br>
+            <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
+            <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
+            <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
+            <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Populate the queue table on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/api/v1/cfbot/get_queue")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.queuetable.forEach(item => {
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-id", item.id);
+                    row.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>${item.is_current ? "✔" : ""}</td>
+                        <td>${item.patch_id}</td>
+                        <td>${item.message_id}</td>
+                        <td>${item.processed_date || ""}</td>
+                        <td>${item.ignore_date || ""}</td>
+                        <td>${item.ll_prev || ""}</td>
+                        <td>${item.ll_next || ""}</td>
+                    `;
+                    if (item.is_current) {
+                        row.classList.add("current-row");
+                    }
+                    tableBody.appendChild(row);
+
+                    // If the item is current, populate the JSON display
+                    if (item.is_current) {
+                        document.getElementById("json-id").textContent = item.id || "";
+                        document.getElementById("json-patch-id").textContent = item.patch_id || "";
+                        document.getElementById("json-message-id").textContent = item.message_id || "";
+                        document.getElementById("json-processed-date").textContent = item.processed_date || "";
+                        document.getElementById("json-ignore-date").textContent = item.ignore_date || "";
+                        document.getElementById("json-ll-prev").textContent = item.ll_prev || "";
+                        document.getElementById("json-ll-next").textContent = item.ll_next || "";
+                    }
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    document.getElementById("get-and-move-btn").addEventListener("click", function () {
+        fetch("/api/v1/cfbot/get_and_move")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Update the JSON display only
+                document.getElementById("json-id").textContent = data.id || "";
+                document.getElementById("json-patch-id").textContent = data.patch_id || "";
+                document.getElementById("json-message-id").textContent = data.message_id || "";
+                document.getElementById("json-processed-date").textContent = data.processed_date || "";
+                document.getElementById("json-ignore-date").textContent = data.ignore_date || "";
+                document.getElementById("json-ll-prev").textContent = data.ll_prev || "";
+                document.getElementById("json-ll-next").textContent = data.ll_next || "";
+
+                // Update the current row in the table
+                const currentId = document.querySelector(".current-row")?.getAttribute("data-id");
+                if (currentId) {
+                    remove_current(currentId);
+                }
+                add_current(data.id);
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    function add_current(id) {
+        const row = document.querySelector(`[data-id='${id}']`);
+        if (row) {
+            row.classList.add("current-row");
+            row.children[1].textContent = "✔";
+        }
+    }
+
+    function remove_current(id) {
+        const row = document.querySelector(`[data-id='${id}']`);
+        if (row) {
+            row.classList.remove("current-row");
+            row.children[1].textContent = "";
+        }
+    }
+</script>
 
 {% endblock %}
