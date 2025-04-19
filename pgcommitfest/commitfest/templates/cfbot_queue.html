@@ -2,17 +2,13 @@
 {% block contents %}
 <div id="response-message" style="margin-bottom: 20px; color: green;"> </div> <!-- Response message -->
 
-<div>
-    <strong>Selected Branch ID:</strong> <span id="selected-branch-id">None</span>
-</div>
-<div>
-    <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
-    <button id="clear-branch-table-btn">Clear Branch Table</button>
-    <button id="clear-branch-history-btn" disabled>Clear Branch History</button>
-</div>
-
 <div style="display: flex; gap: 20px;">
     <div style="flex: 70%;">
+        <div>
+            <strong>Selected Branch ID:</strong> <span id="selected-branch-id">None</span>
+            <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
+            <button id="clear-branch-table-btn">Clear Branch Table</button>
+        </div>
         <div>CI Branches</div>
         <table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
             <thead>
@@ -36,6 +32,9 @@
         </table>
     </div>
     <div style="flex: 30%;">
+        <div>
+            <button id="clear-branch-history-btn" disabled>Clear Branch History</button>
+        </div>
         <div>Branch History</div>
         <table border="1" id="branch-history-table" style="width: 100%; margin-bottom: 20px;">
             <thead>
@@ -297,8 +296,6 @@
                 });
             })
             .catch(error => console.error("Error:", error));
-          // Perform a peek to populate the JSON display
-          performPeek();
         }
 
         function highlightTaskRow(row) {
@@ -417,7 +414,7 @@
             }
         }
 
-                document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
+        document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
             const selectedBranchId = document.getElementById("selected-branch-id").textContent;
             if (selectedBranchId === "None") {
                 alert("Please select a branch first.");
@@ -456,9 +453,7 @@
                     }
 
                     fetchQueue(); // Refresh the queue table
-                    // But show the returned item in the JSON display
-                    const returned = data.returned;
-                    updateJsonDisplay(returned);
+                    updateJsonDisplay(data.returned);
 
                 })
                 .catch(error => console.error("Error:", error));
@@ -556,6 +551,9 @@
                         return;
                     }
 
+                    fetchQueue();
+                    updateJsonDisplay(data.returned);
+
                     const patchId = data.returned.patch_id;
                     const messageId = data.returned.message_id;
 
@@ -573,7 +571,7 @@
                                 responseMessage.style.color = "red";
                             }
                             fetchBranches(); // Refresh the branches table
-                            fetchQueue(); // Refresh the queue table
+
                         })
                         .catch(error => {
                             const responseMessage = document.getElementById("response-message");
