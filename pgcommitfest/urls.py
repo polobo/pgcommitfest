@@ -26,6 +26,7 @@ urlpatterns = [
     re_path(r"^api/v1/cfbot/branches/(\d+)/process_build_tasks$", apiv1.process_build_tasks),
     re_path(r"^api/test/cfbot/clear_queue$", apiv1.clear_queue),
     re_path(r"^api/test/cfbot/add_test_data$", apiv1.add_test_data),
+    re_path(r"^api/test/cfbot/clear_branch_table$", apiv1.clear_branch_table),
     re_path(r"^workflow/$", views.workflow),
     re_path(r"^workflow-reference/$", views.workflow_reference),
     re_path(r"^me/$", views.me),

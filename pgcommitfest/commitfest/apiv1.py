@@ -191,6 +191,14 @@ def clear_queue(request):
     return apiResponse(request, {"message": "Queue cleared successfully."})
 
 
+def clear_branch_table(request):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    CfbotBranch.objects.all().delete()
+    return apiResponse(request, {"message": "Branch table cleared successfully."})
+
+
 def add_test_data(request):
     queue = CfbotQueue.objects.first()
     if not queue:

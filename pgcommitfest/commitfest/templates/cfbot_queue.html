@@ -8,6 +8,9 @@
 <div>
     <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
 </div>
+<div>
+    <button id="clear-branch-table-btn">Clear Branch Table</button>
+</div>
 
 <div>CI Branches</div>
 <table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
@@ -393,6 +396,66 @@
                 });
             // Perform a peek to populate the JSON display
             performPeek();
+        });
+
+        document.getElementById("clear-branch-table-btn").addEventListener("click", function () {
+            fetch("/api/test/cfbot/clear_branch_table", {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+
+                    // Reload the branches table
+                    fetch("/api/v1/cfbot/branches")
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+
+                            const tableBody = document.getElementById("ci-branches-table").getElementsByTagName("tbody")[0];
+                            tableBody.innerHTML = ""; // Clear existing rows
+
+                            data.branches.forEach(branch => {
+                                const row = document.createElement("tr");
+                                row.setAttribute("data-branch-id", branch.branch_id);
+                                row.innerHTML = `
+                                    <td>${branch.patch_id}</td>
+                                    <td>${branch.branch_id}</td>
+                                    <td>${branch.branch_name}</td>
+                                    <td>${branch.commit_id || ""}</td>
+                                    <td><a href="${branch.apply_url}" target="_blank">${branch.apply_url}</a></td>
+                                    <td>${branch.status}</td>
+                                    <td>${branch.needs_rebase_since || ""}</td>
+                                    <td>${branch.failing_since || ""}</td>
+                                    <td>${branch.created}</td>
+                                    <td>${branch.modified}</td>
+                                    <td>${branch.task_count || 0}</td>
+                                `;
+                                row.addEventListener("click", function () {
+                                    highlightRow(this);
+                                    fetchTasksForBranch(branch.branch_id);
+                                });
+                                tableBody.appendChild(row);
+                            });
+                        })
+                        .catch(error => console.error("Error:", error));
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while clearing the branch table.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
         });
     });
 
