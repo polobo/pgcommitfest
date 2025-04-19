@@ -789,6 +789,33 @@ class CfbotBranch(models.Model):
         super(CfbotBranch, self).save(*args, **kwargs)
 
 
+class CfbotBranchHistory(models.Model):
+    id = models.BigAutoField(primary_key=True)  # Auto-numbered primary key
+    patch_id = models.IntegerField(null=False)
+    branch_id = models.IntegerField(null=False)
+    branch_name = models.TextField(null=False)
+    commit_id = models.TextField(null=True, blank=True)
+    apply_url = models.TextField(null=False)
+    status = models.TextField(null=False)
+    needs_rebase_since = models.DateTimeField(null=True, blank=True)
+    failing_since = models.DateTimeField(null=True, blank=True)
+    created = models.DateTimeField()
+    modified = models.DateTimeField()
+    version = models.TextField(null=True, blank=True)
+    patch_count = models.IntegerField(null=True, blank=True)
+    first_additions = models.IntegerField(null=True, blank=True)
+    first_deletions = models.IntegerField(null=True, blank=True)
+    all_additions = models.IntegerField(null=True, blank=True)
+    all_deletions = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Branch History for Patch ID {self.patch_id}, Branch ID {self.branch_id}"
+
+    class Meta:
+        verbose_name_plural = "Cfbot Branch Histories"
+        ordering = ("-modified",)
+
+
 class CfbotTask(models.Model):
     STATUS_CHOICES = [
         ("CREATED", "Created"),

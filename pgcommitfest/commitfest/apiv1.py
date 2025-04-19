@@ -14,6 +14,8 @@ from .models import (
     CfbotQueueItem,
     CfbotBranch,
     CfbotTask,
+    PatchHistory,
+    CfbotBranchHistory,
 )
 
 
@@ -196,7 +198,8 @@ def clear_branch_table(request):
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     CfbotBranch.objects.all().delete()
-    return apiResponse(request, {"message": "Branch table cleared successfully."})
+    CfbotTask.objects.all().delete()  # Clear tasks as well
+    return apiResponse(request, {"message": "Branch table and tasks cleared successfully."})
 
 
 def add_test_data(request):
@@ -227,7 +230,7 @@ def create_branch(request):
     apply_url = f"http://example.com/apply/{patch_id}"
     status = "testing"
 
-    CfbotBranch.objects.update_or_create(
+    branch, created = CfbotBranch.objects.update_or_create(
         patch_id=patch_id,
         defaults={
             "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
@@ -240,4 +243,44 @@ def create_branch(request):
         },
     )
 
+    # Create a history item for the branch
+    if created:
+        CfbotBranchHistory.objects.create(
+            patch_id=branch.patch_id,
+            branch_id=branch.branch_id,
+            branch_name=branch.branch_name,
+            commit_id=branch.commit_id,
+            apply_url=branch.apply_url,
+            status=branch.status,
+            needs_rebase_since=branch.needs_rebase_since,
+            failing_since=branch.failing_since,
+            created=branch.created,
+            modified=branch.modified,
+            version=branch.version,
+            patch_count=branch.patch_count,
+            first_additions=branch.first_additions,
+            first_deletions=branch.first_deletions,
+            all_additions=branch.all_additions,
+            all_deletions=branch.all_deletions,
+        )
+
     return apiResponse(request, {"message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
+
+
+def fetch_branch_history(request):
+    branch_id = request.GET.get("branch_id")
+    if not branch_id:
+        return apiResponse(request, {"error": "Missing branch_id"}, status=400)
+
+    history = CfbotBranchHistory.objects.filter(branch_id=branch_id).order_by("-modified")[:5]
+    history_list = [
+        {
+            "branch_id": entry.branch_id,
+            "status": entry.status,
+            "modified": entry.modified,
+            "commit_id": entry.commit_id,
+        }
+        for entry in history  # Ensure each entry is a CfbotBranchHistory object
+    ]
+
+    return apiResponse(request, {"history": history_list})
