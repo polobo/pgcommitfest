@@ -167,15 +167,38 @@ def update_task_status(request, task_id):
     return apiResponse(request, {"message": f"Task {task_id} status updated to {new_status}."})
 
 
-def process_build_tasks(request, branch_id):
+def process_branch(request, branch_id):
     if request.method != "GET":
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
+    if branch.status == "new":
+        branch.status = "testing"
+    elif branch.status == "testing":
+        branch.status = "finished"
 
+    branch.save()
 
+    CfbotBranchHistory.objects.create(
+        patch_id=branch.patch_id,
+        branch_id=branch.branch_id,
+        branch_name=branch.branch_name,
+        commit_id=branch.commit_id,
+        apply_url=branch.apply_url,
+        status=branch.status,
+        needs_rebase_since=branch.needs_rebase_since,
+        failing_since=branch.failing_since,
+        created=branch.created,
+        modified=branch.modified,
+        version=branch.version,
+        patch_count=branch.patch_count,
+        first_additions=branch.first_additions,
+        first_deletions=branch.first_deletions,
+        all_additions=branch.all_additions,
+        all_deletions=branch.all_deletions,
+    )
 
-    return apiResponse(request, {"message": f"Build tasks for branch {branch.branch_name} are being processed."})
+    return apiResponse(request, {"message": f"Branch {branch.branch_name} is being processed."})
 
 
 def clear_queue(request):
@@ -228,7 +251,7 @@ def create_branch(request):
     branch_name = f"branch_{patch_id}"
     commit_id = f"commit_{patch_id}"
     apply_url = f"http://example.com/apply/{patch_id}"
-    status = "testing"
+    status = "new"
 
     branch, created = CfbotBranch.objects.update_or_create(
         patch_id=patch_id,
@@ -264,7 +287,7 @@ def create_branch(request):
             all_deletions=branch.all_deletions,
         )
 
-    return apiResponse(request, {"message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
+    return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
 
 
 def fetch_branch_history(request):

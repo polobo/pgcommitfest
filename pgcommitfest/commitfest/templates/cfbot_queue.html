@@ -6,7 +6,7 @@
     <div style="flex: 70%;">
         <div>
             <strong>Selected Branch ID:</strong> <span id="selected-branch-id">None</span>
-            <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
+            <button id="process-build-btn">Process Branch</button>
             <button id="clear-branch-table-btn">Clear Branch Table</button>
         </div>
         <div>CI Branches</div>
@@ -232,7 +232,7 @@
                 .catch(error => console.error("Error:", error));
         }
 
-        function fetchBranches() {
+        function fetchBranches(selectOnLoad) {
             fetch("/api/v1/cfbot/branches")
                 .then(response => response.json())
                 .then(data => {
@@ -264,8 +264,11 @@
                             fetchTasksForBranch(branch.branch_id);
                             fetchBranchHistory(branch.branch_id);
                         });
-                        if (index === 0) {
-                            row.click(); // Automatically click the first row to load its data
+
+                        if (index === 0 && !selectOnLoad) {
+                            row.click();
+                        } else if (selectOnLoad && branch.branch_id == selectOnLoad) {
+                            row.click();
                         }
                         tableBody.appendChild(row);
                     });
@@ -414,15 +417,15 @@
             }
         }
 
-        function setupProcessBuildTasksButtons() {
-            document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
+        function setupProcessBranchButton() {
+            document.getElementById("process-build-btn").addEventListener("click", function () {
                 const selectedBranchId = document.getElementById("selected-branch-id").textContent;
                 if (selectedBranchId === "None") {
                     alert("Please select a branch first.");
                     return;
                 }
 
-                fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_build_tasks`, {
+                fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_branch`, {
                     method: "GET",
                 })
                     .then(response => response.json())
@@ -435,10 +438,11 @@
                             responseMessage.textContent = data.error;
                             responseMessage.style.color = "red";
                         }
+                        fetchBranches(selectedBranchId); // Refresh the branches table
                     })
                     .catch(error => {
                         const responseMessage = document.getElementById("response-message");
-                        responseMessage.textContent = "An error occurred while processing build tasks.";
+                        responseMessage.textContent = "An error occurred while processing the branch.";
                         responseMessage.style.color = "red";
                         console.error("Error:", error);
                     });
@@ -567,6 +571,7 @@
                         const patchId = data.returned.patch_id;
                         const messageId = data.returned.message_id;
 
+
                         fetch(`/api/test/cfbot/create_branch?patch_id=${patchId}&message_id=${messageId}`, {
                             method: "GET",
                         })
@@ -580,7 +585,7 @@
                                     responseMessage.textContent = data.error;
                                     responseMessage.style.color = "red";
                                 }
-                                fetchBranches(); // Refresh the branches table
+                                fetchBranches(data.branch_id); // Refresh the branches table
                             })
                             .catch(error => {
                                 const responseMessage = document.getElementById("response-message");
@@ -637,7 +642,7 @@
         }
 
         function wireUpPage() {
-            setupProcessBuildTasksButtons();
+            setupProcessBranchButton();
             setupGetAndMoveButton();
             setupClearQueueButton();
             setupAddTestDataButton();
@@ -648,6 +653,7 @@
             wireUpTaskActions();
             fetchQueue();
             fetchBranches();
+            performPeek();
         }
 
         wireUpPage();

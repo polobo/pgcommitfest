@@ -752,6 +752,7 @@ class CfbotQueueItem(models.Model):
 
 class CfbotBranch(models.Model):
     STATUS_CHOICES = [
+        ("new", "New"),
         ("testing", "Testing"),
         ("finished", "Finished"),
         ("failed", "Failed"),
@@ -766,7 +767,7 @@ class CfbotBranch(models.Model):
     commit_id = models.TextField(null=True, blank=True)
     apply_url = models.TextField(null=False)
     # Actually a postgres enum column
-    status = models.TextField(choices=STATUS_CHOICES, null=False)
+    status = models.TextField(null=False, blank=False)
     needs_rebase_since = models.DateTimeField(null=True, blank=True)
     failing_since = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
