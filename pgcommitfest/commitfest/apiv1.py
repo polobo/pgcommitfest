@@ -172,33 +172,10 @@ def process_branch(request, branch_id):
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
-    if branch.status == "new":
-        branch.status = "testing"
-    elif branch.status == "testing":
-        branch.status = "finished"
+    branch_manager = Workflow.getBranchManager()
+    new_branch = branch_manager.process(branch)
 
-    branch.save()
-
-    CfbotBranchHistory.objects.create(
-        patch_id=branch.patch_id,
-        branch_id=branch.branch_id,
-        branch_name=branch.branch_name,
-        commit_id=branch.commit_id,
-        apply_url=branch.apply_url,
-        status=branch.status,
-        needs_rebase_since=branch.needs_rebase_since,
-        failing_since=branch.failing_since,
-        created=branch.created,
-        modified=branch.modified,
-        version=branch.version,
-        patch_count=branch.patch_count,
-        first_additions=branch.first_additions,
-        first_deletions=branch.first_deletions,
-        all_additions=branch.all_additions,
-        all_deletions=branch.all_deletions,
-    )
-
-    return apiResponse(request, {"message": f"Branch {branch.branch_name} is being processed."})
+    return apiResponse(request, {"message": f"Branch {new_branch.branch_name} has been created with status {new_branch.status}."})
 
 
 def clear_queue(request):

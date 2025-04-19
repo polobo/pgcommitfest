@@ -1068,3 +1068,139 @@ class Workflow(models.Model):
         ).save_and_notify()
 
         return True
+
+    @classmethod
+    def getBranchManager(cls):
+        """
+        Retrieve an instance of BranchManager.
+        """
+        patchBurner = MockBranchManager.getPatchBurner()
+        patchTester = MockBranchManager.getPatchTester()
+        notifier = MockBranchManager.getNotifier()
+        return BranchManager(patchBurner, patchTester, notifier)
+
+
+class BranchManager:
+    """
+    A class to manage branch operations.
+    """
+
+    def __init__(self, burner, tester, notifier):
+        """
+        Initialize the BranchManager with burner, tester, and notifier instances.
+        """
+        self.burner = burner
+        self.tester = tester
+        self.notifier = notifier
+
+    def process(self, branch):
+        """
+        Process the given branch by creating a new branch instance with updated status.
+        The input branch remains unaltered.
+        """
+        old_branch = self.cloneBranch(branch)
+        if old_branch.status == "new":
+            branch.status = "compiling"
+            self.notifier.notify_branch_update(branch)
+            branch.status = "compiled"
+
+        elif old_branch.status == "compiled":
+            branch.status = "testing"
+            self.notifier.notify_branch_update(branch)
+            branch.status = "tested"
+
+        elif old_branch.status == "tested":
+            branch.status = "notifying"
+            self.notifier.notify_branch_update(branch)
+            branch.status = "finished"
+
+        else:
+            pass
+
+        self.notifier.notify_branch_update(branch)
+        return branch
+
+    def cloneBranch(self, branch):
+        """
+        Clone the given branch and return a new instance.
+        """
+        return CfbotBranch(
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            branch_name=branch.branch_name,
+            commit_id=branch.commit_id,
+            apply_url=branch.apply_url,
+            status=branch.status,
+            needs_rebase_since=branch.needs_rebase_since,
+            failing_since=branch.failing_since,
+            version=branch.version,
+            patch_count=branch.patch_count,
+            first_additions=branch.first_additions,
+            first_deletions=branch.first_deletions,
+            all_additions=branch.all_additions,
+            all_deletions=branch.all_deletions,
+        )
+
+class PatchBurner:
+    """
+    A class responsible for burning patches.
+    """
+    def burn(self, patch):
+        # Dummy implementation for burning a patch
+        print(f"Burning patch {patch.id}")
+
+
+class PatchTester:
+    """
+    A class responsible for testing patches.
+    """
+    def test(self, patch):
+        # Dummy implementation for testing a patch
+        print(f"Testing patch {patch.id}")
+
+
+class Notifier:
+    """
+    A class responsible for sending notifications.
+    """
+    def notify_branch_update(self, history_branch):
+        history_branch.save()
+        # Record all processing that happens in the history, even no-ops
+        CfbotBranchHistory.objects.create(
+            patch_id=history_branch.patch_id,
+            branch_id=history_branch.branch_id,
+            branch_name=history_branch.branch_name,
+            commit_id=history_branch.commit_id,
+            apply_url=history_branch.apply_url,
+            status=history_branch.status,
+            needs_rebase_since=history_branch.needs_rebase_since,
+            failing_since=history_branch.failing_since,
+            created=history_branch.created,
+            modified=history_branch.modified,
+            version=history_branch.version,
+            patch_count=history_branch.patch_count,
+            first_additions=history_branch.first_additions,
+            first_deletions=history_branch.first_deletions,
+            all_additions=history_branch.all_additions,
+            all_deletions=history_branch.all_deletions,
+        )
+
+        return history_branch
+
+
+
+class MockBranchManager:
+    """
+    A mock class to provide dummy implementations of PatchBurner, PatchTester, and Notifier.
+    """
+    @staticmethod
+    def getPatchBurner():
+        return PatchBurner()
+
+    @staticmethod
+    def getPatchTester():
+        return PatchTester()
+
+    @staticmethod
+    def getNotifier():
+        return Notifier()

@@ -15,4 +15,5 @@ class Migration(migrations.Migration):
             name='status',
             field=models.TextField(),
         ),
+        # Alter table commitfest_cfbotbranch alter column status type text;
     ]
