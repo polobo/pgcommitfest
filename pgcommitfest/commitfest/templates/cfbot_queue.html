@@ -213,7 +213,7 @@
 
                     tableBody.innerHTML = ""; // Clear existing rows
 
-                    data.tasks.forEach(task => {
+                    data.tasks.forEach((task, index) => {
                         const row = document.createElement("tr");
                         row.setAttribute("data-task-id", task.task_id);
                         row.innerHTML = `
@@ -226,7 +226,16 @@
                             <td>${task.created}</td>
                             <td>${task.modified}</td>
                         `;
+                        row.addEventListener("click", function () {
+                            highlightTaskRow(this);
+                        });
+
                         tableBody.appendChild(row);
+
+                        // Auto-click the first row
+                        if (index === 0) {
+                            row.click();
+                        }
                     });
                 })
                 .catch(error => console.error("Error:", error));
@@ -306,8 +315,12 @@
             const rows = document.querySelectorAll("#cfbot-tasks-table tbody tr");
             rows.forEach(r => r.classList.remove("selected-task-row"));
             row.classList.add("selected-task-row");
+
+            // Update the selected task ID label
+            const taskId = row.getAttribute("data-task-id");
             document.getElementById("selected-task-id").textContent = taskId || "None";
         }
+
         function wireUpTaskActions() {
             document.querySelectorAll(".task-status-btn").forEach(button => {
                 button.addEventListener("click", function () {

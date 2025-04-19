@@ -198,7 +198,8 @@ def clear_branch_table(request):
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     CfbotBranch.objects.all().delete()
-    CfbotTask.objects.all().delete()  # Clear tasks as well
+    CfbotTask.objects.all().delete()
+    CfbotBranchHistory.objects.all().delete()
     return apiResponse(request, {"message": "Branch table and tasks cleared successfully."})
 
 

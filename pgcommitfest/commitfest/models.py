@@ -850,6 +850,18 @@ class CfbotTask(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    def is_done(self):
+        """
+        Check if the task is in a terminal state.
+        """
+        return self.status in {"FAILED", "COMPLETED", "ABORTED", "ERRORED"}
+
+    def is_failure(self):
+        """
+        Check if the task is in a failure state.
+        """
+        return self.status in {"ABORTED", "ERRORED", "FAILED"}
+
 
 # Workflow provides access to the elements required to support
 # the workflow this application is built for.  These elements exist
@@ -1093,6 +1105,13 @@ class BranchManager:
         self.tester = tester
         self.notifier = notifier
 
+    def clear_tasks(self, branch):
+        """
+        Clear all tasks associated with the given branch.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        for task in tasks:
+            task.delete()
     def process(self, branch):
         """
         Process the given branch by creating a new branch instance with updated status.
@@ -1100,18 +1119,33 @@ class BranchManager:
         """
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
+            self.burner.compile(branch)
             branch.status = "compiling"
-            self.notifier.notify_branch_update(branch)
-            branch.status = "compiled"
+
+        elif old_branch.status == "compiling":
+            if self.burner.branch_compiling_completed(branch):
+                if self.burner.apply_branch_compile_results(branch):
+                    branch.status = "compiled"
+                else:
+                    branch.status = "compile-failed"
 
         elif old_branch.status == "compiled":
+            self.clear_tasks(branch)
+            self.tester.launch_branch_testing(branch)
             branch.status = "testing"
-            self.notifier.notify_branch_update(branch)
-            branch.status = "tested"
+
+        elif old_branch.status == "testing":
+            if self.tester.branch_testing_completed(branch):
+                if self.tester.apply_branch_test_results(branch):
+                    branch.status = "tested"
+                else:
+                    branch.status = "testing-failed"
 
         elif old_branch.status == "tested":
+            self.clear_tasks(branch)
             branch.status = "notifying"
             self.notifier.notify_branch_update(branch)
+            self.notifier.notify_branch_tested(branch)
             branch.status = "finished"
 
         else:
@@ -1141,22 +1175,69 @@ class BranchManager:
             all_deletions=branch.all_deletions,
         )
 
+
 class PatchBurner:
     """
     A class responsible for burning patches.
     """
-    def burn(self, patch):
-        # Dummy implementation for burning a patch
-        print(f"Burning patch {patch.id}")
+    def compile(self, branch):
+        CfbotTask.objects.create(
+            task_id=f"task_{branch.branch_id}_compile",
+            task_name="Compile Branch",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=1,  # Example position
+            status="CREATED",
+        )
+    def branch_compiling_completed(self, branch):
+        """
+        Check if all tasks for the branch are completed.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        return all(task.is_done() for task in tasks)
+
+    def apply_branch_compile_results(self, branch):
+        """
+        Apply the results of branch compilation. Return False if any task is a failure.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        if any(task.is_failure() for task in tasks):
+            return False
+        return True
 
 
 class PatchTester:
     """
     A class responsible for testing patches.
     """
-    def test(self, patch):
-        # Dummy implementation for testing a patch
-        print(f"Testing patch {patch.id}")
+    def launch_branch_testing(self, branch):
+        """
+        Create a CI task for testing the given branch.
+        """
+        CfbotTask.objects.create(
+            task_id=f"task_{branch.branch_id}_test",
+            task_name="Test Branch",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=1,  # Example position
+            status="CREATED",
+        )
+
+    def branch_testing_completed(self, branch):
+        """
+        Check if all tasks for the branch are completed.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        return all(task.is_done() for task in tasks)
+
+    def apply_branch_test_results(self, branch):
+        """
+        Apply the results of branch testing. Return False if any task is a failure.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        if any(task.is_failure() for task in tasks):
+            return False
+        return True
 
 
 class Notifier:
@@ -1187,6 +1268,8 @@ class Notifier:
 
         return history_branch
 
+    def notify_branch_tested(self, branch):
+        pass
 
 
 class MockBranchManager:
