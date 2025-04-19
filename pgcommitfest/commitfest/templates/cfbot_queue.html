@@ -8,6 +8,7 @@
 <div>
     <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
     <button id="clear-branch-table-btn">Clear Branch Table</button>
+    <button id="clear-branch-history-btn" disabled>Clear Branch History</button>
 </div>
 
 <div style="display: flex; gap: 20px;">
@@ -160,6 +161,9 @@
             // Update the selected branch ID label
             const branchId = row.getAttribute("data-branch-id");
             document.getElementById("selected-branch-id").textContent = branchId || "None";
+
+            // Enable/disable the clear branch history button based on selection
+            document.getElementById("clear-branch-history-btn").disabled = branchId === "None";
         }
 
         function fetchBranchHistory(branchId) {
@@ -588,6 +592,36 @@
 
         document.getElementById("peek-btn").addEventListener("click", function () {
             performPeek();
+        });
+
+        document.getElementById("clear-branch-history-btn").addEventListener("click", function () {
+            const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+            if (selectedBranchId === "None") {
+                alert("Please select a branch first.");
+                return;
+            }
+
+            fetch(`/api/test/cfbot/clear_branch_history?branch_id=${selectedBranchId}`, {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+                    fetchBranchHistory(selectedBranchId); // Refresh the branch history table
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while clearing the branch history.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
         });
 
         wireUpTaskActions();

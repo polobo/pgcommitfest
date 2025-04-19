@@ -284,3 +284,15 @@ def fetch_branch_history(request):
     ]
 
     return apiResponse(request, {"history": history_list})
+
+
+def clear_branch_history(request):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    branch_id = request.GET.get("branch_id")
+    if not branch_id:
+        return apiResponse(request, {"error": "Missing branch_id"}, status=400)
+
+    deleted_count, _ = CfbotBranchHistory.objects.filter(branch_id=branch_id).delete()
+    return apiResponse(request, {"message": f"Cleared {deleted_count} history entries for branch_id {branch_id}."})
