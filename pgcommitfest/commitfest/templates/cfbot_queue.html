@@ -66,9 +66,7 @@
     <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
 </div>
 
-<div>
-    <button id="add-data-btn">Add Made-Up Data</button>
-</div>
+
 
 <div>Queue table - ringed</div>
 <h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> )</h2>
@@ -76,6 +74,9 @@
 <div>
     <button id="get-and-move-btn">Get and Move</button>
     <button id="peek-btn">Peek</button>
+    <button id="clear-queue-btn">Clear Queue</button>
+    <button id="add-test-data-btn">Add Test Data</button>
+    <button id="add-data-btn">Add Made-Up Data</button>
 </div>
 
 <div id="queue" style="display: flex; gap: 20px;">
@@ -320,6 +321,79 @@
                 })
                 .catch(error => console.error("Error:", error));
         });
+
+        document.getElementById("clear-queue-btn").addEventListener("click", function () {
+            fetch("/api/test/cfbot/clear_queue", {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+
+                    // Clear the queue table
+                    const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+                    tableBody.innerHTML = "";
+                    document.getElementById("current-queue-item").textContent = "None";
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while clearing the queue.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
+            // Perform a peek to populate the JSON display
+            performPeek();
+        });
+
+        document.getElementById("add-test-data-btn").addEventListener("click", function () {
+            fetch("/api/test/cfbot/add_test_data", {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.message) {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else if (data.error) {
+                        responseMessage.textContent = data.error;
+                        responseMessage.style.color = "red";
+                    }
+
+                    // Optionally, refresh the queue table
+                    fetch("/api/v1/cfbot/get_queue")
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+                            tableBody.innerHTML = ""; // Clear existing rows
+
+                            data.queuetable.forEach(item => {
+                                const row = document.createElement("tr");
+                                row.setAttribute("data-id", item.id);
+                                row.innerHTML = generateRowHTML(item);
+                                if (item.is_current) {
+                                    row.classList.add("current-row");
+                                }
+                                tableBody.appendChild(row);
+                            });
+                        });
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while adding test data.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
+            // Perform a peek to populate the JSON display
+            performPeek();
+        });
     });
 
     function highlightRow(row) {
@@ -434,13 +508,14 @@
         fetch("/api/v1/cfbot/peek")
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    alert(data.error);
+                if (!data.item) {
+                    // Clear the JSON display if no item is returned
+                    updateJsonDisplay({});
                     return;
                 }
 
                 // Update the JSON display with the peeked data
-                updateJsonDisplay(data);
+                updateJsonDisplay(data.item);
             })
             .catch(error => console.error("Error:", error));
     }

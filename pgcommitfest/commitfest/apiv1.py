@@ -3,6 +3,7 @@ from django.http import (
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST
 
 import json
 from datetime import datetime
@@ -101,15 +102,12 @@ def cfbot_get_queue(request):
 
 def cfbot_peek(request):
     queue = CfbotQueue.objects.first()
-    if not queue:
-        return apiResponse(request, {"error": "No queue found"}, status=404)
+    if not queue or not queue.current_queue_item:
+        return apiResponse(request, {"item": None})  # Return empty response
 
     item = queue.peek()
-    if not item:
-        return apiResponse(request, {"error": "No items in the queue"}, status=404)
-
     payload = build_item_object(item, is_current=item.id == queue.current_queue_item)
-    return apiResponse(request, payload)
+    return apiResponse(request, {"item": payload})
 
 
 def cfbot_branches(request):
@@ -176,3 +174,30 @@ def process_build_tasks(request, branch_id):
 
 
     return apiResponse(request, {"message": f"Build tasks for branch {branch.branch_name} are being processed."})
+
+
+def clear_queue(request):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    queue.items.all().delete()
+    queue.current_queue_item = None
+    queue.save()
+
+    return apiResponse(request, {"message": "Queue cleared successfully."})
+
+
+def add_test_data(request):
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    # Add test data to the queue
+    queue.insert_item(patch_id=8,   message_id="dgj-example@message-08")
+    queue.insert_item(patch_id=3,   message_id="example@message-3")
+
+    return apiResponse(request, {"message": "Test data added successfully."})
