@@ -414,218 +414,243 @@
             }
         }
 
-        document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
-            const selectedBranchId = document.getElementById("selected-branch-id").textContent;
-            if (selectedBranchId === "None") {
-                alert("Please select a branch first.");
-                return;
-            }
+        function setupProcessBuildTasksButtons() {
+            document.getElementById("process-build-tasks-btn").addEventListener("click", function () {
+                const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+                if (selectedBranchId === "None") {
+                    alert("Please select a branch first.");
+                    return;
+                }
 
-            fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_build_tasks`, {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById("response-message");
-                    if (data.message) {
-                        responseMessage.textContent = data.message;
-                        responseMessage.style.color = "green";
-                    } else if (data.error) {
-                        responseMessage.textContent = data.error;
-                        responseMessage.style.color = "red";
-                    }
+                fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_build_tasks`, {
+                    method: "GET",
                 })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while processing build tasks.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-        });
-
-        document.getElementById("get-and-move-btn").addEventListener("click", function () {
-            fetch("/api/v1/cfbot/get_and_move")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-
-                    fetchQueue(); // Refresh the queue table
-                    updateJsonDisplay(data.returned);
-
-                })
-                .catch(error => console.error("Error:", error));
-        });
-
-        document.getElementById("clear-queue-btn").addEventListener("click", function () {
-            fetch("/api/test/cfbot/clear_queue", {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById("response-message");
-                    if (data.message) {
-                        responseMessage.textContent = data.message;
-                        responseMessage.style.color = "green";
-                    } else if (data.error) {
-                        responseMessage.textContent = data.error;
-                        responseMessage.style.color = "red";
-                    }
-
-                    // Clear the queue table
-                    const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
-                    tableBody.innerHTML = "";
-                    document.getElementById("current-queue-item").textContent = "None";
-                })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while clearing the queue.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-            // Perform a peek to populate the JSON display
-            performPeek();
-        });
-
-        document.getElementById("add-test-data-btn").addEventListener("click", function () {
-            fetch("/api/test/cfbot/add_test_data", {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById("response-message");
-                    if (data.message) {
-                        responseMessage.textContent = data.message;
-                        responseMessage.style.color = "green";
-                    } else if (data.error) {
-                        responseMessage.textContent = data.error;
-                        responseMessage.style.color = "red";
-                    }
-
-                    fetchQueue(); // Refresh the queue table
-                })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while adding test data.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-        });
-
-        document.getElementById("clear-branch-table-btn").addEventListener("click", function () {
-            fetch("/api/test/cfbot/clear_branch_table", {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById("response-message");
-                    if (data.message) {
-                        responseMessage.textContent = data.message;
-                        responseMessage.style.color = "green";
-                    } else if (data.error) {
-                        responseMessage.textContent = data.error;
-                        responseMessage.style.color = "red";
-                    }
-                    fetchBranches(); // Reload the branches table
-                    fetchBranchHistory(null); // Clear the branch history table
-                    fetchTasksForBranch(null); // Clear the tasks table
-                })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while clearing the branch table.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-        });
-
-        document.getElementById("create-branch-btn").addEventListener("click", function () {
-            fetch("/api/v1/cfbot/get_and_move", {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-
-                    fetchQueue();
-                    updateJsonDisplay(data.returned);
-
-                    const patchId = data.returned.patch_id;
-                    const messageId = data.returned.message_id;
-
-                    fetch(`/api/test/cfbot/create_branch?patch_id=${patchId}&message_id=${messageId}`, {
-                        method: "GET",
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            const responseMessage = document.getElementById("response-message");
-                            if (data.message) {
-                                responseMessage.textContent = data.message;
-                                responseMessage.style.color = "green";
-                            } else if (data.error) {
-                                responseMessage.textContent = data.error;
-                                responseMessage.style.color = "red";
-                            }
-                            fetchBranches(); // Refresh the branches table
-
-                        })
-                        .catch(error => {
-                            const responseMessage = document.getElementById("response-message");
-                            responseMessage.textContent = "An error occurred while creating the branch.";
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseMessage = document.getElementById("response-message");
+                        if (data.message) {
+                            responseMessage.textContent = data.message;
+                            responseMessage.style.color = "green";
+                        } else if (data.error) {
+                            responseMessage.textContent = data.error;
                             responseMessage.style.color = "red";
-                            console.error("Error:", error);
-                        });
-                })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while fetching the next queue item.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-        });
-
-        document.getElementById("peek-btn").addEventListener("click", function () {
-            performPeek();
-        });
-
-        document.getElementById("clear-branch-history-btn").addEventListener("click", function () {
-            const selectedBranchId = document.getElementById("selected-branch-id").textContent;
-            if (selectedBranchId === "None") {
-                alert("Please select a branch first.");
-                return;
-            }
-
-            fetch(`/api/test/cfbot/clear_branch_history?branch_id=${selectedBranchId}`, {
-                method: "GET",
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const responseMessage = document.getElementById("response-message");
-                    if (data.message) {
-                        responseMessage.textContent = data.message;
-                        responseMessage.style.color = "green";
-                    } else if (data.error) {
-                        responseMessage.textContent = data.error;
+                        }
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while processing build tasks.";
                         responseMessage.style.color = "red";
-                    }
-                    fetchBranchHistory(selectedBranchId); // Refresh the branch history table
+                        console.error("Error:", error);
+                    });
+            });
+        }
+
+        function setupGetAndMoveButton() {
+            document.getElementById("get-and-move-btn").addEventListener("click", function () {
+                fetch("/api/v1/cfbot/get_and_move")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        fetchQueue(); // Refresh the queue table
+                        updateJsonDisplay(data.returned);
+                    })
+                    .catch(error => console.error("Error:", error));
+            });
+        }
+
+        function setupClearQueueButton() {
+            document.getElementById("clear-queue-btn").addEventListener("click", function () {
+                fetch("/api/test/cfbot/clear_queue", {
+                    method: "GET",
                 })
-                .catch(error => {
-                    const responseMessage = document.getElementById("response-message");
-                    responseMessage.textContent = "An error occurred while clearing the branch history.";
-                    responseMessage.style.color = "red";
-                    console.error("Error:", error);
-                });
-        });
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseMessage = document.getElementById("response-message");
+                        if (data.message) {
+                            responseMessage.textContent = data.message;
+                            responseMessage.style.color = "green";
+                        } else if (data.error) {
+                            responseMessage.textContent = data.error;
+                            responseMessage.style.color = "red";
+                        }
 
-        wireUpTaskActions();
-        fetchQueue();
-        fetchBranches();
+                        // Clear the queue table
+                        const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+                        tableBody.innerHTML = "";
+                        document.getElementById("current-queue-item").textContent = "None";
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while clearing the queue.";
+                        responseMessage.style.color = "red";
+                        console.error("Error:", error);
+                    });
+                // Perform a peek to populate the JSON display
+                performPeek();
+            });
+        }
 
+        function setupAddTestDataButton() {
+            document.getElementById("add-test-data-btn").addEventListener("click", function () {
+                fetch("/api/test/cfbot/add_test_data", {
+                    method: "GET",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseMessage = document.getElementById("response-message");
+                        if (data.message) {
+                            responseMessage.textContent = data.message;
+                            responseMessage.style.color = "green";
+                        } else if (data.error) {
+                            responseMessage.textContent = data.error;
+                            responseMessage.style.color = "red";
+                        }
+
+                        fetchQueue(); // Refresh the queue table
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while adding test data.";
+                        responseMessage.style.color = "red";
+                        console.error("Error:", error);
+                    });
+            });
+        }
+
+        function setupClearBranchTableButton() {
+            document.getElementById("clear-branch-table-btn").addEventListener("click", function () {
+                fetch("/api/test/cfbot/clear_branch_table", {
+                    method: "GET",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseMessage = document.getElementById("response-message");
+                        if (data.message) {
+                            responseMessage.textContent = data.message;
+                            responseMessage.style.color = "green";
+                        } else if (data.error) {
+                            responseMessage.textContent = data.error;
+                            responseMessage.style.color = "red";
+                        }
+                        fetchBranches(); // Reload the branches table
+                        fetchBranchHistory(null); // Clear the branch history table
+                        fetchTasksForBranch(null); // Clear the tasks table
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while clearing the branch table.";
+                        responseMessage.style.color = "red";
+                        console.error("Error:", error);
+                    });
+            });
+        }
+
+        function setupCreateBranchButton() {
+            document.getElementById("create-branch-btn").addEventListener("click", function () {
+                fetch("/api/v1/cfbot/get_and_move", {
+                    method: "GET",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        fetchQueue();
+                        updateJsonDisplay(data.returned);
+
+                        const patchId = data.returned.patch_id;
+                        const messageId = data.returned.message_id;
+
+                        fetch(`/api/test/cfbot/create_branch?patch_id=${patchId}&message_id=${messageId}`, {
+                            method: "GET",
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                const responseMessage = document.getElementById("response-message");
+                                if (data.message) {
+                                    responseMessage.textContent = data.message;
+                                    responseMessage.style.color = "green";
+                                } else if (data.error) {
+                                    responseMessage.textContent = data.error;
+                                    responseMessage.style.color = "red";
+                                }
+                                fetchBranches(); // Refresh the branches table
+                            })
+                            .catch(error => {
+                                const responseMessage = document.getElementById("response-message");
+                                responseMessage.textContent = "An error occurred while creating the branch.";
+                                responseMessage.style.color = "red";
+                                console.error("Error:", error);
+                            });
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while fetching the next queue item.";
+                        responseMessage.style.color = "red";
+                        console.error("Error:", error);
+                    });
+            });
+        }
+
+        function setupPeekButton() {
+            document.getElementById("peek-btn").addEventListener("click", function () {
+                performPeek();
+            });
+        }
+
+        function setupClearBranchHistoryButton() {
+            document.getElementById("clear-branch-history-btn").addEventListener("click", function () {
+                const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+                if (selectedBranchId === "None") {
+                    alert("Please select a branch first.");
+                    return;
+                }
+
+                fetch(`/api/test/cfbot/clear_branch_history?branch_id=${selectedBranchId}`, {
+                    method: "GET",
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const responseMessage = document.getElementById("response-message");
+                        if (data.message) {
+                            responseMessage.textContent = data.message;
+                            responseMessage.style.color = "green";
+                        } else if (data.error) {
+                            responseMessage.textContent = data.error;
+                            responseMessage.style.color = "red";
+                        }
+                        fetchBranchHistory(selectedBranchId); // Refresh the branch history table
+                    })
+                    .catch(error => {
+                        const responseMessage = document.getElementById("response-message");
+                        responseMessage.textContent = "An error occurred while clearing the branch history.";
+                        responseMessage.style.color = "red";
+                        console.error("Error:", error);
+                    });
+            });
+        }
+
+        function wireUpPage() {
+            setupProcessBuildTasksButtons();
+            setupGetAndMoveButton();
+            setupClearQueueButton();
+            setupAddTestDataButton();
+            setupClearBranchTableButton();
+            setupCreateBranchButton();
+            setupPeekButton();
+            setupClearBranchHistoryButton();
+            wireUpTaskActions();
+            fetchQueue();
+            fetchBranches();
+        }
+
+        wireUpPage();
     });
 </script>
 
