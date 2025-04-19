@@ -209,3 +209,35 @@ def add_test_data(request):
     queue.insert_item(patch_id=3,   message_id="example@message-3")
 
     return apiResponse(request, {"message": "Test data added successfully."})
+
+
+def create_branch(request):
+    if request.method != "GET":
+        return apiResponse(request, {"error": "Invalid method"}, status=405)
+
+    patch_id = request.GET.get("patch_id")
+    message_id = request.GET.get("message_id")
+
+    if not patch_id or not message_id:
+        return apiResponse(request, {"error": "Missing patch_id or message_id"}, status=400)
+
+    # Create a new branch using CfbotBranch
+    branch_name = f"branch_{patch_id}"
+    commit_id = f"commit_{patch_id}"
+    apply_url = f"http://example.com/apply/{patch_id}"
+    status = "testing"
+
+    CfbotBranch.objects.update_or_create(
+        patch_id=patch_id,
+        defaults={
+            "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
+            "branch_name": branch_name,
+            "commit_id": commit_id,
+            "apply_url": apply_url,
+            "status": status,
+            "created": datetime.now(),
+            "modified": datetime.now(),
+        },
+    )
+
+    return apiResponse(request, {"message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})

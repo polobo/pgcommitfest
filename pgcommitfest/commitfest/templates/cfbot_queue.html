@@ -7,8 +7,6 @@
 </div>
 <div>
     <button id="process-build-tasks-btn" disabled>Process Build Tasks</button>
-</div>
-<div>
     <button id="clear-branch-table-btn">Clear Branch Table</button>
 </div>
 
@@ -80,6 +78,7 @@
     <button id="clear-queue-btn">Clear Queue</button>
     <button id="add-test-data-btn">Add Test Data</button>
     <button id="add-data-btn">Add Made-Up Data</button>
+    <button id="create-branch-btn">Create Branch</button>
 </div>
 
 <div id="queue" style="display: flex; gap: 20px;">
@@ -441,10 +440,6 @@
                                     <td>${branch.modified}</td>
                                     <td>${branch.task_count || 0}</td>
                                 `;
-                                row.addEventListener("click", function () {
-                                    highlightRow(this);
-                                    fetchTasksForBranch(branch.branch_id);
-                                });
                                 tableBody.appendChild(row);
                             });
                         })
@@ -457,19 +452,115 @@
                     console.error("Error:", error);
                 });
         });
+
+        document.getElementById("create-branch-btn").addEventListener("click", function () {
+            fetch("/api/v1/cfbot/get_and_move", {
+                method: "GET",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const patchId = data.returned.patch_id;
+                    const messageId = data.returned.message_id;
+
+                    fetch(`/api/test/cfbot/create_branch?patch_id=${patchId}&message_id=${messageId}`, {
+                        method: "GET",
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            const responseMessage = document.getElementById("response-message");
+                            if (data.message) {
+                                responseMessage.textContent = data.message;
+                                responseMessage.style.color = "green";
+                            } else if (data.error) {
+                                responseMessage.textContent = data.error;
+                                responseMessage.style.color = "red";
+                            }
+
+                            // Refresh the branches table
+                            fetch("/api/v1/cfbot/branches")
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.error) {
+                                        alert(data.error);
+                                        return;
+                                    }
+
+                                    const tableBody = document.getElementById("ci-branches-table").getElementsByTagName("tbody")[0];
+                                    tableBody.innerHTML = ""; // Clear existing rows
+
+                                    data.branches.forEach(branch => {
+                                        const row = document.createElement("tr");
+                                        row.innerHTML = `
+                                            <td>${branch.patch_id}</td>
+                                            <td>${branch.branch_id}</td>
+                                            <td>${branch.branch_name}</td>
+                                            <td>${branch.commit_id || ""}</td>
+                                            <td><a href="${branch.apply_url}" target="_blank">${branch.apply_url}</a></td>
+                                            <td>${branch.status}</td>
+                                            <td>${branch.needs_rebase_since || ""}</td>
+                                            <td>${branch.failing_since || ""}</td>
+                                            <td>${branch.created}</td>
+                                            <td>${branch.modified}</td>
+                                            <td>${branch.task_count || 0}</td>
+                                        `;
+                                        tableBody.appendChild(row);
+                                    });
+                                })
+                                .catch(error => console.error("Error:", error));
+
+                            // Refresh the queue table
+                            fetch("/api/v1/cfbot/get_queue")
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.error) {
+                                        alert(data.error);
+                                        return;
+                                    }
+
+                                    const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+                                    tableBody.innerHTML = ""; // Clear existing rows
+
+                                    data.queuetable.forEach(item => {
+                                        const row = document.createElement("tr");
+                                        row.setAttribute("data-id", item.id);
+                                        row.innerHTML = `
+                                            <td>${item.id}</td>
+                                            <td>${item.is_current ? "✔" : ""}</td>
+                                            <td>${item.patch_id}</td>
+                                            <td>${item.message_id}</td>
+                                            <td>${item.processed_date || ""}</td>
+                                            <td>${item.ignore_date || ""}</td>
+                                            <td>${item.ll_prev || ""}</td>
+                                            <td>${item.ll_next || ""}</td>
+                                            <td>${item.attachments ? item.attachments.length : 0}</td>
+                                        `;
+                                        tableBody.appendChild(row);
+                                    });
+                                })
+                                .catch(error => console.error("Error:", error));
+                        })
+                        .catch(error => {
+                            const responseMessage = document.getElementById("response-message");
+                            responseMessage.textContent = "An error occurred while creating the branch.";
+                            responseMessage.style.color = "red";
+                            console.error("Error:", error);
+                        });
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.textContent = "An error occurred while fetching the next queue item.";
+                    responseMessage.style.color = "red";
+                    console.error("Error:", error);
+                });
+        });
+
+        // Remove the click handler for the queue table
     });
-
-    function highlightRow(row) {
-        // Highlight the selected row and remove highlight from others
-        const rows = document.querySelectorAll("#ci-branches-table tbody tr");
-        rows.forEach(r => r.classList.remove("selected-row"));
-        row.classList.add("selected-row");
-
-        // Update the selected branch ID in the label
-        const branchId = row.getAttribute("data-branch-id");
-        document.getElementById("selected-branch-id").textContent = branchId || "None";
-        document.getElementById("process-build-tasks-btn").disabled = false;
-    }
 
     // Populate the queue table and perform a peek on page load
     document.addEventListener("DOMContentLoaded", function () {
