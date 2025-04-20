@@ -23,7 +23,7 @@
                     <th>Failing Since</th>
                     <th>Created</th>
                     <th>Modified</th>
-                    <th>Task Count</th> <!-- New column -->
+                    <th>Task Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +43,7 @@
                     <th>Status</th>
                     <th>Modified</th>
                     <th>Commit ID</th>
+                    <th>Task Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -189,6 +190,7 @@
                             <td>${entry.status}</td>
                             <td>${entry.modified}</td>
                             <td>${entry.commit_id || ""}</td>
+                            <td>${entry.task_count || 0}</td> <!-- Populate task_count -->
                         `;
                         tableBody.appendChild(row);
                     });

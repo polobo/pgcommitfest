@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from datetime import datetime
+import json
 
 from pgcommitfest.userprofile.models import UserProfile
 
@@ -808,6 +809,8 @@ class CfbotBranchHistory(models.Model):
     first_deletions = models.IntegerField(null=True, blank=True)
     all_additions = models.IntegerField(null=True, blank=True)
     all_deletions = models.IntegerField(null=True, blank=True)
+    task_count = models.IntegerField(null=True, blank=True)
+    # task_json is a separate one-to-one table with this
 
     def __str__(self):
         return f"Branch History for Patch ID {self.patch_id}, Branch ID {self.branch_id}"
@@ -1246,8 +1249,11 @@ class Notifier:
     """
     def notify_branch_update(self, history_branch):
         history_branch.save()
+        # Retrieve tasks associated with the branch
+        tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
+
         # Record all processing that happens in the history, even no-ops
-        CfbotBranchHistory.objects.create(
+        history = CfbotBranchHistory.objects.create(
             patch_id=history_branch.patch_id,
             branch_id=history_branch.branch_id,
             branch_name=history_branch.branch_name,
@@ -1264,9 +1270,26 @@ class Notifier:
             first_deletions=history_branch.first_deletions,
             all_additions=history_branch.all_additions,
             all_deletions=history_branch.all_deletions,
+            task_count=len(tasks),
         )
 
-        return history_branch
+        # Insert tasks into cfbotbranchhistorytask
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO commitfest_cfbotbranchhistorytask (history_id, branch_tasks)
+                VALUES (%s, %s)
+                """,
+                [history.id, json.dumps([{
+                    "task_id": task.task_id,
+                    "task_name": task.task_name,
+                    "status": task.status,
+                    "created": task.created.isoformat(),
+                    "modified": task.modified.isoformat(),
+                } for task in tasks])]
+            )
+
+        return history
 
     def notify_branch_tested(self, branch):
         pass

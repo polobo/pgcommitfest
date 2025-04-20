@@ -280,6 +280,7 @@ def fetch_branch_history(request):
             "status": entry.status,
             "modified": entry.modified,
             "commit_id": entry.commit_id,
+            "task_count": entry.task_count,
         }
         for entry in history  # Ensure each entry is a CfbotBranchHistory object
     ]
