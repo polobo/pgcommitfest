@@ -16,6 +16,7 @@ from .models import (
     CfbotTask,
     PatchHistory,
     CfbotBranchHistory,
+    MailThreadAttachment,
 )
 
 
@@ -136,7 +137,7 @@ def cfbot_branches(request):
 
 def cfbot_tasks(request):
     branch_id = request.GET.get("branch_id")
-    tasks = CfbotTask.objects.filter(branch_id=branch_id) if branch_id else CfbotTask.objects.all()
+    tasks = CfbotTask.objects.filter(branch_id=branch_id).order_by('-modified') if branch_id else CfbotTask.objects.all()
     task_list = [
         {
             "task_id": task.task_id,
@@ -228,7 +229,6 @@ def create_branch(request):
 
     # Create a new branch using CfbotBranch
     branch_name = f"branch_{patch_id}"
-    commit_id = f"commit_{patch_id}"
     apply_url = f"http://example.com/apply/{patch_id}"
     status = "new"
 
@@ -244,27 +244,30 @@ def create_branch(request):
         },
     )
 
+    # Get the corresponding queue item and use its get_attachments method
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    queue_item = queue.items.filter(patch_id=patch_id).first()
+    if not queue_item:
+        return apiResponse(request, {"error": "No queue item found for the patch"}, status=404)
+
+    attachments = queue_item.get_attachments()
+    for position, attachment in enumerate(attachments, start=1):
+        CfbotTask.objects.create(
+            task_id=f"{attachment['filename']}",
+            task_name=f"Patchset File",
+            patch_id=patch_id,
+            branch_id=branch.branch_id,
+            position=position,
+            status="CREATED",
+            payload=attachment,
+        )
+
     # Create a history item for the branch
     if created:
-        CfbotBranchHistory.objects.create(
-            patch_id=branch.patch_id,
-            branch_id=branch.branch_id,
-            branch_name=branch.branch_name,
-            commit_id=branch.commit_id,
-            apply_url=branch.apply_url,
-            status=branch.status,
-            needs_rebase_since=branch.needs_rebase_since,
-            failing_since=branch.failing_since,
-            created=branch.created,
-            modified=branch.modified,
-            version=branch.version,
-            patch_count=branch.patch_count,
-            first_additions=branch.first_additions,
-            first_deletions=branch.first_deletions,
-            all_additions=branch.all_additions,
-            all_deletions=branch.all_deletions,
-            base_commit_sha=branch.base_commit_sha,
-        )
+        CfbotBranchHistory.add_branch_to_history(branch)
 
     return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
 
@@ -274,7 +277,7 @@ def fetch_branch_history(request):
     if not branch_id:
         return apiResponse(request, {"error": "Missing branch_id"}, status=400)
 
-    history = CfbotBranchHistory.objects.filter(branch_id=branch_id).order_by("-modified")[:5]
+    history = CfbotBranchHistory.objects.filter(branch_id=branch_id).order_by("-modified")
     history_list = [
         {
             "branch_id": entry.branch_id,

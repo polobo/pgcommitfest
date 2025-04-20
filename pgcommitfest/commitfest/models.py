@@ -782,6 +782,7 @@ class CfbotBranch(models.Model):
     all_deletions = models.IntegerField(null=True, blank=True)
     base_commit_sha = models.TextField(null=True, blank=False)
 
+
     def save(self, *args, **kwargs):
         """Only used by the admin panel to save empty commit id as NULL
 
@@ -816,6 +817,49 @@ class CfbotBranchHistory(models.Model):
 
     def __str__(self):
         return f"Branch History for Patch ID {self.patch_id}, Branch ID {self.branch_id}"
+
+    def add_branch_to_history(history_branch):
+
+        cached_tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
+        # Record all processing that happens in the history, even no-ops
+        history = CfbotBranchHistory.objects.create(
+            patch_id=history_branch.patch_id,
+            branch_id=history_branch.branch_id,
+            branch_name=history_branch.branch_name,
+            commit_id=history_branch.commit_id,
+            apply_url=history_branch.apply_url,
+            status=history_branch.status,
+            needs_rebase_since=history_branch.needs_rebase_since,
+            failing_since=history_branch.failing_since,
+            created=history_branch.created,
+            modified=history_branch.modified,
+            version=history_branch.version,
+            patch_count=history_branch.patch_count,
+            first_additions=history_branch.first_additions,
+            first_deletions=history_branch.first_deletions,
+            all_additions=history_branch.all_additions,
+            all_deletions=history_branch.all_deletions,
+            base_commit_sha=history_branch.base_commit_sha,
+            task_count=len(cached_tasks),
+        )
+
+        # Insert tasks into cfbotbranchhistorytask
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO commitfest_cfbotbranchhistorytask (history_id, branch_tasks)
+                VALUES (%s, %s)
+                """,
+                [history.id, json.dumps([{
+                    "task_id": task.task_id,
+                    "task_name": task.task_name,
+                    "status": task.status,
+                    "created": task.created.isoformat(),
+                    "modified": task.modified.isoformat(),
+                } for task in cached_tasks])]
+            )
+
+        return history
 
     class Meta:
         verbose_name_plural = "Cfbot Branch Histories"
@@ -854,6 +898,7 @@ class CfbotTask(models.Model):
     status = models.TextField(choices=STATUS_CHOICES, null=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    payload = models.JSONField(null=True, blank=True)
 
     def is_done(self):
         """
@@ -1193,12 +1238,22 @@ class PatchBurner:
     A class responsible for burning patches.
     """
     def compile(self, branch):
+        """
+        Create a compile task for the branch and mark existing tasks as completed.
+        """
+        # Iterate over existing tasks and mark them as completed
+        existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
+        for task in existing_tasks:
+            task.status = "COMPLETED"
+            task.save()
+
+        # Create a new compile task
         CfbotTask.objects.create(
             task_id=f"task_{branch.branch_id}_compile",
             task_name="Compile Branch",
             patch=branch.patch,
             branch_id=branch.branch_id,
-            position=1,  # Example position
+            position=task.position + 1,
             status="CREATED",
         )
         return True
@@ -1278,46 +1333,7 @@ class Notifier:
     """
     def notify_branch_update(self, history_branch):
         history_branch.save()
-        cached_tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
-        # Record all processing that happens in the history, even no-ops
-        history = CfbotBranchHistory.objects.create(
-            patch_id=history_branch.patch_id,
-            branch_id=history_branch.branch_id,
-            branch_name=history_branch.branch_name,
-            commit_id=history_branch.commit_id,
-            apply_url=history_branch.apply_url,
-            status=history_branch.status,
-            needs_rebase_since=history_branch.needs_rebase_since,
-            failing_since=history_branch.failing_since,
-            created=history_branch.created,
-            modified=history_branch.modified,
-            version=history_branch.version,
-            patch_count=history_branch.patch_count,
-            first_additions=history_branch.first_additions,
-            first_deletions=history_branch.first_deletions,
-            all_additions=history_branch.all_additions,
-            all_deletions=history_branch.all_deletions,
-            base_commit_sha=history_branch.base_commit_sha,
-            task_count=len(cached_tasks),
-        )
-
-        # Insert tasks into cfbotbranchhistorytask
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO commitfest_cfbotbranchhistorytask (history_id, branch_tasks)
-                VALUES (%s, %s)
-                """,
-                [history.id, json.dumps([{
-                    "task_id": task.task_id,
-                    "task_name": task.task_name,
-                    "status": task.status,
-                    "created": task.created.isoformat(),
-                    "modified": task.modified.isoformat(),
-                } for task in cached_tasks])]
-            )
-
-        return history
+        return CfbotBranchHistory.add_branch_to_history(history_branch)
 
     def notify_branch_tested(self, branch):
         """
@@ -1330,7 +1346,6 @@ class Notifier:
             if queue_item:
                 queue_item.last_base_commit_sha = branch.base_commit_sha
                 queue_item.save()
-
 
 
 class MockBranchManager:
