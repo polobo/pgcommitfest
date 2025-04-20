@@ -43,6 +43,7 @@
                     <th>Status</th>
                     <th>Modified</th>
                     <th>Commit ID</th>
+                    <th>Base SHA</th> <!-- New column -->
                     <th>Task Count</th>
                 </tr>
             </thead>
@@ -91,7 +92,7 @@
 
 
 <div>Queue table - ringed</div>
-<h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> )</h2>
+<h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> ) [<span id="current-commit-sha">{{ current_commit_sha }}</span>]</h2>
 
 <div>
     <button id="get-and-move-btn">Get and Move</button>
@@ -115,6 +116,7 @@
                     <th>ll_prev</th>
                     <th>ll_next</th>
                     <th>Attachments</th>
+                    <th>Last Base Commit SHA</th>
                 </tr>
             </thead>
             <tbody>
@@ -190,7 +192,8 @@
                             <td>${entry.status}</td>
                             <td>${entry.modified}</td>
                             <td>${entry.commit_id || ""}</td>
-                            <td>${entry.task_count || 0}</td> <!-- Populate task_count -->
+                            <td>${entry.base_commit_sha || ""}</td>
+                            <td>${entry.task_count || 0}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -393,6 +396,7 @@
                 <td>${item.ll_prev || ""}</td>
                 <td>${item.ll_next || ""}</td>
                 <td>${item.attachments ? item.attachments.length : 0}</td>
+                <td>${item.last_base_commit_sha || ""}</td> <!-- New column -->
             `;
         }
 
@@ -454,6 +458,7 @@
                             responseMessage.style.color = "red";
                         }
                         fetchBranches(selectedBranchId); // Refresh the branches table
+                        fetchQueue(); // Refresh the queue table since branch processing may change it
                     })
                     .catch(error => {
                         const responseMessage = document.getElementById("response-message");

@@ -728,6 +728,7 @@ class CfbotQueueItem(models.Model):
     processed_date = models.DateTimeField(null=True, blank=True)
     ll_prev = models.IntegerField(null=True, blank=False)
     ll_next = models.IntegerField(null=True, blank=False)
+    last_base_commit_sha = models.TextField(null=True, blank=False)
 
     def get_attachments(self):
         """
@@ -779,6 +780,7 @@ class CfbotBranch(models.Model):
     first_deletions = models.IntegerField(null=True, blank=True)
     all_additions = models.IntegerField(null=True, blank=True)
     all_deletions = models.IntegerField(null=True, blank=True)
+    base_commit_sha = models.TextField(null=True, blank=False)
 
     def save(self, *args, **kwargs):
         """Only used by the admin panel to save empty commit id as NULL
@@ -810,7 +812,7 @@ class CfbotBranchHistory(models.Model):
     all_additions = models.IntegerField(null=True, blank=True)
     all_deletions = models.IntegerField(null=True, blank=True)
     task_count = models.IntegerField(null=True, blank=True)
-    # task_json is a separate one-to-one table with this
+    base_commit_sha = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Branch History for Patch ID {self.patch_id}, Branch ID {self.branch_id}"
@@ -1182,6 +1184,7 @@ class BranchManager:
             first_deletions=branch.first_deletions,
             all_additions=branch.all_additions,
             all_deletions=branch.all_deletions,
+            base_commit_sha=branch.base_commit_sha,
         )
 
 
@@ -1199,6 +1202,7 @@ class PatchBurner:
             status="CREATED",
         )
         return True
+
     def branch_compiling_completed(self, branch):
         """
         Check if all tasks for the branch are completed.
@@ -1210,10 +1214,27 @@ class PatchBurner:
         """
         Apply the results of branch compilation. Return False if any task is a failure.
         """
+        branch.commit_id = self.get_merge_commit_sha()
+        branch.base_commit_sha = self.get_base_commit_sha()
+
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
             return False
         return True
+
+    def get_merge_commit_sha(self):
+        """
+        Simulate retrieving the merge commit SHA after a successful compilation.
+        """
+        # Replace with actual logic to retrieve the merge commit SHA
+        return "mergesha"
+
+    def get_base_commit_sha(self):
+        """
+        Simulate retrieving the base commit SHA for the branch.
+        """
+        # Replace with actual logic to retrieve the base commit SHA
+        return "basesha"
 
 
 class PatchTester:
@@ -1276,6 +1297,7 @@ class Notifier:
             first_deletions=history_branch.first_deletions,
             all_additions=history_branch.all_additions,
             all_deletions=history_branch.all_deletions,
+            base_commit_sha=history_branch.base_commit_sha,
             task_count=len(cached_tasks),
         )
 
@@ -1298,7 +1320,17 @@ class Notifier:
         return history
 
     def notify_branch_tested(self, branch):
-        pass
+        """
+        Notify that the branch has been tested and update the queue item's last_base_commit_sha.
+        """
+        # Update the queue item's last_base_commit_sha
+        queue = CfbotQueue.objects.first()
+        if queue:
+            queue_item = queue.items.filter(patch_id=branch.patch_id).first()
+            if queue_item:
+                queue_item.last_base_commit_sha = branch.base_commit_sha
+                queue_item.save()
+
 
 
 class MockBranchManager:

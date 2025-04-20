@@ -17,6 +17,7 @@ import collections
 import hmac
 import json
 import urllib
+import requests
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
@@ -1346,6 +1347,21 @@ def cfbot_queue(request):
             })
             current_item = queue.items.filter(id=current_item.ll_next).first()
 
+    if False:
+        commiturl = "https://api.github.com/repos/postgres/postgres/commits?per_page=1&page=1"
+        current_commit_sha = "unknown"
+
+        try:
+            response = requests.get(commiturl, timeout=5)
+            if response.status_code == 200:
+                commit_data = response.json()
+                if isinstance(commit_data, list) and len(commit_data) > 0:
+                    current_commit_sha = commit_data[0].get("sha", "unknown")
+        except requests.RequestException:
+            current_commit_sha = "error"
+    else:
+        current_commit_sha = "development"
+
     return render(
         request,
         "cfbot_queue.html",
@@ -1353,6 +1369,7 @@ def cfbot_queue(request):
             "title": "CFBot Queue",
             "queue": queue,
             "queuetable": queuetable,
+            "current_commit_sha": current_commit_sha,
         },
     )
 

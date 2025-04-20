@@ -54,6 +54,7 @@ def build_item_object(item, is_current):
         "ll_prev": item.ll_prev,
         "ll_next": item.ll_next,
         "attachments": item.get_attachments(),
+        "last_base_commit_sha": item.last_base_commit_sha,
     }
 
 
@@ -236,7 +237,6 @@ def create_branch(request):
         defaults={
             "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
             "branch_name": branch_name,
-            "commit_id": commit_id,
             "apply_url": apply_url,
             "status": status,
             "created": datetime.now(),
@@ -263,6 +263,7 @@ def create_branch(request):
             first_deletions=branch.first_deletions,
             all_additions=branch.all_additions,
             all_deletions=branch.all_deletions,
+            base_commit_sha=branch.base_commit_sha,
         )
 
     return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
@@ -280,9 +281,10 @@ def fetch_branch_history(request):
             "status": entry.status,
             "modified": entry.modified,
             "commit_id": entry.commit_id,
+            "base_commit_sha": entry.base_commit_sha,
             "task_count": entry.task_count,
         }
-        for entry in history  # Ensure each entry is a CfbotBranchHistory object
+        for entry in history
     ]
 
     return apiResponse(request, {"history": history_list})
