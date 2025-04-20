@@ -888,6 +888,9 @@ class CfbotTask(models.Model):
     # given that we might need to change CI providers at some point, and that
     # CI provider might use e.g. UUIDs, we prefer to consider the format of the
     # ID opaque and store it as text.
+    # XXX: really want to scope this ID to either a specific platform or even
+    # just the branch_id if a platform is not applicable.  This is being used
+    # for more than just CirrusCI at this point.
     task_id = models.TextField(unique=True)
     task_name = models.TextField(null=False)
     patch = models.ForeignKey(
@@ -1175,9 +1178,14 @@ class BranchManager:
             if self.burner.compile(branch):
                 branch.status = "compiling"
             else:
+                # envrionmental issues, up to the point of retrieving files
+                # returns just before the step of running apply-patches.sh
                 branch.status = "compiling-aborted"
 
         elif old_branch.status == "compiling":
+            # Run apply-patches.sh and return.  We are sync right now
+            # so this should never actually return False, which would
+            # require async processing where we simply want to try again
             if self.burner.branch_compiling_completed(branch):
                 if self.burner.apply_branch_compile_results(branch):
                     branch.status = "compiled"
@@ -1205,8 +1213,11 @@ class BranchManager:
             self.notifier.notify_branch_tested(branch)
             branch.status = "finished"
 
-        else:
+        elif old_branch.status in {"finished", "compiling-aborted", "compiling-failed", "testing-aborted", "testing-failed"}:
             pass
+
+        else:
+            raise ValueError(f"Unknown status: {old_branch.status}")
 
         self.notifier.notify_branch_update(branch)
         return branch
@@ -1275,8 +1286,36 @@ class PatchBurner:
 
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
-            return False
-        return True
+            outcome = False
+        else:
+            outcome = True
+
+        compile_result = {
+            "merge_commit_sha": branch.commit_id,
+            "base_commit_sha": branch.base_commit_sha,
+            "patch_count": branch.patch_count,
+            "first_additions": 10,
+            "first_deletions": 5,
+            "all_additions": 10,
+            "all_deletions": 5,
+        }
+
+        branch.first_additions = compile_result["first_additions"]
+        branch.first_deletions = compile_result["first_deletions"]
+        branch.all_additions = compile_result["all_additions"]
+        branch.all_deletions = compile_result["all_deletions"]
+
+        CfbotTask.objects.create(
+            task_id=f"Compile Result Payload",
+            task_name="Compile Result",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=len(tasks) + 1,
+            status="COMPLETED" if outcome else "FAILED",
+            payload=compile_result if outcome else None,
+        )
+
+        return outcome
 
     def get_merge_commit_sha(self):
         """
@@ -1324,21 +1363,37 @@ class PatchTester:
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
-            return False
-        return True
+            outcome = False
+        else:
+            outcome = True
+
+        return outcome
 
 
 class Notifier:
     """
     A class responsible for sending notifications.
     """
-    def notify_branch_update(self, history_branch):
-        history_branch.save()
-        return CfbotBranchHistory.add_branch_to_history(history_branch)
+    def notify_branch_update(self, branch):
+        if branch.status in {"compiling-aborted", "compiling-failed"}:
+            branch.needs_rebase_since = datetime.now()
+            branch.failing_since = datetime.now()
+        elif branch.status in {"testing-aborted", "testing-failed"}:
+            branch.needs_rebase_since = None
+            branch.failing_since = datetime.now()
+
+        if branch.status in {"compiled", "compiling-failed"}:
+            self.update_queue_latest_base_commit_sha(branch)
+
+        branch.save()
+        return CfbotBranchHistory.add_branch_to_history(branch)
 
     def notify_branch_tested(self, branch):
+        pass
+
+    def update_queue_latest_base_commit_sha(self, branch):
         """
-        Notify that the branch has been tested and update the queue item's last_base_commit_sha.
+        Update the queue item's last_base_commit_sha.
         """
         # Update the queue item's last_base_commit_sha
         queue = CfbotQueue.objects.first()
@@ -1347,7 +1402,6 @@ class Notifier:
             if queue_item:
                 queue_item.last_base_commit_sha = branch.base_commit_sha
                 queue_item.save()
-
 
 class MockBranchManager:
     """

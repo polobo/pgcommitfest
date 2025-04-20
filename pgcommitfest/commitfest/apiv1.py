@@ -129,6 +129,11 @@ def cfbot_branches(request):
             "created": branch.created,
             "modified": branch.modified,
             "task_count": CfbotTask.objects.filter(branch_id=branch.branch_id).count(),
+            "first_additions": branch.first_additions,
+            "first_deletions": branch.first_deletions,
+            "all_additions": branch.all_additions,
+            "all_deletions": branch.all_deletions,
+            "patch_count": branch.patch_count,
         }
         for branch in branches
     ]
@@ -232,18 +237,6 @@ def create_branch(request):
     apply_url = f"http://example.com/apply/{patch_id}"
     status = "new"
 
-    branch, created = CfbotBranch.objects.update_or_create(
-        patch_id=patch_id,
-        defaults={
-            "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
-            "branch_name": branch_name,
-            "apply_url": apply_url,
-            "status": status,
-            "created": datetime.now(),
-            "modified": datetime.now(),
-        },
-    )
-
     # Get the corresponding queue item and use its get_attachments method
     queue = CfbotQueue.objects.first()
     if not queue:
@@ -254,6 +247,20 @@ def create_branch(request):
         return apiResponse(request, {"error": "No queue item found for the patch"}, status=404)
 
     attachments = queue_item.get_attachments()
+
+    branch, created = CfbotBranch.objects.update_or_create(
+        patch_id=patch_id,
+        defaults={
+            "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
+            "branch_name": branch_name,
+            "apply_url": apply_url,
+            "status": status,
+            "patch_count": len(attachments),
+            "created": datetime.now(),
+            "modified": datetime.now(),
+        },
+    )
+
     for position, attachment in enumerate(attachments, start=1):
         CfbotTask.objects.create(
             task_id=f"{attachment['filename']}",

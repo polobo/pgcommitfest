@@ -24,6 +24,11 @@
                     <th>Created</th>
                     <th>Modified</th>
                     <th>Task Count</th>
+                    <th>First Additions</th> <!-- New column -->
+                    <th>First Deletions</th> <!-- New column -->
+                    <th>All Additions</th> <!-- New column -->
+                    <th>All Deletions</th> <!-- New column -->
+                    <th>Patch Count</th> <!-- New column -->
                 </tr>
             </thead>
             <tbody>
@@ -272,6 +277,11 @@
                             <td>${branch.created}</td>
                             <td>${branch.modified}</td>
                             <td>${branch.task_count || 0}</td>
+                            <td>${branch.first_additions || ""}</td>
+                            <td>${branch.first_deletions || ""}</td>
+                            <td>${branch.all_additions || ""}</td>
+                            <td>${branch.all_deletions || ""}</td>
+                            <td>${branch.patch_count || ""}</td>
                         `;
                         row.addEventListener("click", function () {
                             highlightBranchRow(this);
