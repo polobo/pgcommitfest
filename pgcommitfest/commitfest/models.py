@@ -856,6 +856,7 @@ class CfbotBranchHistory(models.Model):
                     "status": task.status,
                     "created": task.created.isoformat(),
                     "modified": task.modified.isoformat(),
+                    "payload": task.payload,
                 } for task in cached_tasks])]
             )
 
