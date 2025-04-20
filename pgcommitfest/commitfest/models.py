@@ -1115,6 +1115,8 @@ class BranchManager:
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         for task in tasks:
             task.delete()
+
+
     def process(self, branch):
         """
         Process the given branch by creating a new branch instance with updated status.
@@ -1122,20 +1124,24 @@ class BranchManager:
         """
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
-            self.burner.compile(branch)
-            branch.status = "compiling"
+            if self.burner.compile(branch):
+                branch.status = "compiling"
+            else:
+                branch.status = "compiling-aborted"
 
         elif old_branch.status == "compiling":
             if self.burner.branch_compiling_completed(branch):
                 if self.burner.apply_branch_compile_results(branch):
                     branch.status = "compiled"
                 else:
-                    branch.status = "compile-failed"
+                    branch.status = "compiling-failed"
 
         elif old_branch.status == "compiled":
             self.clear_tasks(branch)
-            self.tester.launch_branch_testing(branch)
-            branch.status = "testing"
+            if self.tester.launch_branch_testing(branch):
+                branch.status = "testing"
+            else:
+                branch.status = "testing-aborted"
 
         elif old_branch.status == "testing":
             if self.tester.branch_testing_completed(branch):
@@ -1192,6 +1198,7 @@ class PatchBurner:
             position=1,  # Example position
             status="CREATED",
         )
+        return True
     def branch_compiling_completed(self, branch):
         """
         Check if all tasks for the branch are completed.
@@ -1225,6 +1232,7 @@ class PatchTester:
             position=1,  # Example position
             status="CREATED",
         )
+        return True
 
     def branch_testing_completed(self, branch):
         """
@@ -1249,9 +1257,7 @@ class Notifier:
     """
     def notify_branch_update(self, history_branch):
         history_branch.save()
-        # Retrieve tasks associated with the branch
-        tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
-
+        cached_tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
         # Record all processing that happens in the history, even no-ops
         history = CfbotBranchHistory.objects.create(
             patch_id=history_branch.patch_id,
@@ -1270,7 +1276,7 @@ class Notifier:
             first_deletions=history_branch.first_deletions,
             all_additions=history_branch.all_additions,
             all_deletions=history_branch.all_deletions,
-            task_count=len(tasks),
+            task_count=len(cached_tasks),
         )
 
         # Insert tasks into cfbotbranchhistorytask
@@ -1286,7 +1292,7 @@ class Notifier:
                     "status": task.status,
                     "created": task.created.isoformat(),
                     "modified": task.modified.isoformat(),
-                } for task in tasks])]
+                } for task in cached_tasks])]
             )
 
         return history

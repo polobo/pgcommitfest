@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
             CREATE TABLE commitfest_cfbotbranchhistorytask (
-                history_id bigint PRIMARY KEY REFERENCES commitfest_cfbotbranchhistory (id),
+                history_id bigint PRIMARY KEY REFERENCES commitfest_cfbotbranchhistory (id) ON DELETE CASCADE,
                 branch_tasks jsonb NOT NULL
             );
             """
