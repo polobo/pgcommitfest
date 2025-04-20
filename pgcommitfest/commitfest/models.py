@@ -600,7 +600,6 @@ class CfbotQueue(models.Model):
         # The insertion is done at the location of the queue pointer's ll_next.
         # i.e., the newly inserted patchset will be up in two next calls absent
         # other changes.
-
         # Check if the item exists
         existing_patch = CfbotQueueItem.objects.filter(patch_id=patch_id)
         if len(existing_patch) == 1:
@@ -610,10 +609,65 @@ class CfbotQueue(models.Model):
                 # Remove and replace. New patch sets get a new start in the queue.
                 self.remove_item(existing_patch[0].id)
 
+        # Walk the queue to find the first item with a non-null processed_date
+        first_item = self.get_first_item()
+        loop_item = first_item
+        current_item = None
+        previous_item = None
+        end_of_list = None
+        target_item = None
+        while loop_item:
+            if not self.current_queue_item:
+                # can't happen; first_item and thus loop_item should be None
+                break
+
+            if loop_item.patch_id == patch_id:
+                # can't happen; either early exit for same message_id or we were removed
+                pass
+
+           # Next up, cannot move pointer off of the current item, and no where to go
+            if not loop_item.ll_next and not loop_item.ll_prev:
+                target_item = loop_item
+                break
+
+            # This is basically a special case where the current_queue_item is
+            # at the head of the list.  Our loop started on it, immediately set
+            # current_item to loop_item, then we got all the way to the end of
+            # the list, started over and found current_item.  But as the head
+            # of the linked list its pointer ll_prev is None, so we needed to
+            # remember or otherwise know what the end of the list is.
+            #
+            # Tail of the Ring Queue, No Not Processed Items
+            if current_item and loop_item.id == self.current_queue_item:
+                target_item = previous_item
+                break
+
+            # Likewise as the above, but we happend to find a real processed item
+            # at the start of the linked list.  We code to add after the target
+            # item so our target must be the end_of_list if ll_prev is None
+            #
+            # Last of the Processed Items (previous_item processed is None)
+            if current_item and loop_item.processed_date is not None:
+                target_item = previous_item
+                break
+
+            # Begin scanning for not processed items with the next item
+            # since we cannot move the pointer off the current item anyway
+            if not current_item and loop_item.id == self.current_queue_item:
+                current_item = loop_item
+
+            # Linked list ends, but queue is circular; capture the end just
+            # in case the first list entry matches our search criteria.
+            previous_item = loop_item
+            if loop_item.ll_next is None:
+                loop_item = first_item
+            else:
+                loop_item = self.items.filter(id=loop_item.ll_next).first()
 
         with transaction.atomic():
             with connection.cursor() as cursor:
                 cursor.execute("SET CONSTRAINTS ALL DEFERRED")
+
                 # Special case if the queue is empty
                 if not self.current_queue_item:
                     new_item = CfbotQueueItem.objects.create(
@@ -627,27 +681,24 @@ class CfbotQueue(models.Model):
                     self.save()
                     return new_item
 
-                # Retrieve the existing item using the current_queue_item ID
-                current_queue_item = CfbotQueueItem.objects.get(id=self.current_queue_item)
-
                 # Create the new item
                 new_item = CfbotQueueItem.objects.create(
                     queue=self,
                     patch_id=patch_id,
                     message_id=message_id,
-                    ll_prev=current_queue_item.id,
+                    ll_prev=target_item.id,
                     # use 0 here and replace with none later to appease partial unique index
-                    ll_next=current_queue_item.ll_next if current_queue_item.ll_next else 0
+                    ll_next=target_item.ll_next if target_item.ll_next else 0
                 )
 
                 # Update the links
-                if current_queue_item.ll_next:
-                    next_queue_item = CfbotQueueItem.objects.get(id=current_queue_item.ll_next)
+                if target_item.ll_next:
+                    next_queue_item = CfbotQueueItem.objects.get(id=target_item.ll_next)
                     next_queue_item.ll_prev = new_item.id
                     next_queue_item.save()
 
-                current_queue_item.ll_next = new_item.id
-                current_queue_item.save()
+                target_item.ll_next = new_item.id
+                target_item.save()
 
                 if not self.current_queue_item:
                     self.current_queue_item = new_item.id
@@ -891,7 +942,7 @@ class CfbotTask(models.Model):
     # XXX: really want to scope this ID to either a specific platform or even
     # just the branch_id if a platform is not applicable.  This is being used
     # for more than just CirrusCI at this point.
-    task_id = models.TextField(unique=True)
+    task_id = models.TextField(unique=False)
     task_name = models.TextField(null=False)
     patch = models.ForeignKey(
         Patch, on_delete=models.CASCADE, related_name="cfbot_tasks"
@@ -1378,9 +1429,11 @@ class Notifier:
         if branch.status in {"compiling-aborted", "compiling-failed"}:
             branch.needs_rebase_since = datetime.now()
             branch.failing_since = datetime.now()
+            self.update_queue_ignore_date(branch)
         elif branch.status in {"testing-aborted", "testing-failed"}:
             branch.needs_rebase_since = None
             branch.failing_since = datetime.now()
+            self.update_queue_ignore_date(branch)
 
         if branch.status in {"compiled", "compiling-failed"}:
             self.update_queue_latest_base_commit_sha(branch)
@@ -1401,6 +1454,18 @@ class Notifier:
             queue_item = queue.items.filter(patch_id=branch.patch_id).first()
             if queue_item:
                 queue_item.last_base_commit_sha = branch.base_commit_sha
+                queue_item.save()
+
+    def update_queue_ignore_date(self, branch):
+        """
+        Update the queue item's ignore_date.
+        """
+        # Update the queue item's ignore_date
+        queue = CfbotQueue.objects.first()
+        if queue:
+            queue_item = queue.items.filter(patch_id=branch.patch_id).first()
+            if queue_item:
+                queue_item.ignore_date = datetime.now()
                 queue_item.save()
 
 class MockBranchManager:

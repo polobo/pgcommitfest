@@ -217,7 +217,10 @@ def add_test_data(request):
 
     # Add test data to the queue
     queue.insert_item(patch_id=8,   message_id="dgj-example@message-08")
+    queue.insert_item(patch_id=2,   message_id="example@message-2")
     queue.insert_item(patch_id=3,   message_id="example@message-3")
+    queue.insert_item(patch_id=4,   message_id="example@message-4")
+    queue.insert_item(patch_id=7,   message_id="example@message-7")
 
     return apiResponse(request, {"message": "Test data added successfully."})
 
