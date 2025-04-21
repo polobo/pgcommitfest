@@ -313,3 +313,17 @@ def clear_branch_history(request):
 
     deleted_count, _ = CfbotBranchHistory.objects.filter(branch_id=branch_id).delete()
     return apiResponse(request, {"message": f"Cleared {deleted_count} history entries for branch_id {branch_id}."})
+
+@csrf_exempt
+@require_POST
+def create_patch(request):
+    print(request.body)
+    body_string = request.body.decode("utf-8")
+    body_json = json.loads(body_string)
+    thread_id = body_json["thread_id"] if "thread_id" in body_json else None
+    message_id = body_json["message_id"] if "message_id" in body_json else None
+
+    if not message_id or not thread_id:
+        return apiResponse(request, {"error": "Missing patch_id or message_id"}, status=400)
+
+    return apiResponse(request, {"patch_id": 1, "message": f"Patch '{1}' created."})
