@@ -4,6 +4,7 @@ from django.http import (
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 
 import json
 from datetime import datetime
@@ -17,6 +18,8 @@ from .models import (
     PatchHistory,
     CfbotBranchHistory,
     MailThreadAttachment,
+    Patch,
+    PatchOnCommitFest,
 )
 
 
@@ -327,3 +330,39 @@ def create_patch(request):
         return apiResponse(request, {"error": "Missing patch_id or message_id"}, status=400)
 
     return apiResponse(request, {"patch_id": 1, "message": f"Patch '{1}' created."})
+
+@csrf_exempt
+def fetch_open_patches(request):
+    """
+    Fetch all open patches.
+    """
+    open_patches = Patch.objects.filter(
+        Q(patchoncommitfest__status__in=PatchOnCommitFest.OPEN_STATUSES)
+    ).distinct()
+
+    patch_list = [
+        {
+            "id": patch.id,
+            "name": patch.name,
+            "status": patch.current_patch_on_commitfest().statusstring,
+            "authors": patch.authors_string,
+            "reviewers": patch.reviewers_string,
+            "committer": str(patch.committer) if patch.committer else None,
+            "created": patch.created,
+            "modified": patch.modified,
+        }
+        for patch in open_patches
+    ]
+
+    return apiResponse(request, {"patches": patch_list})
+
+@csrf_exempt
+@require_POST
+def remove_all_patches(request):
+    """
+    Remove all patches.
+    """
+    #MailThreadAttachment.objects.all().delete()
+    #PatchOnCommitFest.objects.all().delete()
+    #Patch.objects.all().delete()
+    return apiResponse(request, {"message": "All patches removed successfully."})
