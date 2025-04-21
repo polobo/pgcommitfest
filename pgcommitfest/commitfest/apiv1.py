@@ -1,15 +1,19 @@
 from django.http import (
     HttpResponse,
 )
+
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 from django.db.models import Q
+from django.db import transaction
 
 import json
 from datetime import datetime
+from django.contrib.auth.models import User
 
 from .models import (
+    Topic,
     Workflow,
     CfbotQueue,
     CfbotQueueItem,
@@ -17,6 +21,7 @@ from .models import (
     CfbotTask,
     PatchHistory,
     CfbotBranchHistory,
+    MailThread,
     MailThreadAttachment,
     Patch,
     PatchOnCommitFest,
@@ -319,17 +324,63 @@ def clear_branch_history(request):
 
 @csrf_exempt
 @require_POST
+@transaction.atomic
 def create_patch(request):
-    print(request.body)
+    """
+    Create a new patch with placeholder values for required fields.
+    """
     body_string = request.body.decode("utf-8")
     body_json = json.loads(body_string)
-    thread_id = body_json["thread_id"] if "thread_id" in body_json else None
-    message_id = body_json["message_id"] if "message_id" in body_json else None
 
-    if not message_id or not thread_id:
-        return apiResponse(request, {"error": "Missing patch_id or message_id"}, status=400)
+    draft_cf = Workflow.parked_cf()
 
-    return apiResponse(request, {"patch_id": 1, "message": f"Patch '{1}' created."})
+    mailthread = MailThread.objects.create(
+        messageid=body_json.get("thread_message_id"),
+        subject=body_json.get("thread_subject_line"),
+        firstmessage=body_json.get("thread_message_date"),
+        firstauthor=body_json.get("thread_from_author"),
+        latestmsgid=body_json.get("most_recent_message_id"),
+        latestmessage=body_json.get("most_recent_message_date"),
+        latestauthor=body_json.get("most_recent_from_author"),
+        latestsubject=body_json.get("most_recent_subject_line"),
+        patchsetmsgid=body_json.get("patch_message_id"),
+    )
+
+    for attachment in body_json.get("fileset"):
+        MailThreadAttachment.objects.create(
+            mailthread=mailthread,
+            messageid=body_json.get("patch_message_id"),
+            attachmentid=attachment["attachment_id"],
+            filename=attachment["filename"],
+            contenttype=attachment["content_type"],
+            ispatch=attachment["is_patch"],
+            author=body_json.get("patch_from_author"),
+            date=body_json.get("patch_message_date"),
+        )
+
+    topic = Topic.objects.filter(id=3).first()  # Miscellaneous for now
+    # Create a new Patch instance with required fields set to None
+    patch = Patch.objects.create(
+        name=body_json.get("thread_subject_line"),
+        topic=topic,
+        patchset_messageid=body_json.get("patch_message_id", None),
+        patchset_messagedate=body_json.get("patch_message_date", None),
+        lastmail=body_json.get("most_recent_message_date", None),
+    )
+
+    poc = PatchOnCommitFest(
+        patch=patch, commitfest=draft_cf, enterdate=datetime.now()
+    )
+    poc.save()
+    automation_user = User.objects.get(username="admin")
+    PatchHistory(
+        patch=patch, by_cfbot=True, what="Patch created from mail thread"
+    ).save()
+
+    mailthread.patches.add(patch)
+    mailthread.save()
+
+    return apiResponse(request, {"patch_id": patch.id, "message": "Patch created with placeholder values."})
 
 @csrf_exempt
 def fetch_open_patches(request):
