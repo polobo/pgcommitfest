@@ -1231,20 +1231,53 @@ class BranchManager:
         for task in tasks:
             task.delete()
 
-
+    # try to make idiomatic usage
+    # self.action.begin / failure to begin is action-aborted
+    # self.action.is_done / success is "past tense" (applied, compiled, tested)
+    # self.action.did_fail / failure is action-failed
+    # need to pass in PatchApplier too then
+    # Returns delay_for - the number of "seconds?" to wait before attempting the next
+    # processing action on this branch.  0 means no delay needed.  Typically non-zero
+    # only if the active action replies it is not done yet.  None means re-processing
+    # is not required - the branch is at an end state, either finished or aborted/failed
     def process(self, branch):
+        delay_for = 0
         """
         Process the given branch by creating a new branch instance with updated status.
         The input branch remains unaltered.
         """
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
+            if self.burner.apply(branch):
+                branch.status = "applying"
+            else:
+                # envrionmental issues, up to the point of retrieving files
+                # returns just before the step of running apply-patches.sh
+                # also aborts if there happen to be no patches recognized
+                # in the task queue
+                branch.status = "applying-aborted"
+                delay_for = None
+
+        elif old_branch.status == "applying":
+            if self.burner.branch_apply_completed(branch):
+                if self.burner.apply_branch_apply_results(branch):
+                    branch.status = "applied"
+                else:
+                    # XXX: true bit-rot
+                    branch.status = "applying-failed"
+                    delay_for = None
+            else:
+                delay_for = self.burner.get_delay(branch)
+
+        elif old_branch.status == "applied":
+            self.clear_tasks(branch)
             if self.burner.compile(branch):
                 branch.status = "compiling"
             else:
                 # envrionmental issues, up to the point of retrieving files
                 # returns just before the step of running apply-patches.sh
                 branch.status = "compiling-aborted"
+                delay_for = None
 
         elif old_branch.status == "compiling":
             # Run apply-patches.sh and return.  We are sync right now
@@ -1255,6 +1288,9 @@ class BranchManager:
                     branch.status = "compiled"
                 else:
                     branch.status = "compiling-failed"
+                    delay_for = None
+            else:
+                delay_for = self.burner.get_delay(branch)
 
         elif old_branch.status == "compiled":
             self.clear_tasks(branch)
@@ -1262,6 +1298,7 @@ class BranchManager:
                 branch.status = "testing"
             else:
                 branch.status = "testing-aborted"
+                delay_for = None
 
         elif old_branch.status == "testing":
             if self.tester.branch_testing_completed(branch):
@@ -1269,6 +1306,9 @@ class BranchManager:
                     branch.status = "tested"
                 else:
                     branch.status = "testing-failed"
+                    delay_for = None
+            else:
+                delay_for = self.tester.get_delay(branch)
 
         elif old_branch.status == "tested":
             self.clear_tasks(branch)
@@ -1276,15 +1316,17 @@ class BranchManager:
             self.notifier.notify_branch_update(branch)
             self.notifier.notify_branch_tested(branch)
             branch.status = "finished"
+            delay_for = None
 
-        elif old_branch.status in {"finished", "compiling-aborted", "compiling-failed", "testing-aborted", "testing-failed"}:
-            pass
+        elif old_branch.status in {"finished", "applying-aborted", "applying-failed", "compiling-aborted", "compiling-failed", "testing-aborted", "testing-failed"}:
+            # Didn't listen the first time be we don't enforce this
+            delay_for = None
 
         else:
             raise ValueError(f"Unknown status: {old_branch.status}")
 
         self.notifier.notify_branch_update(branch)
-        return branch
+        return delay_for
 
     def cloneBranch(self, branch):
         """
@@ -1313,14 +1355,14 @@ class PatchBurner:
     """
     A class responsible for burning patches.
     """
-    def compile(self, branch):
+    def apply(self, branch):
         """
-        Create a compile task for the branch and mark existing tasks as completed.
+        Apply the patchset to the branch.
         """
         # Iterate over existing tasks and mark them as completed
         existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
         for task in existing_tasks:
-            task.status = "COMPLETED"
+            task.status = "COMPLETED" if task.status == "CREATED" else task.status
             task.save()
 
         # Create a new compile task
@@ -1332,6 +1374,25 @@ class PatchBurner:
             position=task.position + 1,
             status="CREATED",
         )
+
+        return True
+
+    def branch_apply_completed(self, branch):
+        return True
+
+    def apply_branch_apply_results(self, branch):
+        return True
+
+    def compile(self, branch):
+        """
+        Create a compile task for the branch and mark existing tasks as completed.
+        """
+        # Iterate over existing tasks and mark them as completed
+        existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
+        for task in existing_tasks:
+            task.status = "COMPLETED" if task.status == "CREATED" else task.status
+            task.save()
+
         return True
 
     def branch_compiling_completed(self, branch):
