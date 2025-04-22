@@ -783,9 +783,22 @@ class CfbotQueueItem(models.Model):
 
     def get_attachments(self):
         """
-        Return a list of dummy attachments for the queue item.
+        Return the actual attachments for the queue item using a list comprehension.
         """
-        return [{"attachment_id": 1, "filename": "dummy_file.txt"}]
+        return [
+            {
+                "attachmentid": attachment.attachmentid,
+                "filename": attachment.filename,
+                "contenttype": attachment.contenttype,
+                "ispatch": attachment.ispatch,
+                "author": attachment.author,
+                "date": attachment.date,
+            }
+            for attachment in MailThreadAttachment.objects.filter(
+                mailthread__patches__id=self.patch_id,
+                messageid=self.message_id
+            )
+        ]
 
     class Meta:
         constraints = [

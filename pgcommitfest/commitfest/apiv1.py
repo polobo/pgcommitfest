@@ -118,7 +118,10 @@ def cfbot_peek(request):
         return apiResponse(request, {"item": None})  # Return empty response
 
     item = queue.peek()
+
     payload = build_item_object(item, is_current=item.id == queue.current_queue_item)
+    payload["attachments"] = item.get_attachments()  # Include attachments in the response
+
     return apiResponse(request, {"item": payload})
 
 
@@ -271,16 +274,16 @@ def create_branch(request):
             "modified": datetime.now(),
         },
     )
-
+    print(attachments)
     for position, attachment in enumerate(attachments, start=1):
         CfbotTask.objects.create(
-            task_id=f"{attachment['filename']}",
+            task_id=attachment["filename"],
             task_name=f"Patchset File",
             patch_id=patch_id,
             branch_id=branch.branch_id,
             position=position,
             status="CREATED",
-            payload=attachment,
+            payload=json.dumps(attachment, default=datetime_serializer),
         )
 
     # Create a history item for the branch
@@ -396,11 +399,13 @@ def fetch_open_patches(request):
             "id": patch.id,
             "name": patch.name,
             "status": patch.current_patch_on_commitfest().statusstring,
-            "authors": patch.authors_string,
-            "reviewers": patch.reviewers_string,
-            "committer": str(patch.committer) if patch.committer else None,
-            "created": patch.created,
-            "modified": patch.modified,
+            "attachment_count": MailThreadAttachment.objects.filter(
+                mailthread__patches=patch,
+                messageid=patch.patchset_messageid
+            ).count(),
+            "patchset_messagedate": patch.patchset_messagedate,
+            "in_queue": CfbotQueueItem.objects.filter(patch_id=patch.id).exists(),  # New field
+            "has_branch": CfbotBranch.objects.filter(patch_id=patch.id).exists(),  # New field
         }
         for patch in open_patches
     ]
@@ -417,3 +422,26 @@ def remove_all_patches(request):
     #PatchOnCommitFest.objects.all().delete()
     #Patch.objects.all().delete()
     return apiResponse(request, {"message": "All patches removed successfully."})
+
+@csrf_exempt
+@require_POST
+def enqueue_patch(request):
+    """
+    Enqueue a patch into the CfbotQueue.
+    """
+    body = json.loads(request.body)
+    patch_id = body.get("patch_id")
+
+    if not patch_id:
+        return apiResponse(request, {"error": "Missing patch_id"}, status=400)
+
+    queue = CfbotQueue.objects.first()
+    if not queue:
+        return apiResponse(request, {"error": "No queue found"}, status=404)
+
+    patch = get_object_or_404(Patch, pk=patch_id)
+    if CfbotQueueItem.objects.filter(patch_id=patch_id).exists():
+        return apiResponse(request, {"error": "Patch is already in the queue"}, status=400)
+
+    queue.insert_item(patch_id=patch_id, message_id=patch.patchset_messageid)
+    return apiResponse(request, {"success": True, "message": "Patch enqueued successfully."})

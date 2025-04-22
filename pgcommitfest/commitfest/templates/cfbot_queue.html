@@ -4,18 +4,18 @@
 
 <div id="open-patches" style="margin-bottom: 20px;">
     <button id="remove-all-patches-btn">Remove All Patches</button>
+    <button id="reload-patches-btn">Reload Patches</button>
     <h3>Open Patches</h3>
-    <table border="1" id="open-patches-table" style="width: 100%; margin-bottom: 20px;">
+    <table border="1" id="open-patches-table" style="margin-bottom: 20px;">
         <thead>
             <tr>
                 <th>Patch ID</th>
                 <th>Name</th>
                 <th>Status</th>
-                <th>Author(s)</th>
-                <th>Reviewer(s)</th>
-                <th>Committer</th>
-                <th>Created</th>
-                <th>Modified</th>
+                <th>Attachment Count</th>
+                <th>Patchset Message Date</th>
+                <th>In Queue</th>
+                <th>Has Branch</th>
             </tr>
         </thead>
         <tbody>
@@ -46,11 +46,11 @@
                     <th>Created</th>
                     <th>Modified</th>
                     <th>Task Count</th>
-                    <th>First Additions</th> <!-- New column -->
-                    <th>First Deletions</th> <!-- New column -->
-                    <th>All Additions</th> <!-- New column -->
-                    <th>All Deletions</th> <!-- New column -->
-                    <th>Patch Count</th> <!-- New column -->
+                    <th>First Additions</th>
+                    <th>First Deletions</th>
+                    <th>All Additions</th>
+                    <th>All Deletions</th>
+                    <th>Patch Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,7 +70,7 @@
                     <th>Status</th>
                     <th>Modified</th>
                     <th>Commit ID</th>
-                    <th>Base SHA</th> <!-- New column -->
+                    <th>Base SHA</th>
                     <th>Task Count</th>
                 </tr>
             </thead>
@@ -117,7 +117,7 @@
 </div>
 
 <div>Queue table - ringed</div>
-<h2>{{ queue.name }} [<span id="current-commit-sha">{{ current_commit_sha }}</span>]</h2>
+<h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> ) [<span id="current-commit-sha">{{ current_commit_sha }}</span>]</h2>
 
 <div>
     <button id="get-and-move-btn">Get and Move</button>
@@ -349,11 +349,6 @@
             fetch("/api/v1/commitfest/fetch_open_patches")
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        console.error("Error fetching open patches:", data.error);
-                        return;
-                    }
-
                     const tableBody = document.getElementById("open-patches-table").getElementsByTagName("tbody")[0];
                     tableBody.innerHTML = ""; // Clear existing rows
 
@@ -363,16 +358,56 @@
                             <td>${patch.id}</td>
                             <td>${patch.name}</td>
                             <td>${patch.status}</td>
-                            <td>${patch.authors}</td>
-                            <td>${patch.reviewers}</td>
-                            <td>${patch.committer || "None"}</td>
-                            <td>${patch.created}</td>
-                            <td>${patch.modified}</td>
+                            <td>${patch.attachment_count}</td>
+                            <td>${patch.patchset_messagedate || "N/A"}</td>
+                            <td>
+                                ${patch.in_queue ? "Yes" : (patch.attachment_count > 0 ? `<button class="enqueue-btn" data-patch-id="${patch.id}">Enqueue</button>` : "No")}
+                            </td>
+                            <td>${patch.has_branch ? "Yes" : "No"}</td>
                         `;
                         tableBody.appendChild(row);
                     });
+
+                    wireUpEnqueueButtons();
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => console.error("Error fetching open patches:", error));
+        }
+
+        function wireUpEnqueueButtons() {
+            document.querySelectorAll(".enqueue-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    const patchId = this.getAttribute("data-patch-id");
+                    enqueuePatch(patchId);
+                });
+            });
+        }
+
+        function enqueuePatch(patchId) {
+            fetch(`/api/v1/cfbot/enqueue_patch`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ patch_id: patchId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const responseMessage = document.getElementById("response-message");
+                    if (data.success) {
+                        responseMessage.style.color = "green";
+                        responseMessage.textContent = "Patch enqueued successfully!";
+                        reloadAllTables();
+                    } else {
+                        responseMessage.style.color = "red";
+                        responseMessage.textContent = `Failed to enqueue patch: ${data.error}`;
+                    }
+                })
+                .catch(error => {
+                    const responseMessage = document.getElementById("response-message");
+                    responseMessage.style.color = "red";
+                    responseMessage.textContent = "An error occurred while enqueuing the patch.";
+                    console.error("Error enqueuing patch:", error);
+                });
         }
 
         function highlightTaskRow(row) {
@@ -473,9 +508,10 @@
             attachmentsList.innerHTML = ""; // Clear existing list
             if (data.attachments && data.attachments.length > 0) {
                 data.attachments.forEach(attachment => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = `${attachment.filename} (ID: ${attachment.attachment_id})`;
-                    attachmentsList.appendChild(listItem);
+                    const li = document.createElement("li");
+                    const type = attachment.ispatch ? "[patch]" : "[file]";
+                    li.textContent = `${attachment.filename} (id: ${attachment.attachmentid}) ${type}`;
+                    attachmentsList.appendChild(li);
                 });
             }
         }
@@ -573,8 +609,7 @@
                         responseMessage.style.color = "red";
                         console.error("Error:", error);
                     });
-                // Perform a peek to populate the JSON display
-                performPeek();
+                reloadAllTables();
             });
         }
 
@@ -665,7 +700,7 @@
                                     responseMessage.textContent = data.error;
                                     responseMessage.style.color = "red";
                                 }
-                                fetchBranches(data.branch_id); // Refresh the branches table
+                                reloadAllTables(); // Refresh the tables
                             })
                             .catch(error => {
                                 const responseMessage = document.getElementById("response-message");
@@ -727,6 +762,12 @@
             });
         }
 
+        function setupReloadPatchesButton() {
+            document.getElementById("reload-patches-btn").addEventListener("click", function () {
+                reloadAllTables();
+            });
+        }
+
         function removeAllPatches() {
             fetch("/api/v1/commitfest/remove_all_patches", {
                 method: "POST",
@@ -754,6 +795,16 @@
                 });
         }
 
+        function reloadAllTables() {
+            fetchOpenPatches();
+            fetchBranches();
+            fetchQueue();
+            const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+            if (selectedBranchId && selectedBranchId !== "None") {
+                fetchTasksForBranch(selectedBranchId);
+            }
+        }
+
         function wireUpPage() {
             setupProcessBranchButton();
             setupGetAndMoveButton();
@@ -764,11 +815,9 @@
             setupPeekButton();
             setupClearBranchHistoryButton();
             setupRemoveAllPatchesButton();
+            setupReloadPatchesButton();
             wireUpTaskActions();
-            fetchQueue();
-            fetchBranches();
-            fetchOpenPatches();
-            performPeek();
+            reloadAllTables();
         }
 
         wireUpPage();
