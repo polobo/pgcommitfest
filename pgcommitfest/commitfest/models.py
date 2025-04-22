@@ -9,7 +9,7 @@ import json
 
 from pgcommitfest.userprofile.models import UserProfile
 
-from .util import DiffableModel
+from .util import DiffableModel, datetime_serializer
 
 
 # We have few enough of these, and it's really the only thing we
@@ -248,6 +248,26 @@ class Patch(models.Model, DiffableModel):
             self.lastmail = None
         else:
             self.lastmail = max(threads, key=lambda t: t.latestmessage).latestmessage
+    # XXX: make messageid an optional input to return a non-current patchset or to
+    # facilitate confirmation that the current patch is the one being worked on...
+    def get_attachments(self):
+        """
+        Return the actual attachments for the patch.
+        """
+        return [
+            {
+                "attachmentid": attachment.attachmentid,
+                "filename": attachment.filename,
+                "contenttype": attachment.contenttype,
+                "ispatch": attachment.ispatch,
+                "author": attachment.author,
+                "date": attachment.date,
+            }
+            for attachment in MailThreadAttachment.objects.filter(
+                mailthread__patches=self,
+                messageid=self.patchset_messageid
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -781,25 +801,6 @@ class CfbotQueueItem(models.Model):
     ll_next = models.IntegerField(null=True, blank=False)
     last_base_commit_sha = models.TextField(null=True, blank=False)
 
-    def get_attachments(self):
-        """
-        Return the actual attachments for the queue item using a list comprehension.
-        """
-        return [
-            {
-                "attachmentid": attachment.attachmentid,
-                "filename": attachment.filename,
-                "contenttype": attachment.contenttype,
-                "ispatch": attachment.ispatch,
-                "author": attachment.author,
-                "date": attachment.date,
-            }
-            for attachment in MailThreadAttachment.objects.filter(
-                mailthread__patches__id=self.patch_id,
-                messageid=self.message_id
-            )
-        ]
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -1204,10 +1205,11 @@ class Workflow(models.Model):
         """
         Retrieve an instance of BranchManager.
         """
+        patchApplier = MockBranchManager.getPatchApplier()
         patchBurner = MockBranchManager.getPatchBurner()
         patchTester = MockBranchManager.getPatchTester()
         notifier = MockBranchManager.getNotifier()
-        return BranchManager(patchBurner, patchTester, notifier)
+        return BranchManager(patchApplier, patchBurner, patchTester, notifier)
 
 
 class BranchManager:
@@ -1215,10 +1217,11 @@ class BranchManager:
     A class to manage branch operations.
     """
 
-    def __init__(self, burner, tester, notifier):
+    def __init__(self, applier, burner, tester, notifier):
         """
         Initialize the BranchManager with burner, tester, and notifier instances.
         """
+        self.applier = applier
         self.burner = burner
         self.tester = tester
         self.notifier = notifier
@@ -1248,7 +1251,10 @@ class BranchManager:
         """
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
-            if self.burner.apply(branch):
+            # Intentional non-clearing of tasks here.
+            # We should fail to begin, and thus abort,
+            # if tasks already exist.
+            if self.applier.begin(branch):
                 branch.status = "applying"
             else:
                 # envrionmental issues, up to the point of retrieving files
@@ -1259,19 +1265,20 @@ class BranchManager:
                 delay_for = None
 
         elif old_branch.status == "applying":
-            if self.burner.branch_apply_completed(branch):
-                if self.burner.apply_branch_apply_results(branch):
-                    branch.status = "applied"
-                else:
+            if self.applier.is_done(branch):
+                if self.applier.did_fail(branch):
                     # XXX: true bit-rot
                     branch.status = "applying-failed"
                     delay_for = None
+
+                else:
+                    branch.status = "applied"
             else:
-                delay_for = self.burner.get_delay(branch)
+                delay_for = self.applier.get_delay(branch)
 
         elif old_branch.status == "applied":
             self.clear_tasks(branch)
-            if self.burner.compile(branch):
+            if self.burner.begin(branch):
                 branch.status = "compiling"
             else:
                 # envrionmental issues, up to the point of retrieving files
@@ -1283,30 +1290,31 @@ class BranchManager:
             # Run apply-patches.sh and return.  We are sync right now
             # so this should never actually return False, which would
             # require async processing where we simply want to try again
-            if self.burner.branch_compiling_completed(branch):
-                if self.burner.apply_branch_compile_results(branch):
-                    branch.status = "compiled"
-                else:
+            if self.burner.is_done(branch):
+                if self.burner.did_fail(branch):
                     branch.status = "compiling-failed"
                     delay_for = None
+
+                else:
+                    branch.status = "compiled"
             else:
                 delay_for = self.burner.get_delay(branch)
 
         elif old_branch.status == "compiled":
             self.clear_tasks(branch)
-            if self.tester.launch_branch_testing(branch):
+            if self.tester.begin(branch):
                 branch.status = "testing"
             else:
                 branch.status = "testing-aborted"
                 delay_for = None
 
         elif old_branch.status == "testing":
-            if self.tester.branch_testing_completed(branch):
-                if self.tester.apply_branch_test_results(branch):
-                    branch.status = "tested"
-                else:
+            if self.tester.is_done(branch):
+                if self.tester.did_fail(branch):
                     branch.status = "testing-failed"
                     delay_for = None
+                else:
+                    branch.status = "tested"
             else:
                 delay_for = self.tester.get_delay(branch)
 
@@ -1326,7 +1334,7 @@ class BranchManager:
             raise ValueError(f"Unknown status: {old_branch.status}")
 
         self.notifier.notify_branch_update(branch)
-        return delay_for
+        return branch, delay_for
 
     def cloneBranch(self, branch):
         """
@@ -1351,71 +1359,67 @@ class BranchManager:
         )
 
 
-class PatchBurner:
+class PatchApplier:
     """
-    A class responsible for burning patches.
+    A class responsible for applying patches to branches.
     """
-    def apply(self, branch):
+    @transaction.atomic
+    def begin(self, branch):
         """
         Apply the patchset to the branch.
         """
-        # Iterate over existing tasks and mark them as completed
+        # We go first and do not expect any tasks for us to handle.  We create the patchset file tasks.
         existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
-        for task in existing_tasks:
-            task.status = "COMPLETED" if task.status == "CREATED" else task.status
-            task.save()
+        if existing_tasks:
+            return False
 
-        # Create a new compile task
+        patch = branch.patch
+        attachments = patch.get_attachments()
+
+        for position, attachment in enumerate(attachments, start=1):
+            task = CfbotTask.objects.create(
+                task_id=attachment["filename"],
+                task_name=f"Patchset File",
+                patch_id=patch.id,
+                branch_id=branch.branch_id,
+                position=position,
+                status="COMPLETED", # testing setup, mark all as completed right away.
+                payload=json.dumps(attachment, default=datetime_serializer),
+            )
+
+        # Create a new apply task
         CfbotTask.objects.create(
-            task_id=f"task_{branch.branch_id}_compile",
-            task_name="Compile Branch",
+            task_id=f"task_{branch.branch_id}_apply",
+            task_name="Apply Patches",
             patch=branch.patch,
             branch_id=branch.branch_id,
             position=task.position + 1,
-            status="CREATED",
+            status="COMPLETED",  # testing setup, mark all as completed right away.
         )
 
         return True
 
-    def branch_apply_completed(self, branch):
-        return True
-
-    def apply_branch_apply_results(self, branch):
-        return True
-
-    def compile(self, branch):
-        """
-        Create a compile task for the branch and mark existing tasks as completed.
-        """
-        # Iterate over existing tasks and mark them as completed
-        existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
-        for task in existing_tasks:
-            task.status = "COMPLETED" if task.status == "CREATED" else task.status
-            task.save()
-
-        return True
-
-    def branch_compiling_completed(self, branch):
+    def is_done(self, branch):
         """
         Check if all tasks for the branch are completed.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         return all(task.is_done() for task in tasks)
 
-    def apply_branch_compile_results(self, branch):
+    def did_fail(self, branch):
         """
-        Apply the results of branch compilation. Return False if any task is a failure.
+        Apply the results of branch testing. Return False if any task is a failure.
         """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        if any(task.is_failure() for task in tasks):
+            failed = True
+        else:
+            failed = False
+
         branch.commit_id = self.get_merge_commit_sha()
         branch.base_commit_sha = self.get_base_commit_sha()
 
-        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        if any(task.is_failure() for task in tasks):
-            outcome = False
-        else:
-            outcome = True
-
-        compile_result = {
+        apply_results = {
             "merge_commit_sha": branch.commit_id,
             "base_commit_sha": branch.base_commit_sha,
             "patch_count": branch.patch_count,
@@ -1425,22 +1429,25 @@ class PatchBurner:
             "all_deletions": 5,
         }
 
-        branch.first_additions = compile_result["first_additions"]
-        branch.first_deletions = compile_result["first_deletions"]
-        branch.all_additions = compile_result["all_additions"]
-        branch.all_deletions = compile_result["all_deletions"]
+        branch.first_additions = apply_results["first_additions"]
+        branch.first_deletions = apply_results["first_deletions"]
+        branch.all_additions = apply_results["all_additions"]
+        branch.all_deletions = apply_results["all_deletions"]
 
         CfbotTask.objects.create(
-            task_id=f"Compile Result Payload",
-            task_name="Compile Result",
+            task_id=f"Apply Result Payload",
+            task_name="Apply Result",
             patch=branch.patch,
             branch_id=branch.branch_id,
             position=len(tasks) + 1,
-            status="COMPLETED" if outcome else "FAILED",
-            payload=compile_result if outcome else None,
+            status="COMPLETED" if not failed else "FAILED",
+            payload=apply_results if not failed else None,
         )
 
-        return outcome
+        return failed
+
+    def get_delay(self, branch):
+        return 0
 
     def get_merge_commit_sha(self):
         """
@@ -1456,43 +1463,78 @@ class PatchBurner:
         # Replace with actual logic to retrieve the base commit SHA
         return "basesha"
 
-
-class PatchTester:
+class PatchBurner:
     """
-    A class responsible for testing patches.
+    A class responsible for burning patches.
     """
-    def launch_branch_testing(self, branch):
+    def begin(self, branch):
         """
-        Create a CI task for testing the given branch.
+        Create a compile task for the branch and mark existing tasks as completed.
         """
-        CfbotTask.objects.create(
-            task_id=f"task_{branch.branch_id}_test",
-            task_name="Test Branch",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=1,  # Example position
-            status="CREATED",
-        )
+        # All tasks from the previous subsystem should have been removed leaving us with a clean slate
+        existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
+        if existing_tasks:
+            return False
         return True
 
-    def branch_testing_completed(self, branch):
+    def is_done(self, branch):
         """
         Check if all tasks for the branch are completed.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         return all(task.is_done() for task in tasks)
 
-    def apply_branch_test_results(self, branch):
+    def did_fail(self, branch):
+        """
+        Apply the results of branch compilation. Return False if any task is a failure.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        if any(task.is_failure() for task in tasks):
+            failed = True
+        else:
+            failed = False
+
+        return failed
+
+    def get_delay(self, branch):
+        return 0
+
+
+class PatchTester:
+    """
+    A class responsible for testing patches.
+    """
+    def begin(self, branch):
+        """
+        Create a CI task for testing the given branch.
+        """
+        # All tasks from the previous subsystem should have been removed leaving us with a clean slate
+        existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
+        if existing_tasks:
+            return False
+        return True
+
+    def is_done(self, branch):
+        """
+        Check if all tasks for the branch are completed.
+        """
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        return all(task.is_done() for task in tasks)
+
+    def did_fail(self, branch):
         """
         Apply the results of branch testing. Return False if any task is a failure.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
-            outcome = False
+            failed = True
         else:
-            outcome = True
+            failed = False
 
-        return outcome
+        return failed
+
+    def get_delay(self, branch):
+        return 0
 
 
 class Notifier:
@@ -1542,9 +1584,10 @@ class Notifier:
                 queue_item.ignore_date = datetime.now()
                 queue_item.save()
 
+
 class MockBranchManager:
     """
-    A mock class to provide dummy implementations of PatchBurner, PatchTester, and Notifier.
+    A mock class to provide dummy implementations of PatchBurner, PatchTester, Notifier, and PatchApplier.
     """
     @staticmethod
     def getPatchBurner():
@@ -1557,3 +1600,7 @@ class MockBranchManager:
     @staticmethod
     def getNotifier():
         return Notifier()
+
+    @staticmethod
+    def getPatchApplier():
+        return PatchApplier()

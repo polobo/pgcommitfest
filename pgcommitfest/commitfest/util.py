@@ -1,6 +1,7 @@
 import django.db.models.fields.related
 from django.forms.models import model_to_dict
 
+from datetime import datetime
 
 class DiffableModel(object):
     """
@@ -44,3 +45,8 @@ class DiffableModel(object):
         fields = [field.name for field in self._meta.fields]
         fields.extend([field.name for field in self._meta.many_to_many])
         return model_to_dict(self, fields=fields)
+
+def datetime_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%dT%H:%M:%S%z")
+    raise TypeError("Type not serializable")

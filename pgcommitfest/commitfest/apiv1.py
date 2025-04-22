@@ -27,12 +27,7 @@ from .models import (
     PatchOnCommitFest,
 )
 
-
-def datetime_serializer(obj):
-    if isinstance(obj, datetime):
-        return obj.strftime("%Y-%m-%dT%H:%M:%S%z")
-    raise TypeError("Type not serializable")
-
+from .util import datetime_serializer
 
 def apiResponse(request, payload, status=200, content_type="application/json"):
     response = HttpResponse(
@@ -53,6 +48,7 @@ def build_item_object(item, is_current):
     """
     Build a consistent item object for API responses.
     """
+    patch = get_object_or_404(Patch, pk=item.patch_id)
     return {
         "id": item.id,
         "is_current": is_current,
@@ -62,7 +58,7 @@ def build_item_object(item, is_current):
         "ignore_date": item.ignore_date,
         "ll_prev": item.ll_prev,
         "ll_next": item.ll_next,
-        "attachments": item.get_attachments(),
+        "attachments": patch.get_attachments(),
         "last_base_commit_sha": item.last_base_commit_sha,
     }
 
@@ -118,9 +114,10 @@ def cfbot_peek(request):
         return apiResponse(request, {"item": None})  # Return empty response
 
     item = queue.peek()
+    patch = get_object_or_404(Patch, pk=item.patch_id)
 
     payload = build_item_object(item, is_current=item.id == queue.current_queue_item)
-    payload["attachments"] = item.get_attachments()  # Include attachments in the response
+    payload["attachments"] = patch.get_attachments()
 
     return apiResponse(request, {"item": payload})
 
@@ -191,7 +188,7 @@ def process_branch(request, branch_id):
 
     branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
     branch_manager = Workflow.getBranchManager()
-    new_branch = branch_manager.process(branch)
+    new_branch, delay_for = branch_manager.process(branch)
 
     return apiResponse(request, {"message": f"Branch {new_branch.branch_name} has been created with status {new_branch.status}."})
 
@@ -260,7 +257,8 @@ def create_branch(request):
     if not queue_item:
         return apiResponse(request, {"error": "No queue item found for the patch"}, status=404)
 
-    attachments = queue_item.get_attachments()
+    patch = get_object_or_404(Patch, pk=patch_id)
+    attachments = patch.get_attachments()
 
     branch, created = CfbotBranch.objects.update_or_create(
         patch_id=patch_id,
@@ -274,17 +272,6 @@ def create_branch(request):
             "modified": datetime.now(),
         },
     )
-    print(attachments)
-    for position, attachment in enumerate(attachments, start=1):
-        CfbotTask.objects.create(
-            task_id=attachment["filename"],
-            task_name=f"Patchset File",
-            patch_id=patch_id,
-            branch_id=branch.branch_id,
-            position=position,
-            status="CREATED",
-            payload=json.dumps(attachment, default=datetime_serializer),
-        )
 
     # Create a history item for the branch
     if created:
