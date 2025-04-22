@@ -1,5 +1,6 @@
 import os
 import shutil
+from django.conf import settings
 import requests
 from django.contrib.auth.models import User
 from django.db import models
@@ -9,6 +10,8 @@ from django.shortcuts import get_object_or_404
 
 from datetime import datetime
 import json
+import subprocess
+
 
 from pgcommitfest.userprofile.models import UserProfile
 
@@ -1365,6 +1368,8 @@ class BranchManager:
 
 class PatchApplier:
     BASE_FILE_URL = "http://localhost:8001/message-id/attachment/"
+    APPLY_SCRIPT_SRC = "tools/postgres/"
+    APPLY_SCRIPT_NAME = "apply-one-patch.sh"
     """
     A class responsible for applying patches to branches.
     """
@@ -1406,6 +1411,12 @@ class PatchApplier:
         # Copy the template directory to the working directory
         shutil.copytree(self.template_dir, self.repo_dir)
 
+        # Copy the apply script to the repository directory
+        apply_script_path = os.path.join(settings.BASE_DIR, '..' , self.APPLY_SCRIPT_SRC, self.APPLY_SCRIPT_NAME)
+        if not os.path.exists(apply_script_path):
+            raise FileNotFoundError(f"Apply script '{apply_script_path}' does not exist.")
+        shutil.copy(apply_script_path, self.working_dir)
+
     def download_and_save(self, attachment):
         """
         Retrieve the contents at url_path and write them to a file in the working directory.
@@ -1414,8 +1425,9 @@ class PatchApplier:
             url_path = self.BASE_FILE_URL + str(attachment["attachmentid"]) + "/" + attachment["filename"]
             file_path = os.path.join(self.working_dir, attachment["filename"])
             response = requests.get(url_path, stream=True)
+            attachment["download_result"] = "Failed"
             response.raise_for_status()  # Raise an error for bad HTTP responses
-
+            attachment["download_result"] = "Success"
             with open(file_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
@@ -1423,6 +1435,33 @@ class PatchApplier:
             return True
         except Exception as e:
             print(f"Error downloading or saving file {attachment['filename']}: {e}")
+            return False
+
+    # XXX: handles/assumes .diff files only
+    # For compressed files we can branch here to perform decompressions
+    # and create new tasks for the contained files.
+    def perform_apply(self, filename):
+        """
+        Apply the patch file after ensuring it exists in the working directory.
+        """
+        file_path = os.path.join(self.working_dir, filename)
+        if not os.path.exists(file_path):
+            print(f"Error: File {file_path} does not exist in the working directory.")
+            return False
+
+        # Run the apply script with the filename as an argument
+        try:
+            result = subprocess.run(
+                ['./' + self.APPLY_SCRIPT_NAME, filename, self.repo_dir],
+                cwd=self.working_dir,
+                check=True,
+                capture_output=True,
+                text=True
+            )
+            print(f"Apply script output:\n{result.stdout}\n{result.stderr}")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Error running apply script:\n{e.stdout}\n{e.stderr}")
             return False
 
     @transaction.atomic
@@ -1442,7 +1481,7 @@ class PatchApplier:
         patch_count = 0
         fail_count = 0
         for position, attachment in enumerate(attachments, start=1):
-            if attachment.get("ispatch"):
+            if attachment.get("ispatch") and fail_count == 0:
                 patch_count += 1
                 result = self.download_and_save(attachment)
                 if not result: fail_count += 1
@@ -1452,7 +1491,7 @@ class PatchApplier:
                     patch_id=patch.id,
                     branch_id=branch.branch_id,
                     position=position,
-                    status="COMPLETED" if result else "FAILED", # testing setup, mark all as completed right away.
+                    status="EXECUTING" if result else "FAILED", # testing setup, mark all as completed right away.
                     payload=json.dumps(attachment, default=datetime_serializer),
                 )
             else:
@@ -1471,28 +1510,27 @@ class PatchApplier:
         if patch_count == 0 or fail_count > 0:
             return False
 
-        # Create a new apply task
-        CfbotTask.objects.create(
-            task_id=f"task_{branch.branch_id}_apply",
-            task_name="Apply Patches",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=task.position + 1,
-            status="COMPLETED",  # testing setup, mark all as completed right away.
-        )
-
         return True
 
     def is_done(self, branch):
         """
-        Check if all tasks for the branch are completed.
+        Check if all tasks for the branch are completed and apply patches for tasks with the name 'Patchset File'.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        return all(task.is_done() for task in tasks)
+        for task in tasks:
+            if task.task_name == "Patchset File":
+                if self.perform_apply(task.task_id):
+                    task.status = "COMPLETED"
+                else:
+                    task.status = "FAILED"
+
+                task.save()
+
+        return True
 
     def did_fail(self, branch):
         """
-        Apply the results of branch testing. Return False if any task is a failure.
+        Apply the results of branch testing. Return True if any task is a failure.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
@@ -1673,7 +1711,7 @@ class MockBranchManager:
     """
     A mock class to provide dummy implementations of PatchBurner, PatchTester, Notifier, and PatchApplier.
     """
-    path_template_dir = "/home/davidj/postgres-cfapp/"
+    path_template_dir = "/home/davidj/cfapp-temp/template/postgres/"
     path_working_dir = "/home/davidj/cfapp-temp/work/"
     path_repo_dir = "/home/davidj/cfapp-temp/postgres/"
 
