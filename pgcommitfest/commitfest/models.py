@@ -1,3 +1,6 @@
+import os
+import shutil
+import requests
 from django.contrib.auth.models import User
 from django.db import models
 from django.db import transaction, connection
@@ -943,6 +946,7 @@ class CfbotTask(models.Model):
         ("SCHEDULED", "Scheduled"),
         ("ABORTED", "Aborted"),
         ("ERRORED", "Errored"),
+        ("IGNORED", "Ignored"),
     ]
 
     # This id is only used by Django. Using text type for primary keys, has
@@ -1360,9 +1364,67 @@ class BranchManager:
 
 
 class PatchApplier:
+    BASE_FILE_URL = "http://localhost:8001/message-id/attachment/"
     """
     A class responsible for applying patches to branches.
     """
+    def __init__(self, template_dir, working_dir, repo_dir):
+        """
+        Initialize the PatchApplier with directory paths.
+        """
+        self.template_dir = template_dir
+        self.working_dir = working_dir
+        self.repo_dir = repo_dir
+
+    def initialize_directories(self):
+        """
+        Check and clear the working and repository directories if they exist.
+        Raise FileNotFoundError if they do not exist.
+        """
+        if not os.path.exists(self.working_dir):
+            raise FileNotFoundError(f"Working directory '{self.working_dir}' does not exist.")
+
+        if not os.path.exists(self.repo_dir):
+            raise FileNotFoundError(f"Repository directory '{self.repo_dir}' does not exist.")
+
+        """
+        Ensure the template directory exists, is non-empty, and contains a .git directory.
+        """
+        if not os.path.exists(self.template_dir):
+            raise FileNotFoundError(f"Template directory '{self.template_dir}' does not exist.")
+
+        if not os.listdir(self.template_dir):
+            raise ValueError(f"Template directory '{self.template_dir}' is empty.")
+
+        git_dir = os.path.join(self.template_dir, '.git')
+        if not os.path.exists(git_dir):
+            raise FileNotFoundError(f"Template directory '{self.template_dir}' does not contain a .git directory.")
+
+        shutil.rmtree(self.working_dir)
+        shutil.rmtree(self.repo_dir)
+        os.makedirs(self.working_dir)
+        # Copy the template directory to the working directory
+        shutil.copytree(self.template_dir, self.repo_dir)
+
+    def download_and_save(self, attachment):
+        """
+        Retrieve the contents at url_path and write them to a file in the working directory.
+        """
+        try:
+            url_path = self.BASE_FILE_URL + str(attachment["attachmentid"]) + "/" + attachment["filename"]
+            file_path = os.path.join(self.working_dir, attachment["filename"])
+            response = requests.get(url_path, stream=True)
+            response.raise_for_status()  # Raise an error for bad HTTP responses
+
+            with open(file_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+            return True
+        except Exception as e:
+            print(f"Error downloading or saving file {attachment['filename']}: {e}")
+            return False
+
     @transaction.atomic
     def begin(self, branch):
         """
@@ -1373,19 +1435,41 @@ class PatchApplier:
         if existing_tasks:
             return False
 
+        self.initialize_directories()
+
         patch = branch.patch
         attachments = patch.get_attachments()
-
+        patch_count = 0
+        fail_count = 0
         for position, attachment in enumerate(attachments, start=1):
-            task = CfbotTask.objects.create(
-                task_id=attachment["filename"],
-                task_name=f"Patchset File",
-                patch_id=patch.id,
-                branch_id=branch.branch_id,
-                position=position,
-                status="COMPLETED", # testing setup, mark all as completed right away.
-                payload=json.dumps(attachment, default=datetime_serializer),
-            )
+            if attachment.get("ispatch"):
+                patch_count += 1
+                result = self.download_and_save(attachment)
+                if not result: fail_count += 1
+                task = CfbotTask.objects.create(
+                    task_id=attachment["filename"],
+                    task_name=f"Patchset File",
+                    patch_id=patch.id,
+                    branch_id=branch.branch_id,
+                    position=position,
+                    status="COMPLETED" if result else "FAILED", # testing setup, mark all as completed right away.
+                    payload=json.dumps(attachment, default=datetime_serializer),
+                )
+            else:
+                task = CfbotTask.objects.create(
+                    task_id=attachment["filename"],
+                    task_name=f"Patchset File",
+                    patch_id=patch.id,
+                    branch_id=branch.branch_id,
+                    position=position,
+                    status="IGNORED",
+                    payload=json.dumps(attachment, default=datetime_serializer),
+                )
+
+        # Abort if none of the files are patches.  Should never have gotten this far.
+        # Also, all must d/l correctly.
+        if patch_count == 0 or fail_count > 0:
+            return False
 
         # Create a new apply task
         CfbotTask.objects.create(
@@ -1589,6 +1673,10 @@ class MockBranchManager:
     """
     A mock class to provide dummy implementations of PatchBurner, PatchTester, Notifier, and PatchApplier.
     """
+    path_template_dir = "/home/davidj/postgres-cfapp/"
+    path_working_dir = "/home/davidj/cfapp-temp/work/"
+    path_repo_dir = "/home/davidj/cfapp-temp/postgres/"
+
     @staticmethod
     def getPatchBurner():
         return PatchBurner()
@@ -1603,4 +1691,7 @@ class MockBranchManager:
 
     @staticmethod
     def getPatchApplier():
-        return PatchApplier()
+        return PatchApplier(
+            MockBranchManager.path_template_dir,
+            MockBranchManager.path_working_dir,
+            MockBranchManager.path_repo_dir)
