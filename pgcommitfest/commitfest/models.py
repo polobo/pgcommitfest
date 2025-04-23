@@ -1508,6 +1508,31 @@ class PatchApplier:
             payload["apply_error"] = e.stderr
             return False
 
+    def convert_to_merge_commit(self, branch):
+        """
+        Convert the branch to a merge commit.
+        """
+        msg_file = os.path.join(self.working_dir, "merge_commit_msg.txt")
+        commit_id = self.get_head_commit_sha()
+
+        # Write a message to the msg_file
+        with open(msg_file, "w") as f:
+            f.write(f"Merge branch '{branch.branch_name}' into master\n\n")
+            f.write(f"Patch ID: {branch.patch_id}\n")
+            f.write(f"Branch ID: {branch.branch_id}\n")
+            f.write(f"Commit ID: {commit_id}\n")
+
+        reset_cmd = ["git", "-C", self.repo_dir, "reset", "origin/master", "--hard", "--quiet"]
+        merge_cmd = ["git", "-C", self.repo_dir, "merge", "--no-ff", "--quiet", "-F", msg_file, commit_id]
+
+        try:
+            subprocess.run(reset_cmd, check=True)
+            subprocess.run(merge_cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"Failed to convert to merge commit: {e.stderr.strip()}")
+
+        return True
+
     @transaction.atomic
     def begin(self, branch):
         """
@@ -1583,27 +1608,34 @@ class PatchApplier:
         else:
             failed = False
 
-        branch.commit_id = self.get_merge_commit_sha()
-        branch.base_commit_sha = self.get_base_commit_sha()
         branch.patch_count = self.get_patch_count()
-
         first_additions, first_deletions = self.git_shortstat("origin/master", "HEAD~%s" % (branch.patch_count - 1,))
         all_additions, all_deletions = self.git_shortstat("origin/master", "HEAD")
 
-        apply_results = {
-            "merge_commit_sha": branch.commit_id,
-            "base_commit_sha": branch.base_commit_sha,
-            "patch_count": branch.patch_count,
-            "first_additions": first_additions,
-            "first_deletions": first_deletions,
-            "all_additions": all_additions,
-            "all_deletions": all_deletions,
-        }
+        if not failed:
+            if self.convert_to_merge_commit(branch):
+                failed = False
+            else:
+                failed = True
 
-        branch.first_additions = apply_results["first_additions"]
-        branch.first_deletions = apply_results["first_deletions"]
-        branch.all_additions = apply_results["all_additions"]
-        branch.all_deletions = apply_results["all_deletions"]
+        if not failed:
+            branch.commit_id = self.get_head_commit_sha()
+            branch.base_commit_sha = self.get_base_commit_sha()
+
+            apply_results = {
+                "merge_commit_sha": branch.commit_id,
+                "base_commit_sha": branch.base_commit_sha,
+                "patch_count": branch.patch_count,
+                "first_additions": first_additions,
+                "first_deletions": first_deletions,
+                "all_additions": all_additions,
+                "all_deletions": all_deletions,
+            }
+
+            branch.first_additions = apply_results["first_additions"]
+            branch.first_deletions = apply_results["first_deletions"]
+            branch.all_additions = apply_results["all_additions"]
+            branch.all_deletions = apply_results["all_deletions"]
 
         CfbotTask.objects.create(
             task_id=f"Apply Result Payload",
@@ -1631,7 +1663,7 @@ class PatchApplier:
         import os
         return sum(1 for file in os.listdir(self.working_dir) if file.endswith((".diff", ".patch")))
 
-    def get_merge_commit_sha(self):
+    def get_head_commit_sha(self):
         """
         Simulate retrieving the merge commit SHA after a successful compilation.
         """

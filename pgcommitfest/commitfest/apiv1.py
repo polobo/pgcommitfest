@@ -259,7 +259,6 @@ def create_branch(request):
         return apiResponse(request, {"error": "No queue item found for the patch"}, status=404)
 
     patch = get_object_or_404(Patch, pk=patch_id)
-    attachments = patch.get_attachments()
 
     branch, created = CfbotBranch.objects.update_or_create(
         patch_id=patch_id,

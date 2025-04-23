@@ -69,8 +69,6 @@
                     <th>Branch ID</th>
                     <th>Status</th>
                     <th>Modified</th>
-                    <th>Commit ID</th>
-                    <th>Base SHA</th>
                     <th>Task Count</th>
                 </tr>
             </thead>
@@ -244,8 +242,6 @@
                             <td>${entry.branch_id}</td>
                             <td>${entry.status}</td>
                             <td>${entry.modified}</td>
-                            <td>${entry.commit_id || ""}</td>
-                            <td>${entry.base_commit_sha || ""}</td>
                             <td>${entry.task_count || 0}</td>
                         `;
                         tableBody.appendChild(row);
