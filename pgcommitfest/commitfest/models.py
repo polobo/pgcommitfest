@@ -1729,86 +1729,108 @@ class PatchBurner:
         """
         Filter for "Compile", "Configure", and "Make" tasks, perform their respective work, and update their payloads.
         """
-        # Filter for "Compile" task
-        compile_task = CfbotTask.objects.filter(
-            task_name="Compile", branch_id=branch.branch_id
-        ).first()
-        if not compile_task:
+        configure_is_done = None
+        make_is_done = None
+        compile_is_done = None
+        compile_task = None
+
+        # Loop through tasks and update the *_is_done booleans appropriately
+        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
+        for task in tasks:
+            if task.task_name == "Meson Setup":
+                configure_is_done = task.is_done()
+            elif task.task_name == "Ninja":
+                make_is_done = task.is_done()
+            elif task.task_name == "Compile":
+                compile_is_done = task.is_done()
+                compile_task = task
+
+        if compile_is_done is None:
             raise ValueError("Compile task not found.")
+
+        if compile_is_done:
+            return compile_is_done
 
         if compile_task.status == "CREATED":
             compile_task.status = "EXECUTING"
             compile_task.save()
-        else:
-            raise ValueError("Compile task is not in the correct state.")
 
-        # Create "Configure" task
-        configure_task = CfbotTask.objects.create(
-            task_id=f"Meson Setup {branch.branch_name}",
-            task_name="Meson Setup",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=2,
-            status="EXECUTING",
-            payload=None,
-        )
-
-        try:
-            prefix_dir = os.path.join(self.working_dir, "install")
-            configure_result = subprocess.run(
-                ["meson", "setup", "build", f"--prefix={prefix_dir}"],
-                cwd=self.repo_dir,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
+        if configure_is_done is None:
+            # Create "Configure" task
+            configure_task = CfbotTask.objects.create(
+                task_id=f"Meson Setup {branch.branch_name}",
+                task_name="Meson Setup",
+                patch=branch.patch,
+                branch_id=branch.branch_id,
+                position=2,
+                status="EXECUTING",
+                payload=None,
             )
-            configure_task.payload = {
-                "stdout": configure_result.stdout,
-                "stderr": configure_result.stderr,
-            }
-            configure_task.status = "COMPLETED" if configure_result.returncode == 0 else "FAILED"
-        except Exception as e:
-            configure_task.payload = {"error": str(e)}
-            configure_task.status = "FAILED"
-        configure_task.save()
 
-        if configure_task.status == "FAILED":
+            try:
+                prefix_dir = os.path.join(self.working_dir, "install")
+                configure_result = subprocess.run(
+                    ["meson", "setup", "build", f"--prefix={prefix_dir}"],
+                    cwd=self.repo_dir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+                configure_task.payload = {
+                    "stdout": configure_result.stdout,
+                    "stderr": configure_result.stderr,
+                }
+                configure_task.status = "COMPLETED" if configure_result.returncode == 0 else "FAILED"
+            except Exception as e:
+                configure_task.payload = {"error": str(e)}
+                configure_task.status = "FAILED"
+            configure_task.save()
+
+            if configure_task.status == "FAILED":
+                compile_task.status = "COMPLETED"
+                compile_task.save()
+                return True
+
+        if make_is_done is None:
+            # Create "Make" task
+            make_task = CfbotTask.objects.create(
+                task_id=f"Ninja {branch.branch_name}",
+                task_name="Ninja",
+                patch=branch.patch,
+                branch_id=branch.branch_id,
+                position=3,
+                status="EXECUTING",
+                payload=None,
+            )
+            def run_make_task():
+                try:
+                    build_dir = os.path.join(self.repo_dir, "build")
+                    make_result = subprocess.run(
+                        ["ninja"],
+                        cwd=build_dir,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                    )
+                    make_task.payload = {
+                        "stdout": make_result.stdout,
+                        "stderr": make_result.stderr,
+                    }
+                    make_task.status = "COMPLETED" if make_result.returncode == 0 else "FAILED"
+                except Exception as e:
+                    make_task.payload = {"error": str(e)}
+                    make_task.status = "FAILED"
+                make_task.save()
+
+            import threading
+            threading.Thread(target=run_make_task).start()
+
+        if make_is_done and configure_is_done:
             compile_task.status = "COMPLETED"
             compile_task.save()
-            return False
+            return True
 
-        # Create "Make" task
-        make_task = CfbotTask.objects.create(
-            task_id=f"Ninja {branch.branch_name}",
-            task_name="Ninja",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=3,
-            status="EXECUTING",
-            payload=None,
-        )
-
-        try:
-            build_dir = os.path.join(self.repo_dir, "build")
-            make_result = subprocess.run(
-                ["ninja"],
-                cwd=build_dir,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            make_task.payload = {
-                "stdout": make_result.stdout,
-                "stderr": make_result.stderr,
-            }
-            make_task.status = "COMPLETED" if make_result.returncode == 0 else "FAILED"
-        except Exception as e:
-            make_task.payload = {"error": str(e)}
-            make_task.status = "FAILED"
-        make_task.save()
-        compile_task.status = "COMPLETED"
-        compile_task.save()
-        return True
+        return False
 
     def did_fail(self, branch):
         """
@@ -1823,7 +1845,7 @@ class PatchBurner:
         return failed
 
     def get_delay(self, branch):
-        return 0
+        return 60
 
 
 class PatchTester:
