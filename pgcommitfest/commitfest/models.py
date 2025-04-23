@@ -1834,7 +1834,7 @@ class PatchBurner:
 
     def did_fail(self, branch):
         """
-        Apply the results of branch compilation. Return False if any task is a failure.
+        Apply the results of branch compilation. Return True if any task is a failure.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
@@ -1852,37 +1852,115 @@ class PatchTester:
     """
     A class responsible for testing patches.
     """
+    def __init__(self, working_dir, repo_dir):
+        self.working_dir = working_dir
+        self.repo_dir = repo_dir
+
     def begin(self, branch):
         """
-        Create a CI task for testing the given branch.
+        Check if all tasks for the branch are completed and perform testing work.
         """
         # All tasks from the previous subsystem should have been removed leaving us with a clean slate
         existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
         if existing_tasks:
             return False
+
+        CfbotTask.objects.create(
+            task_id=f"Test {branch.branch_name}",
+            task_name="Test",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=1,
+            status="CREATED",
+            payload=None,
+        )
+
         return True
 
     def is_done(self, branch):
         """
-        Check if all tasks for the branch are completed.
+        Create a test task for the branch and mark existing tasks as completed.
         """
+        test_is_done = None
+        testing_is_done = None
+        testing_task = None
+
+        # Loop through tasks and update the *_is_done booleans appropriately
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        return all(task.is_done() for task in tasks)
+        for task in tasks:
+            if task.task_name == "Run Test":
+                test_is_done = task.is_done()
+            elif task.task_name == "Test":
+                testing_is_done = task.is_done()
+                testing_task = task
+
+        if testing_is_done is None:
+            raise ValueError("Testing task not found.")
+
+        if testing_is_done:
+            return testing_is_done
+
+        if testing_task.status == "CREATED":
+            testing_task.status = "EXECUTING"
+            testing_task.save()
+
+        if test_is_done is None:
+            # Create "Test" task
+            test_task = CfbotTask.objects.create(
+                task_id=f"Meson Test {branch.branch_name}",
+                task_name="Run Test",
+                patch=branch.patch,
+                branch_id=branch.branch_id,
+                position=2,
+                status="EXECUTING",
+                payload=None,
+            )
+            def run_test_task():
+                try:
+                    build_dir = os.path.join(self.repo_dir, "build")
+                    test_result = subprocess.run(
+                        ["meson", "test"],
+                        cwd=build_dir,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                    )
+                    test_task.payload = {
+                        "stdout": test_result.stdout,
+                        "stderr": test_result.stderr,
+                    }
+                    test_task.status = "COMPLETED" if test_result.returncode == 0 else "FAILED"
+                except Exception as e:
+                    test_task.payload = {"error": str(e)}
+                    test_task.status = "FAILED"
+                test_task.save()
+
+                # within build_dir/meson-logs/testlog*
+                # there are three artifacts to collect as well
+                # need to either bring the concept over from cfbot
+                # or figure out something else.
+
+            import threading
+            threading.Thread(target=run_test_task).start()
+
+        if test_is_done:
+            testing_task.status = "COMPLETED"
+            testing_task.save()
+            return True
+
+        return False
 
     def did_fail(self, branch):
         """
-        Apply the results of branch testing. Return False if any task is a failure.
+        Apply the results of branch testing. Return True if any task is a failure.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         if any(task.is_failure() for task in tasks):
-            failed = True
-        else:
-            failed = False
-
-        return failed
+            return True
+        return False
 
     def get_delay(self, branch):
-        return 0
+        return 60
 
 
 class Notifier:
@@ -1946,17 +2024,22 @@ class MockBranchManager:
         return PatchApplier(
             MockBranchManager.path_template_dir,
             MockBranchManager.path_working_dir,
-            MockBranchManager.path_repo_dir)
+            MockBranchManager.path_repo_dir,
+        )
 
     @staticmethod
     def getPatchBurner():
         return PatchBurner(
             MockBranchManager.path_working_dir,
-            MockBranchManager.path_repo_dir)
+            MockBranchManager.path_repo_dir,
+        )
 
     @staticmethod
     def getPatchTester():
-        return PatchTester()
+        return PatchTester(
+            MockBranchManager.path_working_dir,
+            MockBranchManager.path_repo_dir,
+        )
 
     @staticmethod
     def getNotifier():
