@@ -114,9 +114,9 @@
             <strong>Payload:</strong>
             <pre id="task-json-payload" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd;"></pre>
             <strong>Apply Output:</strong>
-            <textarea id="task-json-apply-output" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            <textarea id="task-json-stdout" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
             <strong>Apply Error:</strong>
-            <textarea id="task-json-apply-error" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            <textarea id="task-json-stderr" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
         </div>
     </div>
 </div>
@@ -261,8 +261,8 @@
             document.getElementById("task-json-created").textContent = "";
             document.getElementById("task-json-modified").textContent = "";
             document.getElementById("task-json-payload").textContent = "";
-            document.getElementById("task-json-apply-output").value = "";
-            document.getElementById("task-json-apply-error").value = "";
+            document.getElementById("task-json-stdout").value = "";
+            document.getElementById("task-json-stderr").value = "";
         }
 
         function fetchTasksForBranch(branchId) {
@@ -482,10 +482,10 @@
             };
 
             // Extract and split apply_out and apply_error if they exist
-            const applyOutput = taskDetails.payload.apply_output ? taskDetails.payload.apply_output.split("\n") : [];
-            const applyError = taskDetails.payload.apply_error ? taskDetails.payload.apply_error.split("\n") : [];
-            if (taskDetails.payload.apply_output) delete taskDetails.payload.apply_output;
-            if (taskDetails.payload.apply_error) delete taskDetails.payload.apply_error;
+            const applyOutput = taskDetails.payload.stdout ? taskDetails.payload.stdout.split("\n") : [];
+            const applyError = taskDetails.payload.stderr ? taskDetails.payload.stderr.split("\n") : [];
+            if (taskDetails.payload.stdout) delete taskDetails.payload.stdout;
+            if (taskDetails.payload.stderr) delete taskDetails.payload.stderr;
 
             document.getElementById("task-json-id").textContent = taskDetails.id || "None";
             document.getElementById("task-json-name").textContent = taskDetails.name || "None";
@@ -498,8 +498,8 @@
             document.getElementById("task-json-payload").textContent = JSON.stringify(taskDetails.payload, null, 2) || "None";
 
             // Display apply_out and apply_error in text boxes
-            const applyOutputBox = document.getElementById("task-json-apply-output");
-            const applyErrorBox = document.getElementById("task-json-apply-error");
+            const applyOutputBox = document.getElementById("task-json-stdout");
+            const applyErrorBox = document.getElementById("task-json-stderr");
             applyOutputBox.value = applyOutput.join("\n");
             applyErrorBox.value = applyError.join("\n");
 

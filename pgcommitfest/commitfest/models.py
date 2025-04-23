@@ -1498,14 +1498,14 @@ class PatchApplier:
             )
             print(f"Apply script output:\n{result.stdout}\n{result.stderr}")
             payload["apply_result"] = "Success"
-            payload["apply_output"] = result.stdout
-            payload["apply_error"] = result.stderr
+            payload["stdout"] = result.stdout
+            payload["stderr"] = result.stderr
             return True
         except subprocess.CalledProcessError as e:
             print(f"Error running apply script:\n{e.stdout}\n{e.stderr}")
             payload["apply_result"] = "Failure"
-            payload["apply_output"] = e.stdout
-            payload["apply_error"] = e.stderr
+            payload["stdout"] = e.stdout
+            payload["stderr"] = e.stderr
             return False
 
     def convert_to_merge_commit(self, branch):
@@ -1679,7 +1679,6 @@ class PatchApplier:
         except subprocess.CalledProcessError as e:
             raise Exception(f"Failed to retrieve base commit SHA: {e.stderr.strip()}")
 
-
     def get_base_commit_sha(self):
         """
         Retrieve the base commit SHA from the template directory.
@@ -1701,6 +1700,10 @@ class PatchBurner:
     """
     A class responsible for burning patches.
     """
+    def __init__(self, working_dir, repo_dir):
+        self.working_dir = working_dir
+        self.repo_dir = repo_dir
+
     def begin(self, branch):
         """
         Create a compile task for the branch and mark existing tasks as completed.
@@ -1709,14 +1712,103 @@ class PatchBurner:
         existing_tasks = CfbotTask.objects.filter(branch_id=branch.branch_id).order_by('position')
         if existing_tasks:
             return False
+
+        CfbotTask.objects.create(
+            task_id=f"Compile {branch.branch_name}",
+            task_name="Compile",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=1,
+            status="CREATED",
+            payload=None,
+        )
+
         return True
 
     def is_done(self, branch):
         """
-        Check if all tasks for the branch are completed.
+        Filter for "Compile", "Configure", and "Make" tasks, perform their respective work, and update their payloads.
         """
-        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        return all(task.is_done() for task in tasks)
+        # Filter for "Compile" task
+        compile_task = CfbotTask.objects.filter(
+            task_name="Compile", branch_id=branch.branch_id
+        ).first()
+        if not compile_task:
+            raise ValueError("Compile task not found.")
+
+        if compile_task.status == "CREATED":
+            compile_task.status = "EXECUTING"
+            compile_task.save()
+        else:
+            raise ValueError("Compile task is not in the correct state.")
+
+        # Create "Configure" task
+        configure_task = CfbotTask.objects.create(
+            task_id=f"Meson Setup {branch.branch_name}",
+            task_name="Meson Setup",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=2,
+            status="EXECUTING",
+            payload=None,
+        )
+
+        try:
+            prefix_dir = os.path.join(self.working_dir, "install")
+            configure_result = subprocess.run(
+                ["meson", "setup", "build", f"--prefix={prefix_dir}"],
+                cwd=self.repo_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            configure_task.payload = {
+                "stdout": configure_result.stdout,
+                "stderr": configure_result.stderr,
+            }
+            configure_task.status = "COMPLETED" if configure_result.returncode == 0 else "FAILED"
+        except Exception as e:
+            configure_task.payload = {"error": str(e)}
+            configure_task.status = "FAILED"
+        configure_task.save()
+
+        if configure_task.status == "FAILED":
+            compile_task.status = "COMPLETED"
+            compile_task.save()
+            return False
+
+        # Create "Make" task
+        make_task = CfbotTask.objects.create(
+            task_id=f"Ninja {branch.branch_name}",
+            task_name="Ninja",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=3,
+            status="EXECUTING",
+            payload=None,
+        )
+
+        try:
+            build_dir = os.path.join(self.repo_dir, "build")
+            make_result = subprocess.run(
+                ["ninja"],
+                cwd=build_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            make_task.payload = {
+                "stdout": make_result.stdout,
+                "stderr": make_result.stderr,
+            }
+            make_task.status = "COMPLETED" if make_result.returncode == 0 else "FAILED"
+        except Exception as e:
+            make_task.payload = {"error": str(e)}
+            make_task.status = "FAILED"
+        make_task.save()
+        compile_task.status = "COMPLETED"
+        compile_task.save()
+        return True
 
     def did_fail(self, branch):
         """
@@ -1828,8 +1920,17 @@ class MockBranchManager:
     path_repo_dir = "/home/davidj/cfapp-temp/postgres/"
 
     @staticmethod
+    def getPatchApplier():
+        return PatchApplier(
+            MockBranchManager.path_template_dir,
+            MockBranchManager.path_working_dir,
+            MockBranchManager.path_repo_dir)
+
+    @staticmethod
     def getPatchBurner():
-        return PatchBurner()
+        return PatchBurner(
+            MockBranchManager.path_working_dir,
+            MockBranchManager.path_repo_dir)
 
     @staticmethod
     def getPatchTester():
@@ -1839,9 +1940,3 @@ class MockBranchManager:
     def getNotifier():
         return Notifier()
 
-    @staticmethod
-    def getPatchApplier():
-        return PatchApplier(
-            MockBranchManager.path_template_dir,
-            MockBranchManager.path_working_dir,
-            MockBranchManager.path_repo_dir)
