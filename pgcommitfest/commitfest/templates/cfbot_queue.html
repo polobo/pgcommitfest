@@ -81,24 +81,47 @@
     </div>
 </div>
 
-<div>CFBot Tasks</div>
-<table border="1" id="cfbot-tasks-table" style="width: 100%; margin-bottom: 20px;">
-    <thead>
-        <tr>
-            <th>Task ID</th>
-            <th>Task Name</th>
-            <th>Patch ID</th>
-            <th>Branch ID</th>
-            <th>Position</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Modified</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Table rows will be dynamically populated via AJAX -->
-    </tbody>
-</table>
+<div style="display: flex; gap: 20px; margin-top: 20px;">
+    <div style="flex: 70%;">
+        <div>CFBot Tasks</div>
+        <table border="1" id="cfbot-tasks-table" style="width: 100%; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>Task ID</th>
+                    <th>Task Name</th>
+                    <th>Patch ID</th>
+                    <th>Branch ID</th>
+                    <th>Position</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+            </tbody>
+        </table>
+    </div>
+    <div id="task-json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+        <h3>Task Details</h3>
+        <div id="task-json-keys">
+            <strong>Task ID:</strong> <span id="task-json-id"></span><br>
+            <strong>Task Name:</strong> <span id="task-json-name"></span><br>
+            <strong>Patch ID:</strong> <span id="task-json-patch-id"></span><br>
+            <strong>Branch ID:</strong> <span id="task-json-branch-id"></span><br>
+            <strong>Position:</strong> <span id="task-json-position"></span><br>
+            <strong>Status:</strong> <span id="task-json-status"></span><br>
+            <strong>Created:</strong> <span id="task-json-created"></span><br>
+            <strong>Modified:</strong> <span id="task-json-modified"></span><br>
+            <strong>Payload:</strong>
+            <pre id="task-json-payload" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd;"></pre>
+            <strong>Apply Output:</strong>
+            <textarea id="task-json-apply-output" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            <strong>Apply Error:</strong>
+            <textarea id="task-json-apply-error" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+        </div>
+    </div>
+</div>
 
 <div>
     <strong>Selected Task ID:</strong> <span id="selected-task-id">None</span>
@@ -179,6 +202,11 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = "auto"; // Reset height to calculate scrollHeight
+            textarea.style.height = textarea.scrollHeight + "px"; // Set height to fit content
+        }
+
         function highlightBranchRow(row) {
             // Highlight the selected branch row and remove highlight from others
             const rows = document.querySelectorAll("#ci-branches-table tbody tr");
@@ -226,10 +254,26 @@
                 .catch(error => console.error("Error:", error));
         }
 
+        function clearTaskDisplay() {
+            // Clear the task JSON display
+            document.getElementById("task-json-id").textContent = "";
+            document.getElementById("task-json-name").textContent = "";
+            document.getElementById("task-json-patch-id").textContent = "";
+            document.getElementById("task-json-branch-id").textContent = "";
+            document.getElementById("task-json-position").textContent = "";
+            document.getElementById("task-json-status").textContent = "";
+            document.getElementById("task-json-created").textContent = "";
+            document.getElementById("task-json-modified").textContent = "";
+            document.getElementById("task-json-payload").textContent = "";
+            document.getElementById("task-json-apply-output").value = "";
+            document.getElementById("task-json-apply-error").value = "";
+        }
+
         function fetchTasksForBranch(branchId) {
             const tableBody = document.getElementById("cfbot-tasks-table").getElementsByTagName("tbody")[0];
             if (!branchId) {
                 tableBody.innerHTML = ""; // Clear existing rows
+                clearTaskDisplay(); // Clear the task JSON display
                 return;
             }
             // Fetch tasks for the selected branch
@@ -246,6 +290,14 @@
                     data.tasks.forEach((task, index) => {
                         const row = document.createElement("tr");
                         row.setAttribute("data-task-id", task.task_id);
+                        row.setAttribute("data-task-name", task.task_name);
+                        row.setAttribute("data-patch-id", task.patch_id);
+                        row.setAttribute("data-branch-id", task.branch_id);
+                        row.setAttribute("data-position", task.position);
+                        row.setAttribute("data-status", task.status);
+                        row.setAttribute("data-created", task.created);
+                        row.setAttribute("data-modified", task.modified);
+                        row.setAttribute("data-payload", JSON.stringify(task.payload, null, 2));
                         row.innerHTML = `
                             <td>${task.task_id}</td>
                             <td>${task.task_name}</td>
@@ -419,6 +471,45 @@
             // Update the selected task ID label
             const taskId = row.getAttribute("data-task-id");
             document.getElementById("selected-task-id").textContent = taskId || "None";
+
+            // Update the JSON display with task details
+            const taskDetails = {
+                id: row.getAttribute("data-task-id"),
+                name: row.getAttribute("data-task-name"),
+                patchId: row.getAttribute("data-patch-id"),
+                branchId: row.getAttribute("data-branch-id"),
+                position: row.getAttribute("data-position"),
+                status: row.getAttribute("data-status"),
+                created: row.getAttribute("data-created"),
+                modified: row.getAttribute("data-modified"),
+                payload: JSON.parse(row.getAttribute("data-payload")) || {},
+            };
+
+            // Extract and split apply_out and apply_error if they exist
+            const applyOutput = taskDetails.payload.apply_output ? taskDetails.payload.apply_output.split("\n") : [];
+            const applyError = taskDetails.payload.apply_error ? taskDetails.payload.apply_error.split("\n") : [];
+            if (taskDetails.payload.apply_output) delete taskDetails.payload.apply_output;
+            if (taskDetails.payload.apply_error) delete taskDetails.payload.apply_error;
+
+            document.getElementById("task-json-id").textContent = taskDetails.id || "None";
+            document.getElementById("task-json-name").textContent = taskDetails.name || "None";
+            document.getElementById("task-json-patch-id").textContent = taskDetails.patchId || "None";
+            document.getElementById("task-json-branch-id").textContent = taskDetails.branchId || "None";
+            document.getElementById("task-json-position").textContent = taskDetails.position || "None";
+            document.getElementById("task-json-status").textContent = taskDetails.status || "None";
+            document.getElementById("task-json-created").textContent = taskDetails.created || "None";
+            document.getElementById("task-json-modified").textContent = taskDetails.modified || "None";
+            document.getElementById("task-json-payload").textContent = JSON.stringify(taskDetails.payload, null, 2) || "None";
+
+            // Display apply_out and apply_error in text boxes
+            const applyOutputBox = document.getElementById("task-json-apply-output");
+            const applyErrorBox = document.getElementById("task-json-apply-error");
+            applyOutputBox.value = applyOutput.join("\n");
+            applyErrorBox.value = applyError.join("\n");
+
+            // Auto-resize textareas to fit content
+            autoResizeTextarea(applyOutputBox);
+            autoResizeTextarea(applyErrorBox);
         }
 
         function wireUpTaskActions() {

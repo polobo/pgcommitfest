@@ -161,6 +161,7 @@ def cfbot_tasks(request):
             "status": task.status,
             "created": task.created,
             "modified": task.modified,
+            "payload": task.payload,
         }
         for task in tasks
     ]

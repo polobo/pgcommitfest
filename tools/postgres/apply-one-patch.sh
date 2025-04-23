@@ -1,5 +1,5 @@
 #!/bin/sh
-set  -e
+set -e
 
 date
 
@@ -38,7 +38,6 @@ inputfile="$workdir/$inputfile"
 
 set -x
 
-
 # XXX: can we assume if the .msg file is empty this will fail?
 if [ ! -s "$msgfile" ]; then
     echo "Message file is empty. Skipping 'git am'."
@@ -56,7 +55,7 @@ else
 fi
 
 echo "=== using $PATCH_CMD to apply $inputfile ==="
-if ! $PATCH_CMD -p1 --no-backup-if-mismatch -V none -f -N <"$inputfilef" && git -C "$gitrepo" add .; then
+if ! ( cd "$gitrepo" && $PATCH_CMD -p1 --no-backup-if-mismatch -V none -f -N <"$inputfile" ); then
     git -C "$gitrepo" reset HEAD .
     git -C "$gitrepo" checkout -- .
     git -C "$gitrepo" clean -fdx
@@ -66,6 +65,8 @@ if ! $PATCH_CMD -p1 --no-backup-if-mismatch -V none -f -N <"$inputfilef" && git 
     echo "=== using 'git apply' to apply patch $f ==="
     # --allow-empty (minimum version requirements...)
     git -C "$gitrepo" apply --3way "$inputfile" || { git -C "$gitrepo" diff && exit 1; }
+else
+    git -C "$gitrepo" add .;
 fi
 
 # Linked to apparently missing --allow-empty option in git apply...
@@ -77,8 +78,6 @@ fi
 #     exit 0
 # fi
 
-# set up the git user then commit
-git -C "$gitrepo" config user.name "Commitfest Bot"
-git -C "$gitrepo" config user.email "cfbot@cputube.org"
+
 git -C "$gitrepo" commit -m "$MESSAGE" --author="${NAME:-Commitfest Bot} <${EMAIL:-cfbot@cputube.org}>" --date="${DATE:-now}"
 

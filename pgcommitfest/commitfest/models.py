@@ -913,6 +913,14 @@ class CfbotBranchHistory(models.Model):
             base_commit_sha=history_branch.base_commit_sha,
             task_count=len(cached_tasks),
         )
+        taskarr = [{
+                    "task_id": task.task_id,
+                    "task_name": task.task_name,
+                    "status": task.status,
+                    "created": task.created.isoformat(),
+                    "modified": task.modified.isoformat(),
+                    "payload": task.payload,
+                   } for task in cached_tasks]
 
         # Insert tasks into cfbotbranchhistorytask
         with connection.cursor() as cursor:
@@ -921,14 +929,7 @@ class CfbotBranchHistory(models.Model):
                 INSERT INTO commitfest_cfbotbranchhistorytask (history_id, branch_tasks)
                 VALUES (%s, %s)
                 """,
-                [history.id, json.dumps([{
-                    "task_id": task.task_id,
-                    "task_name": task.task_name,
-                    "status": task.status,
-                    "created": task.created.isoformat(),
-                    "modified": task.modified.isoformat(),
-                    "payload": task.payload,
-                } for task in cached_tasks])]
+                [history.id, json.dumps(taskarr, default=datetime_serializer)]
             )
 
         return history
@@ -1417,6 +1418,10 @@ class PatchApplier:
             raise FileNotFoundError(f"Apply script '{apply_script_path}' does not exist.")
         shutil.copy(apply_script_path, self.working_dir)
 
+        # Set up the git user then commit
+        subprocess.run(["git", "-C", self.repo_dir, "config", "user.name", "Commitfest Bot"], check=True)
+        subprocess.run(["git", "-C", self.repo_dir, "config", "user.email", "cfbot@cputube.org"], check=True)
+
     def download_and_save(self, attachment):
         """
         Retrieve the contents at url_path and write them to a file in the working directory.
@@ -1440,7 +1445,7 @@ class PatchApplier:
     # XXX: handles/assumes .diff files only
     # For compressed files we can branch here to perform decompressions
     # and create new tasks for the contained files.
-    def perform_apply(self, filename):
+    def perform_apply(self, filename, payload):
         """
         Apply the patch file after ensuring it exists in the working directory.
         """
@@ -1459,9 +1464,15 @@ class PatchApplier:
                 text=True
             )
             print(f"Apply script output:\n{result.stdout}\n{result.stderr}")
+            payload["apply_result"] = "Success"
+            payload["apply_output"] = result.stdout
+            payload["apply_error"] = result.stderr
             return True
         except subprocess.CalledProcessError as e:
             print(f"Error running apply script:\n{e.stdout}\n{e.stderr}")
+            payload["apply_result"] = "Failure"
+            payload["apply_output"] = e.stdout
+            payload["apply_error"] = e.stderr
             return False
 
     @transaction.atomic
@@ -1481,6 +1492,7 @@ class PatchApplier:
         patch_count = 0
         fail_count = 0
         for position, attachment in enumerate(attachments, start=1):
+            attachment["date"] = attachment["date"].isoformat() # XXX: hack for JSONField usage
             if attachment.get("ispatch") and fail_count == 0:
                 patch_count += 1
                 result = self.download_and_save(attachment)
@@ -1492,7 +1504,7 @@ class PatchApplier:
                     branch_id=branch.branch_id,
                     position=position,
                     status="EXECUTING" if result else "FAILED", # testing setup, mark all as completed right away.
-                    payload=json.dumps(attachment, default=datetime_serializer),
+                    payload=attachment,
                 )
             else:
                 task = CfbotTask.objects.create(
@@ -1502,7 +1514,7 @@ class PatchApplier:
                     branch_id=branch.branch_id,
                     position=position,
                     status="IGNORED",
-                    payload=json.dumps(attachment, default=datetime_serializer),
+                    payload=attachment,
                 )
 
         # Abort if none of the files are patches.  Should never have gotten this far.
@@ -1519,7 +1531,7 @@ class PatchApplier:
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
         for task in tasks:
             if task.task_name == "Patchset File":
-                if self.perform_apply(task.task_id):
+                if self.perform_apply(task.task_id, task.payload):
                     task.status = "COMPLETED"
                 else:
                     task.status = "FAILED"
