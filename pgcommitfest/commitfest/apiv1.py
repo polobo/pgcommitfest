@@ -268,7 +268,6 @@ def create_branch(request):
             "branch_name": branch_name,
             "apply_url": apply_url,
             "status": status,
-            "patch_count": len(attachments),
             "created": datetime.now(),
             "modified": datetime.now(),
         },

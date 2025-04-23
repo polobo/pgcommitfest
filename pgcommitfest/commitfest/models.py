@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime
 import json
 import subprocess
+import re
 
 
 from pgcommitfest.userprofile.models import UserProfile
@@ -1371,6 +1372,10 @@ class PatchApplier:
     BASE_FILE_URL = "http://localhost:8001/message-id/attachment/"
     APPLY_SCRIPT_SRC = "tools/postgres/"
     APPLY_SCRIPT_NAME = "apply-one-patch.sh"
+
+    RE_ADDITIONS = re.compile(r"(\d+) insertion")
+    RE_DELETIONS = re.compile(r"(\d+) deletion")
+
     """
     A class responsible for applying patches to branches.
     """
@@ -1381,6 +1386,34 @@ class PatchApplier:
         self.template_dir = template_dir
         self.working_dir = working_dir
         self.repo_dir = repo_dir
+
+    def git_shortstat(self, from_commit, to_commit):
+        try:
+            result = subprocess.run(
+                ["git", "-C", self.repo_dir, "diff", "--shortstat", from_commit, to_commit],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+                text=True,
+            )
+            shortstat = result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"Failed to retrieve base commit SHA: {e.stderr.strip()}")
+
+        additions = re.search(self.RE_ADDITIONS, shortstat)
+        deletions = re.search(self.RE_DELETIONS, shortstat)
+
+        if additions:
+            additions = int(additions.group(1))
+        else:
+            additions = 0
+
+        if deletions:
+            deletions = int(deletions.group(1))
+        else:
+            deletions = 0
+
+        return additions, deletions
 
     def initialize_directories(self):
         """
@@ -1552,15 +1585,19 @@ class PatchApplier:
 
         branch.commit_id = self.get_merge_commit_sha()
         branch.base_commit_sha = self.get_base_commit_sha()
+        branch.patch_count = self.get_patch_count()
+
+        first_additions, first_deletions = self.git_shortstat("origin/master", "HEAD~%s" % (branch.patch_count - 1,))
+        all_additions, all_deletions = self.git_shortstat("origin/master", "HEAD")
 
         apply_results = {
             "merge_commit_sha": branch.commit_id,
             "base_commit_sha": branch.base_commit_sha,
             "patch_count": branch.patch_count,
-            "first_additions": 10,
-            "first_deletions": 5,
-            "all_additions": 10,
-            "all_deletions": 5,
+            "first_additions": first_additions,
+            "first_deletions": first_deletions,
+            "all_additions": all_additions,
+            "all_deletions": all_deletions,
         }
 
         branch.first_additions = apply_results["first_additions"]
@@ -1583,19 +1620,50 @@ class PatchApplier:
     def get_delay(self, branch):
         return 0
 
+    def get_patch_count(self):
+        # In particular since an input file can be an archive of patches
+        # we need to count the number of patches found in the directory
+        # though possible this can be confirmed/gotten in other ways.
+        # but this is consistent with context introspection other values get.
+        """
+        Count the number of files in the working directory with .diff or .patch extensions.
+        """
+        import os
+        return sum(1 for file in os.listdir(self.working_dir) if file.endswith((".diff", ".patch")))
+
     def get_merge_commit_sha(self):
         """
         Simulate retrieving the merge commit SHA after a successful compilation.
         """
-        # Replace with actual logic to retrieve the merge commit SHA
-        return "mergesha"
+        try:
+            result = subprocess.run(
+                ["git", "-C", self.repo_dir, "rev-parse", "HEAD"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+                text=True,
+            )
+            return result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"Failed to retrieve base commit SHA: {e.stderr.strip()}")
+
 
     def get_base_commit_sha(self):
         """
-        Simulate retrieving the base commit SHA for the branch.
+        Retrieve the base commit SHA from the template directory.
         """
-        # Replace with actual logic to retrieve the base commit SHA
-        return "basesha"
+        try:
+            result = subprocess.run(
+                ["git", "-C", self.repo_dir, "rev-parse", "origin/master"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+                text=True,
+            )
+            return result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"Failed to retrieve base commit SHA: {e.stderr.strip()}")
+
 
 class PatchBurner:
     """
