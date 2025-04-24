@@ -1,0 +1,44 @@
+From 09b1184d9ec79afc7d2378a0494590fb52ae3b20 Mon Sep 17 00:00:00 2001
+From: Commitfest Bot <cfbot@cputube.org>
+Date: Thu, 24 Apr 2025 17:48:37 +0000
+Subject: [PATCH 2/2] [PATCH]: protocol-6.patch
+
+---
+ doc/src/sgml/protocol.sgml | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/doc/src/sgml/protocol.sgml b/doc/src/sgml/protocol.sgml
+index 65bbfc34f5..1cfdbd0aec 100644
+--- a/doc/src/sgml/protocol.sgml
++++ b/doc/src/sgml/protocol.sgml
+@@ -5317,8 +5317,10 @@ psql "dbname=postgres replication=database" -c "IDENTIFY_SYSTEM;"
+        <term>Byte1('v')</term>
+        <listitem>
+         <para>
+-         Identifies the message as a protocol version negotiation
+-         message.
++         Identifies the message as a protocol version negotiation message.
++         The server sends this message when the client requests a major protocol version
++         that the server supports and a newer minor protocol version than the server supports,
++         or when the client includes protocol options that the server does not recognize.
+         </para>
+        </listitem>
+       </varlistentry>
+@@ -5336,8 +5338,12 @@ psql "dbname=postgres replication=database" -c "IDENTIFY_SYSTEM;"
+        <term>Int32</term>
+        <listitem>
+         <para>
+-         Newest minor protocol version supported by the server
+-         for the major protocol version requested by the client.
++         The latest protocol version supported by the server if the client
++         requests a newer protocol version than the server supports.
++         The protocol version requested by the client, otherwise.
++         The most significant 16 bits are the major version number, and the least
++         significant 16 bits are the minor version number. This will be the version
++         of the protocol which will be used for the duration of the connection.
+         </para>
+        </listitem>
+       </varlistentry>
+-- 
+2.34.1
+

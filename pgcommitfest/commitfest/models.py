@@ -623,10 +623,6 @@ class CfbotQueue(models.Model):
             item_to_remove.delete()
 
     def insert_item(self, patch_id, message_id):
-        # Insert a new patchset into the queue after (next) an existing patchset.
-        # The insertion is done at the location of the queue pointer's ll_next.
-        # i.e., the newly inserted patchset will be up in two next calls absent
-        # other changes.
         # Check if the item exists
         existing_patch = CfbotQueueItem.objects.filter(patch_id=patch_id)
         if len(existing_patch) == 1:
@@ -782,6 +778,8 @@ class CfbotQueue(models.Model):
             return None  # No items in the queue
         return CfbotQueueItem.objects.get(id=self.current_queue_item)
 
+    def retrieve():
+        return CfbotQueue.objects.first()
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -808,16 +806,16 @@ class CfbotQueueItem(models.Model):
     ll_next = models.IntegerField(null=True, blank=False)
     last_base_commit_sha = models.TextField(null=True, blank=False)
 
+    def generaterowhtml(self):
+        """
+        Generate HTML for a row, truncating last_base_commit_sha to the first 10 characters.
+        """
+        return f"<tr><td>{self.patch_id}</td><td>{self.message_id}</td><td>{self.last_base_commit_sha[:10] if self.last_base_commit_sha else ''}</td></tr>"
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=["queue"],
-                condition=models.Q(ll_prev__isnull=True),
-                name="unique_first_item"
-            ),
-            models.UniqueConstraint(
-                fields=["queue"],
-                condition=models.Q(ll_next__isnull=True),
                 name="unique_last_item"
             ),
             models.UniqueConstraint(fields=["patch_id"], name="unique_patch_id")
@@ -1220,6 +1218,48 @@ class Workflow(models.Model):
         notifier = MockBranchManager.getNotifier()
         return BranchManager(patchApplier, patchBurner, patchTester, notifier)
 
+    @staticmethod
+    def createBranch(patch_id, message_id):
+        if not patch_id or not message_id:
+            raise ValueError("Patch ID and Message ID are required.")
+
+        # Create a new branch using CfbotBranch
+        branch_name = f"branch_{patch_id}"
+        apply_url = f"http://example.com/apply/{patch_id}"
+        status = "new"
+
+        # Get the corresponding queue item and use its get_attachments method
+        queue = CfbotQueue.objects.first()
+        if not queue:
+            raise ValueError("No queue found.")
+
+        queue_item = queue.items.filter(patch_id=patch_id).first()
+        if not queue_item:
+            raise ValueError(f"No queue item found for patch ID {patch_id}.")
+
+        branch, created = CfbotBranch.objects.update_or_create(
+            patch_id=patch_id,
+            defaults={
+                "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
+                "branch_name": branch_name,
+                "apply_url": apply_url,
+                "status": status,
+                "created": datetime.now(),
+                "modified": datetime.now(),
+            },
+        )
+
+        queue_item.processed_date = datetime.now()
+        queue_item.save()
+
+        # Create a history item for the branch
+        if created:
+            CfbotBranchHistory.add_branch_to_history(branch)
+
+    def processBranch(branch, branchManager = None):
+        if not branchManager:
+            branchManager = Workflow.getBranchManager()
+        return branchManager.process(branch)
 
 class BranchManager:
     """
@@ -1253,11 +1293,15 @@ class BranchManager:
     # only if the active action replies it is not done yet.  None means re-processing
     # is not required - the branch is at an end state, either finished or aborted/failed
     def process(self, branch):
+        if not branch:
+            raise ValueError("Branch cannot be None.")
+
         delay_for = 0
         """
         Process the given branch by creating a new branch instance with updated status.
         The input branch remains unaltered.
         """
+        print(branch)
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
             # Intentional non-clearing of tasks here.
@@ -1415,7 +1459,7 @@ class PatchApplier:
 
         return additions, deletions
 
-    def initialize_directories(self):
+    def initialize_directories(self, branch):
         """
         Check and clear the working and repository directories if they exist.
         Raise FileNotFoundError if they do not exist.
@@ -1454,6 +1498,9 @@ class PatchApplier:
         # Set up the git user then commit
         subprocess.run(["git", "-C", self.repo_dir, "config", "user.name", "Commitfest Bot"], check=True)
         subprocess.run(["git", "-C", self.repo_dir, "config", "user.email", "cfbot@cputube.org"], check=True)
+
+        subprocess.call(["git", "-C", self.repo_dir, "branch", "--quiet", '-D', f"cf/{branch.patch.id}"])
+        subprocess.run(["git", "-C", self.repo_dir, "checkout", "--quiet", '-b', f"cf/{branch.patch.id}"], check=True)
 
     def download_and_save(self, attachment):
         """
@@ -1543,7 +1590,7 @@ class PatchApplier:
         if existing_tasks:
             return False
 
-        self.initialize_directories()
+        self.initialize_directories(branch)
 
         patch = branch.patch
         attachments = patch.get_attachments()

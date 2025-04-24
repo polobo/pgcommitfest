@@ -1,0 +1,7 @@
+ + [ ! -s protocol-6.patch.msg ]
+ + echo Message file is empty. Skipping 'git am'.
+ + echo === using patch to apply /home/davidj/cfapp-temp/work/protocol-6.patch ===
+ + cd /home/davidj/cfapp-temp/postgres/
+ + patch -p1 --no-backup-if-mismatch -V none -f -N
+ + git -C /home/davidj/cfapp-temp/postgres/ add .
+ + git -C /home/davidj/cfapp-temp/postgres/ commit -m [PATCH]: protocol-6.patch --author=Commitfest Bot <cfbot@cputube.org> --date=now

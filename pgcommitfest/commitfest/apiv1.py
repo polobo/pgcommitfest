@@ -123,7 +123,7 @@ def cfbot_peek(request):
 
 
 def cfbot_branches(request):
-    branches = CfbotBranch.objects.all()
+    branches = CfbotBranch.objects.all().order_by("branch_id")
     branch_list = [
         {
             "patch_id": branch.patch_id,
@@ -225,12 +225,16 @@ def add_test_data(request):
         return apiResponse(request, {"error": "No queue found"}, status=404)
 
     # Add test data to the queue
-    queue.insert_item(patch_id=8,   message_id="dgj-example@message-08")
-    queue.insert_item(patch_id=2,   message_id="example@message-2")
-    queue.insert_item(patch_id=3,   message_id="example@message-3")
-    queue.insert_item(patch_id=4,   message_id="example@message-4")
-    queue.insert_item(patch_id=7,   message_id="example@message-7")
+    # queue.insert_item(patch_id=8,   message_id="dgj-example@message-08")
+    # queue.insert_item(patch_id=2,   message_id="example@message-2")
+    # queue.insert_item(patch_id=3,   message_id="example@message-3")
+    # queue.insert_item(patch_id=4,   message_id="example@message-4")
+    # queue.insert_item(patch_id=7,   message_id="example@message-7")
 
+    from .fixtures.protocol_6 import load
+    # Load test data from fixtures
+    load.create_patches()
+    print("Test data added successfully.")
     return apiResponse(request, {"message": "Test data added successfully."})
 
 
@@ -241,42 +245,9 @@ def create_branch(request):
     patch_id = request.GET.get("patch_id")
     message_id = request.GET.get("message_id")
 
-    if not patch_id or not message_id:
-        return apiResponse(request, {"error": "Missing patch_id or message_id"}, status=400)
+    branch = Workflow.create_branch(patch_id, message_id)
 
-    # Create a new branch using CfbotBranch
-    branch_name = f"branch_{patch_id}"
-    apply_url = f"http://example.com/apply/{patch_id}"
-    status = "new"
-
-    # Get the corresponding queue item and use its get_attachments method
-    queue = CfbotQueue.objects.first()
-    if not queue:
-        return apiResponse(request, {"error": "No queue found"}, status=404)
-
-    queue_item = queue.items.filter(patch_id=patch_id).first()
-    if not queue_item:
-        return apiResponse(request, {"error": "No queue item found for the patch"}, status=404)
-
-    patch = get_object_or_404(Patch, pk=patch_id)
-
-    branch, created = CfbotBranch.objects.update_or_create(
-        patch_id=patch_id,
-        defaults={
-            "branch_id": patch_id,  # Using patch_id as branch_id for simplicity
-            "branch_name": branch_name,
-            "apply_url": apply_url,
-            "status": status,
-            "created": datetime.now(),
-            "modified": datetime.now(),
-        },
-    )
-
-    # Create a history item for the branch
-    if created:
-        CfbotBranchHistory.add_branch_to_history(branch)
-
-    return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
+    return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch.name}' created for patch_id {patch_id} with message_id {message_id}."})
 
 
 def fetch_branch_history(request):
@@ -378,7 +349,7 @@ def fetch_open_patches(request):
     """
     open_patches = Patch.objects.filter(
         Q(patchoncommitfest__status__in=PatchOnCommitFest.OPEN_STATUSES)
-    ).distinct()
+    ).distinct().order_by("id")
 
     patch_list = [
         {
@@ -404,9 +375,16 @@ def remove_all_patches(request):
     """
     Remove all patches.
     """
-    #MailThreadAttachment.objects.all().delete()
-    #PatchOnCommitFest.objects.all().delete()
-    #Patch.objects.all().delete()
+    CfbotTask.objects.all().delete()
+    CfbotBranchHistory.objects.all().delete()
+    CfbotBranch.objects.all().delete()
+    CfbotQueueItem.objects.all().delete()
+    q = CfbotQueue.retrieve()
+    q.current_queue_item = None
+    q.save()
+    MailThreadAttachment.objects.all().delete()
+    PatchOnCommitFest.objects.all().delete()
+    Patch.objects.all().delete()
     return apiResponse(request, {"message": "All patches removed successfully."})
 
 @csrf_exempt

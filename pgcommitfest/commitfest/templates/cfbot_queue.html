@@ -2,28 +2,81 @@
 {% block contents %}
 <div id="response-message" style="margin-bottom: 20px; color: green;"> </div> <!-- Response message -->
 
-<div id="open-patches" style="margin-bottom: 20px;">
-    <button id="remove-all-patches-btn">Remove All Patches</button>
-    <button id="reload-patches-btn">Reload Patches</button>
-    <h3>Open Patches</h3>
-    <table border="1" id="open-patches-table" style="margin-bottom: 20px;">
-        <thead>
-            <tr>
-                <th>Patch ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Attachment Count</th>
-                <th>Patchset Message Date</th>
-                <th>In Queue</th>
-                <th>Has Branch</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Table rows will be dynamically populated via AJAX -->
-        </tbody>
-    </table>
-</div>
+<div style="display: flex; gap: 5px;">
+ <div style="flex: 30%;">
+  <div id="open-patches" style="margin-bottom: 20px;">
+      <button id="remove-all-patches-btn">Remove All Patches</button>
+      <button id="add-test-data-btn">Add Test Data</button>
+      <button id="reload-patches-btn">Reload Patches</button>
+      <h3>Open Patches</h3>
+      <table border="1" id="open-patches-table" style="margin-bottom: 20px;">
+          <thead>
+              <tr>
+                  <th>Patch ID</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>A#</th>
+                  <th>In Queue</th>
+                  <th>Has Branch</th>
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Table rows will be dynamically populated via AJAX -->
+          </tbody>
+      </table>
+  </div>
+ </div>
+ <div style="flex: 70%;">
+  <h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> ) [<span id="current-commit-sha">{{ current_commit_sha }}</span>]</h2>
 
+  <div>
+      <button id="get-and-move-btn">Get and Move</button>
+      <button id="peek-btn">Peek</button>
+      <button id="clear-queue-btn">Clear Queue</button>
+      <button id="create-branch-btn">Create Branch</button>
+  </div>
+
+  <div id="queue" style="display: flex; gap: 20px;">
+      <div style="flex: 70%;">
+          <table border="1" id="queue-table" style="width: 100%;">
+              <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Current</th>
+                      <th>Patch ID</th>
+                      <th>Message ID</th>
+                      <th>Processed Date</th>
+                      <th>Ignore Date</th>
+                      <th>ll_prev</th>
+                      <th>ll_next</th>
+                      <th>A#</th>
+                      <th>Last Base Commit SHA</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Table rows will be dynamically populated via AJAX -->
+              </tbody>
+          </table>
+      </div>
+      <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+          <h3>Details</h3>
+          <div id="json-keys">
+              <strong>ID:</strong> <span id="json-id"></span><br>
+              <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
+              <strong>Message ID:</strong> <span id="json-message-id"></span><br>
+              <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
+              <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
+              <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
+              <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
+              <strong>Attachments:</strong>
+              <ul id="json-attachments">
+                  <!-- Attachment list will be dynamically populated -->
+              </ul>
+          </div>
+      </div>
+  </div>
+ </div>
+</div>
 <div style="display: flex; gap: 20px;">
     <div style="flex: 70%;">
         <div>
@@ -137,56 +190,6 @@
     <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
 </div>
 
-<div>Queue table - ringed</div>
-<h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> ) [<span id="current-commit-sha">{{ current_commit_sha }}</span>]</h2>
-
-<div>
-    <button id="get-and-move-btn">Get and Move</button>
-    <button id="peek-btn">Peek</button>
-    <button id="clear-queue-btn">Clear Queue</button>
-    <button id="add-test-data-btn">Add Test Data</button>
-    <button id="create-branch-btn">Create Branch</button>
-</div>
-
-<div id="queue" style="display: flex; gap: 20px;">
-    <div style="flex: 70%;">
-        <table border="1" id="queue-table" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Current</th>
-                    <th>Patch ID</th>
-                    <th>Message ID</th>
-                    <th>Processed Date</th>
-                    <th>Ignore Date</th>
-                    <th>ll_prev</th>
-                    <th>ll_next</th>
-                    <th>Attachments</th>
-                    <th>Last Base Commit SHA</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Table rows will be dynamically populated via AJAX -->
-            </tbody>
-        </table>
-    </div>
-    <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
-        <h3>Details</h3>
-        <div id="json-keys">
-            <strong>ID:</strong> <span id="json-id"></span><br>
-            <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
-            <strong>Message ID:</strong> <span id="json-message-id"></span><br>
-            <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
-            <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
-            <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
-            <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
-            <strong>Attachments:</strong>
-            <ul id="json-attachments">
-                <!-- Attachment list will be dynamically populated -->
-            </ul>
-        </div>
-    </div>
-</div>
 
 <style>
     .selected-row {
@@ -407,7 +410,6 @@
                             <td>${patch.name}</td>
                             <td>${patch.status}</td>
                             <td>${patch.attachment_count}</td>
-                            <td>${patch.patchset_messagedate || "N/A"}</td>
                             <td>
                                 ${patch.in_queue ? "Yes" : (patch.attachment_count > 0 ? `<button class="enqueue-btn" data-patch-id="${patch.id}">Enqueue</button>` : "No")}
                             </td>
@@ -578,7 +580,7 @@
                 <td>${item.ll_prev || ""}</td>
                 <td>${item.ll_next || ""}</td>
                 <td>${item.attachments ? item.attachments.length : 0}</td>
-                <td>${item.last_base_commit_sha || ""}</td> <!-- New column -->
+                <td>${item.last_base_commit_sha ? item.last_base_commit_sha.substring(0, 10) : ""}</td>
             `;
         }
 
@@ -716,7 +718,7 @@
                             responseMessage.style.color = "red";
                         }
 
-                        fetchQueue(); // Refresh the queue table
+                        reloadAllTables(); // Refresh the queue table
                     })
                     .catch(error => {
                         const responseMessage = document.getElementById("response-message");
@@ -868,7 +870,7 @@
                     if (data.message) {
                         responseMessage.textContent = data.message;
                         responseMessage.style.color = "green";
-                        fetchOpenPatches(); // Refresh the open patches table
+                        reloadAllTables();
                     } else if (data.error) {
                         responseMessage.textContent = data.error;
                         responseMessage.style.color = "red";

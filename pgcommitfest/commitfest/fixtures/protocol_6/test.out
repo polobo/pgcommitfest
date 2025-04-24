@@ -1,0 +1,338 @@
+ninja: Entering directory `/home/davidj/cfapp-temp/postgres/build'
+ninja: no work to do.
+  1/326 postgresql:setup / tmp_install                                                  OK                0.74s
+  2/326 postgresql:setup / install_test_files                                           OK                0.11s
+  3/326 postgresql:setup / initdb_cache                                                 OK                0.41s
+  4/326 postgresql:pg_upgrade / pg_upgrade/001_basic                                    OK                0.20s   9 subtests passed
+  5/326 postgresql:pg_upgrade / pg_upgrade/003_logical_slots                            OK                8.64s   12 subtests passed
+  6/326 postgresql:pg_upgrade / pg_upgrade/004_subscription                             OK               10.52s   15 subtests passed
+  7/326 postgresql:pg_upgrade / pg_upgrade/005_char_signedness                          OK                5.36s   16 subtests passed
+  8/326 postgresql:regress / regress/regress                                            OK               27.79s   228 subtests passed
+  9/326 postgresql:pg_upgrade / pg_upgrade/006_transfer_modes                           OK               20.76s   14 subtests passed
+ 10/326 postgresql:recovery / recovery/002_archiving                                    OK                1.68s   8 subtests passed
+ 11/326 postgresql:recovery / recovery/001_stream_rep                                   OK                5.86s   63 subtests passed
+ 12/326 postgresql:recovery / recovery/003_recovery_targets                             OK                4.10s   9 subtests passed
+ 13/326 postgresql:recovery / recovery/004_timeline_switch                              OK                4.55s   3 subtests passed
+ 14/326 postgresql:recovery / recovery/006_logical_decoding                             OK                1.37s   20 subtests passed
+ 15/326 postgresql:recovery / recovery/007_sync_rep                                     OK                2.92s   11 subtests passed
+ 16/326 postgresql:recovery / recovery/005_replay_delay                                 OK                5.56s   3 subtests passed
+ 17/326 postgresql:isolation / isolation/isolation                                      OK               30.31s   118 subtests passed
+ 18/326 postgresql:recovery / recovery/010_logical_decoding_timelines                   OK                1.59s   13 subtests passed
+ 19/326 postgresql:pg_upgrade / pg_upgrade/002_pg_upgrade                               OK               47.81s   22 subtests passed
+ 20/326 postgresql:recovery / recovery/012_subtransactions                              OK                2.70s   12 subtests passed
+ 21/326 postgresql:recovery / recovery/013_crash_restart                                OK                0.98s   18 subtests passed
+ 22/326 postgresql:recovery / recovery/014_unlogged_reinit                              OK                0.85s   23 subtests passed
+ 23/326 postgresql:recovery / recovery/009_twophase                                     OK                6.72s   30 subtests passed
+ 24/326 postgresql:recovery / recovery/015_promotion_pages                              OK                1.35s   1 subtests passed
+ 25/326 postgresql:recovery / recovery/016_min_consistency                              OK                1.10s   1 subtests passed
+ 26/326 postgresql:recovery / recovery/017_shm                                          OK                1.76s   4 subtests passed
+ 27/326 postgresql:recovery / recovery/008_fsm_truncation                               OK               11.38s   1 subtests passed
+ 28/326 postgresql:recovery / recovery/021_row_visibility                               OK                1.04s   10 subtests passed
+ 29/326 postgresql:recovery / recovery/020_archive_status                               OK                4.19s   19 subtests passed
+ 30/326 postgresql:recovery / recovery/022_crash_temp_files                             OK                1.07s   11 subtests passed
+ 31/326 postgresql:recovery / recovery/023_pitr_prepared_xact                           OK                1.25s   1 subtests passed
+ 32/326 postgresql:recovery / recovery/024_archive_recovery                             OK                1.71s   2 subtests passed
+ 33/326 postgresql:recovery / recovery/025_stuck_on_old_timeline                        OK                1.53s   1 subtests passed
+ 34/326 postgresql:recovery / recovery/019_replslot_limit                               OK                7.72s   26 subtests passed
+ 35/326 postgresql:recovery / recovery/018_wal_optimize                                 OK                9.44s   38 subtests passed
+ 36/326 postgresql:recovery / recovery/026_overwrite_contrecord                         OK                2.73s   3 subtests passed
+ 37/326 postgresql:recovery / recovery/028_pitr_timelines                               OK                3.01s   3 subtests passed
+ 38/326 postgresql:recovery / recovery/029_stats_restart                                OK                3.39s   44 subtests passed
+ 39/326 postgresql:recovery / recovery/030_stats_cleanup_replica                        OK                2.62s   11 subtests passed
+ 40/326 postgresql:recovery / recovery/031_recovery_conflict                            OK                2.97s   18 subtests passed
+ 41/326 postgresql:recovery / recovery/034_create_database                              OK                1.09s   2 subtests passed
+ 42/326 postgresql:recovery / recovery/035_standby_logical_decoding                     SKIP              0.29s
+ 43/326 postgresql:recovery / recovery/032_relfilenode_reuse                            OK                4.10s   14 subtests passed
+ 44/326 postgresql:recovery / recovery/036_truncated_dropped                            OK                3.23s   8 subtests passed
+ 45/326 postgresql:recovery / recovery/037_invalid_database                             OK                2.51s   10 subtests passed
+ 46/326 postgresql:recovery / recovery/033_replay_tsp_drops                             OK                8.06s   3 subtests passed
+ 47/326 postgresql:recovery / recovery/038_save_logical_slots_shutdown                  OK                2.47s   2 subtests passed
+ 48/326 postgresql:recovery / recovery/041_checkpoint_at_promote                        SKIP              0.24s
+ 49/326 postgresql:recovery / recovery/042_low_level_backup                             OK                3.06s   4 subtests passed
+ 50/326 postgresql:recovery / recovery/039_end_of_wal                                   OK                7.17s   14 subtests passed
+ 51/326 postgresql:recovery / recovery/043_no_contrecord_switch                         OK                2.14s   1 subtests passed
+ 52/326 postgresql:recovery / recovery/044_invalidate_inactive_slots                    SKIP              0.17s
+ 53/326 postgresql:plpgsql / plpgsql/regress                                            OK                2.03s   13 subtests passed
+ 54/326 postgresql:plperl / plperl/regress                                              OK                1.23s   13 subtests passed
+ 55/326 postgresql:recovery / recovery/040_standby_failover_slots_sync                  OK                9.45s   35 subtests passed
+ 56/326 postgresql:recovery / recovery/045_archive_restartpoint                         OK                5.65s   1 subtests passed
+ 57/326 postgresql:plpython / plpython/regress                                          OK                2.56s   23 subtests passed
+ 58/326 postgresql:basic_archive / basic_archive/regress                                OK                0.56s   1 subtests passed
+ 59/326 postgresql:bloom / bloom/regress                                                OK                0.52s   1 subtests passed
+ 60/326 postgresql:bool_plperl / bool_plperl/regress                                    OK                0.57s   2 subtests passed
+ 61/326 postgresql:btree_gin / btree_gin/regress                                        OK                1.93s   30 subtests passed
+ 62/326 postgresql:amcheck / amcheck/regress                                            OK                4.69s   4 subtests passed
+ 63/326 postgresql:btree_gist / btree_gist/regress                                      OK                2.10s   32 subtests passed
+ 64/326 postgresql:cube / cube/regress                                                  OK                0.50s   2 subtests passed
+ 65/326 postgresql:citext / citext/regress                                              OK                0.59s   3 subtests passed
+ 66/326 postgresql:dict_int / dict_int/regress                                          OK                0.39s   1 subtests passed
+ 67/326 postgresql:dict_xsyn / dict_xsyn/regress                                        OK                0.38s   1 subtests passed
+ 68/326 postgresql:dblink / dblink/regress                                              OK                0.55s   1 subtests passed
+ 69/326 postgresql:file_fdw / file_fdw/regress                                          OK                0.42s   1 subtests passed
+ 70/326 postgresql:earthdistance / earthdistance/regress                                OK                0.50s   1 subtests passed
+ 71/326 postgresql:fuzzystrmatch / fuzzystrmatch/regress                                OK                0.42s   2 subtests passed
+ 72/326 postgresql:hstore_plpython / hstore_plpython/regress                            OK                0.42s   1 subtests passed
+ 73/326 postgresql:hstore_plperl / hstore_plperl/regress                                OK                0.52s   3 subtests passed
+ 74/326 postgresql:isn / isn/regress                                                    OK                0.48s   1 subtests passed
+ 75/326 postgresql:hstore / hstore/regress                                              OK                1.08s   2 subtests passed
+ 76/326 postgresql:jsonb_plpython / jsonb_plpython/regress                              OK                0.39s   1 subtests passed
+ 77/326 postgresql:jsonb_plperl / jsonb_plperl/regress                                  OK                0.47s   2 subtests passed
+ 78/326 postgresql:lo / lo/regress                                                      OK                0.44s   1 subtests passed
+ 79/326 postgresql:ltree / ltree/regress                                                OK                0.70s   1 subtests passed
+ 80/326 postgresql:ltree_plpython / ltree_plpython/regress                              OK                0.44s   1 subtests passed
+ 81/326 postgresql:passwordcheck / passwordcheck/regress                                OK                0.41s   1 subtests passed
+ 82/326 postgresql:pageinspect / pageinspect/regress                                    OK                0.78s   8 subtests passed
+ 83/326 postgresql:pg_buffercache / pg_buffercache/regress                              OK                0.46s   2 subtests passed
+ 84/326 postgresql:intarray / intarray/regress                                          OK                3.11s   1 subtests passed
+ 85/326 postgresql:pg_freespacemap / pg_freespacemap/regress                            OK                0.39s   1 subtests passed
+ 86/326 postgresql:pg_overexplain / pg_overexplain/regress                              OK                0.42s   1 subtests passed
+ 87/326 postgresql:pg_logicalinspect / pg_logicalinspect/isolation                      OK                0.45s   1 subtests passed
+ 88/326 postgresql:pgrowlocks / pgrowlocks/isolation                                    OK                0.43s   1 subtests passed
+ 89/326 postgresql:pgcrypto / pgcrypto/regress                                          OK                1.64s   24 subtests passed
+ 90/326 postgresql:pgstattuple / pgstattuple/regress                                    OK                0.42s   1 subtests passed
+ 91/326 postgresql:pg_stat_statements / pg_stat_statements/regress                      OK                0.91s   15 subtests passed
+ 92/326 postgresql:pg_surgery / pg_surgery/regress                                      OK                0.40s   1 subtests passed
+ 93/326 postgresql:pg_visibility / pg_visibility/regress                                OK                0.40s   1 subtests passed
+ 94/326 postgresql:pg_walinspect / pg_walinspect/regress                                OK                0.44s   2 subtests passed
+ 95/326 postgresql:seg / seg/regress                                                    OK                0.48s   3 subtests passed
+ 96/326 postgresql:pg_trgm / pg_trgm/regress                                            OK                1.16s   3 subtests passed
+ 97/326 postgresql:recovery / recovery/027_stream_regress                               OK               34.57s   9 subtests passed
+ 98/326 postgresql:spi / spi/regress                                                    OK                0.43s   2 subtests passed
+ 99/326 postgresql:tablefunc / tablefunc/regress                                        OK                0.41s   1 subtests passed
+100/326 postgresql:tcn / tcn/isolation                                                  OK                0.41s   1 subtests passed
+101/326 postgresql:tsm_system_rows / tsm_system_rows/regress                            OK                0.39s   1 subtests passed
+102/326 postgresql:tsm_system_time / tsm_system_time/regress                            OK                0.37s   1 subtests passed
+103/326 postgresql:unaccent / unaccent/regress                                          OK                0.33s   1 subtests passed
+104/326 postgresql:brin / brin/isolation                                                OK                0.38s   1 subtests passed
+105/326 postgresql:postgres_fdw / postgres_fdw/regress                                  OK                2.99s   2 subtests passed
+106/326 postgresql:commit_ts / commit_ts/regress                                        OK                0.36s   1 subtests passed
+107/326 postgresql:test_decoding / test_decoding/isolation                              OK                2.32s   13 subtests passed
+108/326 postgresql:dummy_index_am / dummy_index_am/regress                              OK                0.37s   1 subtests passed
+109/326 postgresql:dummy_seclabel / dummy_seclabel/regress                              OK                0.35s   1 subtests passed
+110/326 postgresql:plsample / plsample/regress                                          OK                0.34s   1 subtests passed
+111/326 postgresql:delay_execution / delay_execution/isolation                          OK                0.87s   2 subtests passed
+112/326 postgresql:spgist_name_ops / spgist_name_ops/regress                            OK                0.40s   1 subtests passed
+113/326 postgresql:test_decoding / test_decoding/regress                                OK                3.19s   19 subtests passed
+114/326 postgresql:test_copy_callbacks / test_copy_callbacks/regress                    OK                0.38s   1 subtests passed
+115/326 postgresql:test_bloomfilter / test_bloomfilter/regress                          OK                0.52s   1 subtests passed
+116/326 postgresql:test_dsa / test_dsa/regress                                          OK                0.39s   1 subtests passed
+117/326 postgresql:test_dsm_registry / test_dsm_registry/regress                        OK                0.39s   1 subtests passed
+118/326 postgresql:test_ginpostinglist / test_ginpostinglist/regress                    OK                0.39s   1 subtests passed
+119/326 postgresql:test_ddl_deparse / test_ddl_deparse/regress                          OK                0.86s   21 subtests passed
+120/326 postgresql:test_extensions / test_extensions/regress                            OK                1.00s   2 subtests passed
+121/326 postgresql:test_lfind / test_lfind/regress                                      OK                0.41s   1 subtests passed
+122/326 postgresql:test_parser / test_parser/regress                                    OK                0.37s   1 subtests passed
+123/326 postgresql:test_pg_dump / test_pg_dump/regress                                  OK                0.42s   1 subtests passed
+124/326 postgresql:test_oat_hooks / test_oat_hooks/regress                              OK                0.81s   2 subtests passed
+125/326 postgresql:test_predtest / test_predtest/regress                                OK                0.37s   1 subtests passed
+126/326 postgresql:test_radixtree / test_radixtree/regress                              OK                0.41s   1 subtests passed
+127/326 postgresql:test_rbtree / test_rbtree/regress                                    OK                0.40s   1 subtests passed
+128/326 postgresql:test_resowner / test_resowner/regress                                OK                0.41s   1 subtests passed
+129/326 postgresql:test_rls_hooks / test_rls_hooks/regress                              OK                0.40s   1 subtests passed
+130/326 postgresql:test_slru / test_slru/regress                                        OK                0.38s   1 subtests passed
+131/326 postgresql:test_regex / test_regex/regress                                      OK                1.00s   2 subtests passed
+132/326 postgresql:test_tidstore / test_tidstore/regress                                OK                0.45s   1 subtests passed
+133/326 postgresql:unsafe_tests / unsafe_tests/regress                                  OK                0.63s   4 subtests passed
+134/326 postgresql:test_integerset / test_integerset/regress                            OK                3.62s   1 subtests passed
+135/326 postgresql:libpq / libpq/001_uri                                                OK                0.60s   63 subtests passed
+136/326 postgresql:libpq / libpq/002_api                                                OK                0.15s   1 subtests passed
+137/326 postgresql:libpq / libpq/004_load_balance_dns                                   SKIP              0.12s
+138/326 postgresql:libpq / libpq/005_negotiate_encryption                               SKIP              0.22s
+139/326 postgresql:test_shm_mq / test_shm_mq/regress                                    OK                2.30s   1 subtests passed
+140/326 postgresql:libpq / libpq/006_service                                            OK                0.67s   26 subtests passed
+141/326 postgresql:pg_amcheck / pg_amcheck/001_basic                                    OK                0.14s   9 subtests passed
+142/326 postgresql:ecpg / ecpg/ecpg                                                     OK                2.44s   65 subtests passed
+143/326 postgresql:libpq / libpq/003_load_balance_host_list                             OK                2.14s   127 subtests passed
+144/326 postgresql:pg_amcheck / pg_amcheck/002_nonesuch                                 OK                1.40s   107 subtests passed
+145/326 postgresql:pg_amcheck / pg_amcheck/005_opclass_damage                           OK                0.96s   10 subtests passed
+146/326 postgresql:pg_archivecleanup / pg_archivecleanup/010_pg_archivecleanup          OK                0.21s   51 subtests passed
+147/326 postgresql:pg_amcheck / pg_amcheck/004_verify_heapam                            OK                1.76s   32 subtests passed
+148/326 postgresql:pg_basebackup / pg_basebackup/011_in_place_tablespace                OK                0.59s   3 subtests passed
+149/326 postgresql:pg_amcheck / pg_amcheck/003_check                                    OK                4.23s   75 subtests passed
+150/326 postgresql:pg_basebackup / pg_basebackup/030_pg_recvlogical                     OK                0.66s   24 subtests passed
+151/326 postgresql:pg_basebackup / pg_basebackup/020_pg_receivewal                      OK                2.04s   38 subtests passed
+152/326 postgresql:pg_checksums / pg_checksums/001_basic                                OK                0.18s   9 subtests passed
+153/326 postgresql:initdb / initdb/001_initdb                                           OK                7.19s   44 subtests passed
+154/326 postgresql:pg_combinebackup / pg_combinebackup/001_basic                        OK                0.16s   13 subtests passed
+155/326 postgresql:pg_checksums / pg_checksums/002_actions                              OK                2.54s   66 subtests passed
+156/326 postgresql:pg_combinebackup / pg_combinebackup/002_compare_backups              OK                8.58s   6 subtests passed
+157/326 postgresql:pg_basebackup / pg_basebackup/040_pg_createsubscriber                OK               10.89s   46 subtests passed
+158/326 postgresql:pg_basebackup / pg_basebackup/010_pg_basebackup                      OK               14.09s   200 subtests passed
+159/326 postgresql:pg_combinebackup / pg_combinebackup/004_manifest                     OK                1.50s   11 subtests passed
+160/326 postgresql:pg_combinebackup / pg_combinebackup/003_timeline                     OK                9.75s   7 subtests passed
+161/326 postgresql:pg_combinebackup / pg_combinebackup/007_wal_level_minimal            OK                1.68s   3 subtests passed
+162/326 postgresql:pg_combinebackup / pg_combinebackup/009_no_full_file                 OK                3.62s   4 subtests passed
+163/326 postgresql:pg_combinebackup / pg_combinebackup/006_db_file_copy                 OK                6.19s   4 subtests passed
+164/326 postgresql:pg_config / pg_config/001_pg_config                                  OK                0.16s   21 subtests passed
+165/326 postgresql:pg_controldata / pg_controldata/001_pg_controldata                   OK                0.24s   18 subtests passed
+166/326 postgresql:pg_ctl / pg_ctl/001_start_stop                                       OK                1.82s   25 subtests passed
+167/326 postgresql:pg_ctl / pg_ctl/002_status                                           OK                0.44s   3 subtests passed
+168/326 postgresql:pg_combinebackup / pg_combinebackup/010_hardlink                     OK                4.42s   4 subtests passed
+169/326 postgresql:pg_combinebackup / pg_combinebackup/008_promote                      OK                8.86s   2 subtests passed
+170/326 postgresql:pg_combinebackup / pg_combinebackup/005_integrity                    OK               10.88s   22 subtests passed
+171/326 postgresql:pg_dump / pg_dump/001_basic                                          OK                0.47s   107 subtests passed
+172/326 postgresql:pg_ctl / pg_ctl/003_promote                                          OK                1.69s   12 subtests passed
+173/326 postgresql:pg_dump / pg_dump/003_pg_dump_with_server                            OK                0.65s   3 subtests passed
+174/326 postgresql:pg_dump / pg_dump/004_pg_dump_parallel                               OK                0.93s   4 subtests passed
+175/326 postgresql:pg_ctl / pg_ctl/004_logrotate                                        OK                2.71s   14 subtests passed
+176/326 postgresql:pg_dump / pg_dump/005_pg_dump_filterfile                             OK                2.56s   108 subtests passed
+177/326 postgresql:pg_resetwal / pg_resetwal/001_basic                                  OK                1.16s   77 subtests passed
+178/326 postgresql:pg_resetwal / pg_resetwal/002_corrupted                              OK                0.38s   9 subtests passed
+179/326 postgresql:pg_dump / pg_dump/010_dump_connstr                                   OK                5.26s   14 subtests passed
+180/326 postgresql:pg_dump / pg_dump/002_pg_dump                                        OK                9.74s   11475 subtests passed
+181/326 postgresql:pg_dump / pg_dump/006_pg_dumpall                                     OK                8.93s   23 subtests passed
+182/326 postgresql:pg_rewind / pg_rewind/001_basic                                      OK                7.73s   57 subtests passed
+183/326 postgresql:pg_rewind / pg_rewind/005_same_timeline                              OK                1.87s   1 subtests passed
+184/326 postgresql:pg_rewind / pg_rewind/006_options                                    OK                0.22s   13 subtests passed
+185/326 postgresql:pg_rewind / pg_rewind/002_databases                                  OK                8.32s   12 subtests passed
+186/326 postgresql:pg_rewind / pg_rewind/004_pg_xlog_symlink                            OK                6.62s   10 subtests passed
+187/326 postgresql:pg_rewind / pg_rewind/003_extrafiles                                 OK                7.10s   6 subtests passed
+188/326 postgresql:pg_rewind / pg_rewind/007_standby_source                             OK                3.61s   7 subtests passed
+189/326 postgresql:pg_test_fsync / pg_test_fsync/001_basic                              OK                0.18s   13 subtests passed
+190/326 postgresql:pg_test_timing / pg_test_timing/001_basic                            OK                0.15s   13 subtests passed
+191/326 postgresql:pg_verifybackup / pg_verifybackup/001_basic                          OK                0.14s   17 subtests passed
+192/326 postgresql:pg_rewind / pg_rewind/009_growing_files                              OK                3.71s   3 subtests passed
+193/326 postgresql:pg_rewind / pg_rewind/008_min_recovery_point                         OK                6.87s   3 subtests passed
+194/326 postgresql:pg_verifybackup / pg_verifybackup/004_options                        OK                0.82s   32 subtests passed
+195/326 postgresql:pg_rewind / pg_rewind/010_keep_recycled_wals                         OK                6.69s   1 subtests passed
+196/326 postgresql:pg_verifybackup / pg_verifybackup/002_algorithm                      OK                4.90s   38 subtests passed
+197/326 postgresql:pg_verifybackup / pg_verifybackup/005_bad_manifest                   OK                0.46s   60 subtests passed
+198/326 postgresql:pg_verifybackup / pg_verifybackup/006_encoding                       OK                0.63s   5 subtests passed
+199/326 postgresql:pg_verifybackup / pg_verifybackup/007_wal                            OK                1.17s   9 subtests passed
+200/326 postgresql:pg_verifybackup / pg_verifybackup/008_untar                          OK                1.28s   6 subtests passed
+201/326 postgresql:pg_verifybackup / pg_verifybackup/003_corruption                     OK                5.19s   92 subtests passed
+202/326 postgresql:pg_verifybackup / pg_verifybackup/009_extract                        OK                1.35s   4 subtests passed
+203/326 postgresql:pg_walsummary / pg_walsummary/001_basic                              OK                0.19s   11 subtests passed
+204/326 postgresql:pg_verifybackup / pg_verifybackup/010_client_untar                   OK                1.22s   6 subtests passed
+205/326 postgresql:pg_waldump / pg_waldump/002_save_fullpage                            OK                0.56s   5 subtests passed
+206/326 postgresql:pg_walsummary / pg_walsummary/002_blocks                             OK                0.64s   8 subtests passed
+207/326 postgresql:pg_waldump / pg_waldump/001_basic                                    OK                1.33s   92 subtests passed
+208/326 postgresql:pgbench / pgbench/002_pgbench_no_server                              OK                0.54s   208 subtests passed
+209/326 postgresql:psql / psql/020_cancel                                               OK                0.56s   2 subtests passed
+210/326 postgresql:psql / psql/010_tab_completion                                       OK                0.73s   89 subtests passed
+211/326 postgresql:scripts / scripts/010_clusterdb                                      OK                0.59s   16 subtests passed
+212/326 postgresql:scripts / scripts/011_clusterdb_all                                  OK                0.72s   7 subtests passed
+213/326 postgresql:psql / psql/001_basic                                                OK                1.78s   116 subtests passed
+214/326 postgresql:scripts / scripts/040_createuser                                     OK                0.68s   37 subtests passed
+215/326 postgresql:scripts / scripts/050_dropdb                                         OK                0.78s   16 subtests passed
+216/326 postgresql:scripts / scripts/070_dropuser                                       OK                0.55s   13 subtests passed
+217/326 postgresql:scripts / scripts/020_createdb                                       OK                1.51s   52 subtests passed
+218/326 postgresql:scripts / scripts/080_pg_isready                                     OK                0.52s   11 subtests passed
+219/326 postgresql:scripts / scripts/091_reindexdb_all                                  OK                0.99s   13 subtests passed
+220/326 postgresql:scripts / scripts/101_vacuumdb_all                                   OK                0.70s   5 subtests passed
+221/326 postgresql:scripts / scripts/090_reindexdb                                      OK                1.80s   64 subtests passed
+222/326 postgresql:scripts / scripts/100_vacuumdb                                       OK                1.91s   105 subtests passed
+223/326 postgresql:ecpg / ecpg/001_ecpg_err_warn_msg                                    OK                0.14s   27 subtests passed
+224/326 postgresql:ecpg / ecpg/002_ecpg_err_warn_msg_informix                           OK                0.13s   4 subtests passed
+225/326 postgresql:pg_bsd_indent / pg_bsd_indent/001_pg_bsd_indent                      OK                0.28s   39 subtests passed
+226/326 postgresql:pgbench / pgbench/001_pgbench_with_server                            OK                6.30s   467 subtests passed
+227/326 postgresql:scripts / scripts/102_vacuumdb_stages                                OK                1.67s   4 subtests passed
+228/326 postgresql:scripts / scripts/200_connstr                                        OK                1.78s   3 subtests passed
+229/326 postgresql:amcheck / amcheck/002_cic                                            OK                0.62s   3 subtests passed
+230/326 postgresql:amcheck / amcheck/004_verify_nbtree_unique                           OK                0.69s   6 subtests passed
+231/326 postgresql:amcheck / amcheck/003_cic_2pc                                        OK                1.00s   7 subtests passed
+232/326 postgresql:amcheck / amcheck/005_pitr                                           OK                1.00s   3 subtests passed
+233/326 postgresql:auto_explain / auto_explain/001_auto_explain                         OK                0.60s   20 subtests passed
+234/326 postgresql:basebackup_to_shell / basebackup_to_shell/001_basic                  OK                2.02s   16 subtests passed
+235/326 postgresql:oid2name / oid2name/001_basic                                        OK                0.18s   9 subtests passed
+236/326 postgresql:dblink / dblink/001_auth_scram                                       OK                2.60s   12 subtests passed
+237/326 postgresql:amcheck / amcheck/001_verify_heapam                                  OK                4.96s   272 subtests passed
+238/326 postgresql:pg_prewarm / pg_prewarm/001_basic                                    OK                0.78s   7 subtests passed
+239/326 postgresql:pg_stat_statements / pg_stat_statements/010_restart                  OK                0.99s   3 subtests passed
+240/326 postgresql:pg_visibility / pg_visibility/002_corrupt_vm                         OK                1.05s   3 subtests passed
+241/326 postgresql:pg_visibility / pg_visibility/001_concurrent_transaction             OK                1.08s   2 subtests passed
+242/326 postgresql:vacuumlo / vacuumlo/001_basic                                        OK                0.17s   9 subtests passed
+243/326 postgresql:test_decoding / test_decoding/001_repl_stats                         OK                1.35s   6 subtests passed
+244/326 postgresql:postgres_fdw / postgres_fdw/001_auth_scram                           OK                2.33s   7 subtests passed
+245/326 postgresql:authentication / authentication/001_password                         OK                1.95s   201 subtests passed
+246/326 postgresql:authentication / authentication/002_saslprep                         OK                1.14s   20 subtests passed
+247/326 postgresql:bloom / bloom/001_wal                                                OK                6.86s   31 subtests passed
+248/326 postgresql:authentication / authentication/005_sspi                             SKIP              0.12s
+249/326 postgresql:authentication / authentication/007_pre_auth                         SKIP              0.14s
+250/326 postgresql:authentication / authentication/003_peer                             OK                0.85s   53 subtests passed
+251/326 postgresql:authentication / authentication/004_file_inclusion                   OK                0.72s   2 subtests passed
+252/326 postgresql:postmaster / postmaster/001_basic                                    OK                0.15s   9 subtests passed
+253/326 postgresql:postmaster / postmaster/002_connection_limits                        OK                0.52s   30 subtests passed
+254/326 postgresql:authentication / authentication/006_login_trigger                    OK                0.89s   32 subtests passed
+255/326 postgresql:postmaster / postmaster/003_start_stop                               OK                0.77s   25 subtests passed
+256/326 postgresql:subscription / subscription/003_constraints                          OK                1.26s   6 subtests passed
+257/326 postgresql:subscription / subscription/002_types                                OK                1.48s   4 subtests passed
+258/326 postgresql:subscription / subscription/004_sync                                 OK                2.17s   8 subtests passed
+259/326 postgresql:subscription / subscription/006_rewrite                              OK                1.29s   2 subtests passed
+260/326 postgresql:subscription / subscription/005_encoding                             OK                2.06s   1 subtests passed
+261/326 postgresql:subscription / subscription/001_rep_changes                          OK                4.71s   36 subtests passed
+262/326 postgresql:subscription / subscription/008_diff_schema                          OK                1.51s   5 subtests passed
+263/326 postgresql:subscription / subscription/007_ddl                                  OK                2.09s   8 subtests passed
+264/326 postgresql:subscription / subscription/012_collation                            SKIP              0.21s
+265/326 postgresql:subscription / subscription/009_matviews                             OK                1.40s   1 subtests passed
+266/326 postgresql:subscription / subscription/010_truncate                             OK                2.57s   14 subtests passed
+267/326 postgresql:subscription / subscription/011_generated                            OK                2.57s   11 subtests passed
+268/326 postgresql:subscription / subscription/014_binary                               OK                2.94s   8 subtests passed
+269/326 postgresql:subscription / subscription/016_stream_subxact                       OK                1.36s   3 subtests passed
+270/326 postgresql:subscription / subscription/017_stream_ddl                           OK                1.16s   3 subtests passed
+271/326 postgresql:subscription / subscription/019_stream_subxact_ddl_abort             OK                1.05s   2 subtests passed
+272/326 postgresql:subscription / subscription/020_messages                             OK                0.93s   5 subtests passed
+273/326 postgresql:subscription / subscription/018_stream_subxact_abort                 OK                2.84s   9 subtests passed
+274/326 postgresql:subscription / subscription/013_partition                            OK                6.38s   74 subtests passed
+275/326 postgresql:subscription / subscription/015_stream                               OK                5.31s   10 subtests passed
+276/326 postgresql:subscription / subscription/024_add_drop_pub                         OK                1.71s   4 subtests passed
+277/326 postgresql:subscription / subscription/022_twophase_cascade                     OK                3.01s   41 subtests passed
+278/326 postgresql:subscription / subscription/021_twophase                             OK                3.99s   30 subtests passed
+279/326 postgresql:subscription / subscription/023_twophase_stream                      OK                4.26s   33 subtests passed
+280/326 postgresql:subscription / subscription/025_rep_changes_for_schema               OK                3.70s   13 subtests passed
+281/326 postgresql:subscription / subscription/028_row_filter                           OK                3.22s   26 subtests passed
+282/326 postgresql:subscription / subscription/026_stats                                OK                4.92s   13 subtests passed
+283/326 postgresql:subscription / subscription/029_on_error                             OK                1.69s   5 subtests passed
+284/326 postgresql:subscription / subscription/027_nosuperuser                          OK                6.26s   19 subtests passed
+285/326 postgresql:subscription / subscription/030_origin                               OK                3.22s   13 subtests passed
+286/326 postgresql:subscription / subscription/032_subscribe_use_index                  OK                4.86s   15 subtests passed
+287/326 postgresql:subscription / subscription/033_run_as_table_owner                   OK                3.49s   10 subtests passed
+288/326 postgresql:subscription / subscription/031_column_list                          OK                5.80s   36 subtests passed
+289/326 postgresql:subscription / subscription/034_temporal                             OK                3.22s   32 subtests passed
+290/326 postgresql:subscription / subscription/035_conflicts                            OK                1.93s   3 subtests passed
+291/326 postgresql:brin / brin/01_workitems                                             OK                1.39s   2 subtests passed
+292/326 postgresql:brin / brin/02_wal_consistency                                       OK                1.39s   2 subtests passed
+293/326 postgresql:commit_ts / commit_ts/001_base                                       OK                1.71s   2 subtests passed
+294/326 postgresql:commit_ts / commit_ts/002_standby                                    OK                1.62s   4 subtests passed
+295/326 postgresql:libpq_pipeline / libpq_pipeline/001_libpq_pipeline                   OK                0.65s   23 subtests passed
+296/326 postgresql:oauth_validator / oauth_validator/001_server                         SKIP              0.14s
+297/326 postgresql:oauth_validator / oauth_validator/002_client                         SKIP              0.14s
+298/326 postgresql:commit_ts / commit_ts/003_standby_2                                  OK                2.33s   4 subtests passed
+299/326 postgresql:commit_ts / commit_ts/004_restart                                    OK                1.66s   16 subtests passed
+300/326 postgresql:ssl_passphrase_callback / ssl_passphrase_callback/001_testfunc       OK                0.78s   4 subtests passed
+301/326 postgresql:test_custom_rmgrs / test_custom_rmgrs/001_basic                      OK                0.58s   2 subtests passed
+302/326 postgresql:test_aio / test_aio/002_io_workers                                   OK                0.97s   22 subtests passed
+303/326 postgresql:test_escape / test_escape/001_test_escape                            OK                0.66s   1131 subtests passed
+304/326 postgresql:subscription / subscription/100_bugs                                 OK                6.18s   14 subtests passed
+305/326 postgresql:test_extensions / test_extensions/001_extension_control_path         OK                0.56s   5 subtests passed
+306/326 postgresql:test_json_parser / test_json_parser/003_test_semantic                OK                0.19s   12 subtests passed
+307/326 postgresql:test_json_parser / test_json_parser/004_test_parser_perf             OK                0.17s   2 subtests passed
+308/326 postgresql:test_aio / test_aio/001_aio                                          OK                3.07s   350 subtests passed
+309/326 postgresql:test_json_parser / test_json_parser/001_test_json_parser_incremental OK                1.30s   516 subtests passed
+310/326 postgresql:test_misc / test_misc/001_constraint_validation                      OK                0.98s   42 subtests passed
+311/326 postgresql:test_misc / test_misc/002_tablespace                                 OK                0.71s   20 subtests passed
+312/326 postgresql:test_misc / test_misc/003_check_guc                                  OK                0.50s   3 subtests passed
+313/326 postgresql:test_misc / test_misc/005_timeouts                                   SKIP              0.16s
+314/326 postgresql:test_misc / test_misc/006_signal_autovacuum                          SKIP              0.16s
+315/326 postgresql:test_misc / test_misc/007_catcache_inval                             SKIP              0.17s
+316/326 postgresql:test_slru / test_slru/001_multixact                                  SKIP              0.14s
+317/326 postgresql:worker_spi / worker_spi/001_worker_spi                               OK                1.26s   8 subtests passed
+318/326 postgresql:xid_wraparound / xid_wraparound/001_emergency_vacuum                 SKIP              0.16s
+319/326 postgresql:xid_wraparound / xid_wraparound/002_limits                           SKIP              0.16s
+320/326 postgresql:test_misc / test_misc/004_io_direct                                  OK                2.55s   3 subtests passed
+321/326 postgresql:xid_wraparound / xid_wraparound/003_wraparounds                      SKIP              0.22s
+322/326 postgresql:test_pg_dump / test_pg_dump/001_base                                 OK                2.27s   1044 subtests passed
+323/326 postgresql:ssl / ssl/001_ssltests                                               SKIP              0.19s
+324/326 postgresql:ssl / ssl/002_scram                                                  SKIP              0.18s
+325/326 postgresql:ssl / ssl/003_sslinfo                                                SKIP              0.14s
+326/326 postgresql:test_json_parser / test_json_parser/002_inline                       OK                6.77s   3400 subtests passed
+
+
+Ok:                 306
+Expected Fail:      0
+Fail:               0
+Unexpected Pass:    0
+Skipped:            20
+Timeout:            0
+
+Full log written to /home/davidj/cfapp-temp/postgres/build/meson-logs/testlog.txt
