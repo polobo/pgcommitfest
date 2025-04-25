@@ -26,6 +26,8 @@ urlpatterns = [
     re_path(r"^api/v1/cfbot/branches$", apiv1.cfbot_branches),
     re_path(r"^api/v1/cfbot/tasks$", apiv1.cfbot_tasks),
     re_path(r"^api/v1/cfbot/task/([^/]+)/update_status$", apiv1.update_task_status),
+    re_path(r"^api/v1/cfbot/task/([^/]+)/commands$", apiv1.fetch_task_commands),
+    re_path(r"^api/v1/cfbot/task/([^/]+)/artifacts$", apiv1.fetch_task_artifacts),
     re_path(r"^api/v1/cfbot/branches/(\d+)/process_branch$", apiv1.process_branch),
     re_path(r"^api/v1/cfbot/branch_history$", apiv1.fetch_branch_history),
     re_path(r"^api/test/cfbot/clear_queue$", apiv1.clear_queue),

@@ -162,6 +162,30 @@
                 <!-- Table rows will be dynamically populated via AJAX -->
             </tbody>
         </table>
+        <table id="cfbot-task-commands-table" border="1" style="width: 100%; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+            </tbody>
+        </table>
+        <table id="cfbot-task-artifacts-table" border="1" style="width: 100%; margin-bottom: 20px;">
+         <thead>
+         <tr>
+             <th>Name</th>
+             <th>Path</th>
+             <th>Size</th>
+         </tr>
+     </thead>
+     <tbody>
+         <!-- Table rows will be dynamically populated via AJAX -->
+     </tbody></table>
     </div>
     <div id="task-json-display" style="flex: 50%; border: 1px solid #ccc; padding: 10px;">
         <h3>Task Details</h3>
@@ -267,6 +291,7 @@
 
                     data.tasks.forEach((task, index) => {
                         const row = document.createElement("tr");
+                        row.setAttribute("data-item-id", task.item_id);
                         row.setAttribute("data-task-id", task.task_id);
                         row.setAttribute("data-task-name", task.task_name);
                         row.setAttribute("data-patch-id", task.patch_id);
@@ -438,8 +463,7 @@
                     console.error("Error enqueuing patch:", error);
                 });
         }
-
-        function highlightTaskRow(row) {
+        function populateTaskDetails(row) {
             // Highlight the selected task row and remove highlight from others
             const rows = document.querySelectorAll("#cfbot-tasks-table tbody tr");
             rows.forEach(r => r.classList.remove("selected-task-row"));
@@ -479,6 +503,69 @@
             // Auto-resize textareas to fit content
             // autoResizeTextarea(applyOutputBox);
             autoResizeTextarea(applyErrorBox);
+        }
+
+        function populateTaskArtifacts(row) {
+            // Fetch and populate cfbot-task-artifacts-table
+            const taskId = row.getAttribute("data-item-id");
+            fetch(`/api/v1/cfbot/task/${taskId}/artifacts`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("cfbot-task-artifacts-table");
+                    tableBody.innerHTML = ""; // Clear existing rows
+
+                    if (data.artifacts && data.artifacts.length > 0) {
+                        data.artifacts.forEach(artifact => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${artifact.name}</td>
+                                <td>${artifact.path}</td>
+                                <td>${artifact.size}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td colspan="3">No artifacts available</td>`;
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => console.error("Error fetching task artifacts:", error));
+        }
+
+        function populateTaskCommands(row) {
+            // Fetch and populate cfbot-task-commands-table
+            const taskId = row.getAttribute("data-item-id");
+            fetch(`/api/v1/cfbot/task/${taskId}/commands`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("cfbot-task-commands-table");
+                    tableBody.innerHTML = ""; // Clear existing rows
+
+                    if (data.commands && data.commands.length > 0) {
+                        data.commands.forEach(command => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${command.name}</td>
+                                <td>${command.status}</td>
+                                <td>${command.type}</td>
+                                <td>${command.duration}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `<td colspan="4">No commands available</td>`;
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => console.error("Error fetching task commands:", error));
+        }
+
+        function highlightTaskRow(row) {
+            populateTaskDetails(row)
+            populateTaskCommands(row)
+            populateTaskArtifacts(row)
         }
 
         function wireUpTaskActions() {

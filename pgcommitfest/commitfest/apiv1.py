@@ -25,6 +25,8 @@ from .models import (
     MailThreadAttachment,
     Patch,
     PatchOnCommitFest,
+    CfbotTaskCommand,
+    CfbotTaskArtifact,
 )
 
 from .util import datetime_serializer
@@ -153,6 +155,7 @@ def cfbot_tasks(request):
     tasks = CfbotTask.objects.filter(branch_id=branch_id).order_by('-modified') if branch_id else CfbotTask.objects.all()
     task_list = [
         {
+            "item_id": task.id,
             "task_id": task.task_id,
             "task_name": task.task_name,
             "patch_id": task.patch_id,
@@ -409,3 +412,39 @@ def enqueue_patch(request):
 
     queue.insert_item(patch_id=patch_id, message_id=patch.patchset_messageid)
     return apiResponse(request, {"success": True, "message": "Patch enqueued successfully."})
+
+def fetch_task_commands(request, task_id):
+    """
+    Fetch commands for a specific task.
+    """
+    print(f"Fetching commands for task ID: {task_id}")
+    task = get_object_or_404(CfbotTask, id=task_id)
+    commands = CfbotTaskCommand.objects.filter(task=task).order_by("id")
+    command_list = [
+        {
+            "name": command.name,
+            "status": command.status,
+            "type": command.type,
+            "duration": command.duration,
+            "log": command.log,
+        }
+        for command in commands
+    ]
+    return apiResponse(request, {"commands": command_list})
+
+def fetch_task_artifacts(request, task_id):
+    """
+    Fetch artifacts for a specific task.
+    """
+    task = get_object_or_404(CfbotTask, id=task_id)
+    artifacts = CfbotTaskArtifact.objects.filter(task=task).order_by("id")
+    artifact_list = [
+        {
+            "name": artifact.name,
+            "path": artifact.path,
+            "size": artifact.size,
+        }
+        for artifact in artifacts
+    ]
+    return apiResponse(request, {"artifacts": artifact_list})
+

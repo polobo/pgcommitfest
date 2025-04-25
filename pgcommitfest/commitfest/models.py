@@ -987,6 +987,26 @@ class CfbotTask(models.Model):
         """
         return self.status in {"ABORTED", "ERRORED", "FAILED"}
 
+class CfbotTaskCommand(models.Model):
+    task = models.ForeignKey(
+        CfbotTask, null=False, blank=False, on_delete=models.CASCADE
+    )
+    name = models.TextField(null=False)
+    status = models.TextField(null=False)
+    type = models.TextField(null=False)
+    duration = models.IntegerField(null=False)
+    log = models.TextField(null=True, blank=True)
+    payload = models.JSONField(null=True, blank=True)
+
+class CfbotTaskArtifact(models.Model):
+    task = models.ForeignKey(
+        CfbotTask, null=False, blank=False, on_delete=models.CASCADE
+    )
+    name = models.TextField(null=False)
+    path = models.TextField(null=False)
+    size = models.IntegerField(null=False)
+    body = models.TextField(null=True, blank=True)
+    payload = models.JSONField(null=True, blank=True)
 
 # Workflow provides access to the elements required to support
 # the workflow this application is built for.  These elements exist
