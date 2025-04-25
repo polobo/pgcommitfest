@@ -122,7 +122,6 @@ INSTALLED_APPS = (
     "pgcommitfest.commitfest.apps.CFAppConfig",
     "pgcommitfest.mailqueue",
     "pgcommitfest.userprofile",
-    "pgcommitfest.cfbot",
 )
 
 AUTHENTICATION_BACKENDS = ("pgcommitfest.auth.AuthBackend",)

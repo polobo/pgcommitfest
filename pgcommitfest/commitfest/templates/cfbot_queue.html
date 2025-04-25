@@ -385,7 +385,7 @@
                     data.patches.forEach(patch => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${patch.id}</td>
+                            <td><a href="/patch/${patch.id}">${patch.id}</a></td>
                             <td>${patch.name}</td>
                             <td>${patch.status}</td>
                             <td>${patch.attachment_count}</td>

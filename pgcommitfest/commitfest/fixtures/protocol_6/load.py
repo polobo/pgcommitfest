@@ -1,10 +1,17 @@
 import os
 
 from django.conf import settings
-from pgcommitfest.commitfest.models import BranchManager, CfbotTask, Notifier, PatchApplier, PatchBurner, PatchOnCommitFest, PatchTester, Workflow, CommitFest, Patch, Topic, TargetVersion, CfbotQueue, CfbotQueueItem, CfbotBranch, MailThread, MailThreadAttachment
+from pgcommitfest.commitfest.models import (
+    BranchManager, CfbotTask, Notifier,
+    AbstractPatchApplier, AbstractPatchCompiler, PatchOnCommitFest,
+    AbstractPatchTester, Workflow, CommitFest,
+    Patch, Topic, TargetVersion,
+    CfbotQueue, CfbotQueueItem, CfbotBranch,
+    MailThread, MailThreadAttachment
+)
 from datetime import datetime
 import time
-from django.db import transaction
+
 
 def create_patches():
     # Create a topic and target version for the patches
@@ -122,7 +129,7 @@ def create_patches():
     for patch in [patch6]:
         mock_test(patch)
 
-class TestPatchApplier(PatchApplier):
+class TestPatchApplier(AbstractPatchApplier):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
@@ -165,7 +172,7 @@ class TestPatchApplier(PatchApplier):
         return None
 
 
-class TestPatchCompiler(PatchBurner):
+class TestPatchCompiler(AbstractPatchCompiler):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
@@ -196,7 +203,7 @@ class TestPatchCompiler(PatchBurner):
             })()
         return configure_result
 
-class TestPatchTester(PatchTester):
+class TestPatchTester(AbstractPatchTester):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
