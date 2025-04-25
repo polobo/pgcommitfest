@@ -256,5 +256,3 @@ def mock_test(patch_id):
     Workflow.processBranch(cfbot_branch, branchManager=branchManager)
     cfbot_branch.save()
 
-if __name__ == "__main__":
-    create_patches()
