@@ -1,11 +1,11 @@
 import os
 
 from django.conf import settings
-from pgcommitfest.commitfest.models import BranchManager, CfbotTask, Notifier, PatchOnCommitFest, Workflow, CommitFest, Patch, Topic, TargetVersion, CfbotQueue, CfbotQueueItem, CfbotBranch, MailThread, MailThreadAttachment
+from pgcommitfest.commitfest.models import BranchManager, CfbotTask, Notifier, PatchApplier, PatchBurner, PatchOnCommitFest, PatchTester, Workflow, CommitFest, Patch, Topic, TargetVersion, CfbotQueue, CfbotQueueItem, CfbotBranch, MailThread, MailThreadAttachment
 from datetime import datetime
+import time
 from django.db import transaction
 
-@transaction.atomic
 def create_patches():
     # Create a topic and target version for the patches
     topic, _ = Topic.objects.get_or_create(topic="Example Topic")
@@ -99,102 +99,111 @@ def create_patches():
         patch.save()
 
     for patch in [patch2, patch3, patch4, patch5, patch6]:
+    #for patch in [patch5]:
         print(f"Adding patch {patch.id} to queue")
         queue.insert_item(patch.id, patch.patchset_messageid)
 
     # new
     for patch in [patch3, patch4, patch5, patch6]:
+    #for patch in [patch5]:
         Workflow.createBranch(patch.id, patch.patchset_messageid)
 
     # applying-applied
     for patch in [patch4, patch5, patch6]:
+    #for patch in [patch5]:
         mock_apply(patch)
 
     # compiling-compiled
     for patch in [patch5, patch6]:
+    #for patch in [patch5]:
         mock_compile(patch)
 
     # testing-tested
     for patch in [patch6]:
         mock_test(patch)
 
-class TestPatchApplier:
-    def begin(self, branch):
-        patch = branch.patch
-        attachments = patch.get_attachments()
-        attachment = attachments[0] # known data
-        attachment["date"] = attachment["date"].isoformat()
+class TestPatchApplier(PatchApplier):
+    # Standard API is being tested, just need to implement constant results
+    # def begin(self, branch):
+    # def is_done(self, branch):
+    # def did_fail(self, branch):
+
+    def __init__(self):
+        super().__init__(None, None, None)
+
+    def initialize_directories(self, branch):
+        pass
+
+    def download_and_save(self, attachment):
         attachment["download_result"] = "Success"
-        task = CfbotTask.objects.create(
-            task_id=attachment["filename"],
-            task_name=f"Patchset File",
-            patch_id=patch.id,
-            branch_id=branch.branch_id,
-            position=2,
-            status="EXECUTING",
-            payload=attachment,
-        )
         return True
 
-    def is_done(self, branch):
-        tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        for task in tasks:
-            if task.task_name == "Patchset File":
-                task.status = "COMPLETED"
-                task.payload["apply_result"] = "Success"
-                with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/apply.out"), "r") as stdout_file:
-                    task.payload["stdout"] = stdout_file.read()
-                with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/apply.err"), "r") as stderr_file:
-                    task.payload["stderr"] = stderr_file.read()
-                task.save()
-
+    def perform_apply(self, filename, payload):
+        payload["apply_result"] = "Success"
+        with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/apply.out"), "r") as stdout_file:
+            payload["stdout"] = stdout_file.read()
+        with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/apply.err"), "r") as stderr_file:
+            payload["stderr"] = stderr_file.read()
         return True
-    def did_fail(self, branch):
-        apply_results = {
-            "merge_commit_sha": "473eb7bd581737e34ca4400bc02340cc1474a6cd",
-            "base_commit_sha": "e29df428a1dca4112aad640c889a9a54642759c9",
-            "patch_count": 1,
-            "first_additions": 10,
-            "first_deletions": 4,
-            "all_additions": 10,
-            "all_deletions": 4,
-        }
-        CfbotTask.objects.create(
-            task_id=f"Apply Result Payload",
-            task_name="Apply Result",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=2,
-            status="COMPLETED" ,
-            payload=apply_results,
-        )
-        return False
+
+    def convert_to_merge_commit(self, branch):
+        return True
+
+    def get_patch_count(self, branch):
+        return 1
+
+    def get_base_commit_sha(self, branch):
+        return "e29df428a1dca4112aad640c889a9a54642759c9"
+
+    def get_head_commit_sha(self,branch):
+        return "473eb7bd581737e34ca4400bc02340cc1474a6cd"
+
+    def git_shortstat(self, branch, from_commit, to_commit):
+        return 10, 4
+
     def get_delay(self, branch):
         return None
 
-class TestPatchCompiler:
-    def begin(self, branch):
-        print(f"Beginning patch application for branch: {branch}")
-        return True
-    def is_done(self, branch):
-        print(f"Checking if patch application is done for branch: {branch}")
-        return True
-    def did_fail(self, branch):
-        print(f"Checking if patch application failed for branch: {branch}")
-        return False
+
+class TestPatchCompiler(PatchBurner):
+    # Standard API is being tested, just need to implement constant results
+    # def begin(self, branch):
+    # def is_done(self, branch):
+    # def did_fail(self, branch):
+    def __init__(self):
+        super().__init__(None, None)
+
     def get_delay(self, branch):
         return None
 
-class TestPatchTester:
-    def begin(self, branch):
-        print(f"Beginning patch application for branch: {branch}")
-        return True
-    def is_done(self, branch):
-        print(f"Checking if patch application is done for branch: {branch}")
-        return True
-    def did_fail(self, branch):
-        print(f"Checking if patch application failed for branch: {branch}")
-        return False
+    def do_compile_async(self, branch, compile_task, signal_done):
+        print("Compiling...")
+        with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/configure.out"), "r") as stdout_file:
+            compile_result = type("CompileResult", (object,), {
+            "returncode": 0,
+            "stdout": stdout_file.read(),
+            "stderr": ""
+            })()
+        signal_done(branch, compile_task, compile_result)
+        return
+
+    def do_configure_sync(self, branch):
+        with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/configure.out"), "r") as stdout_file:
+            configure_result = type("ConfigureResult", (object,), {
+            "returncode": 0,
+            "stdout": stdout_file.read(),
+            "stderr": ""
+            })()
+        return configure_result
+
+class TestPatchTester(PatchTester):
+    # Standard API is being tested, just need to implement constant results
+    # def begin(self, branch):
+    # def is_done(self, branch):
+    # def did_fail(self, branch):
+    def __init__(self):
+        super().__init__(None, None)
+
     def get_delay(self, branch):
         return None
 
@@ -213,8 +222,12 @@ def mock_apply(patch_id):
 
 def mock_compile(patch_id):
     cfbot_branch = CfbotBranch.objects.filter(patch_id=patch_id).first()
-    Workflow.processBranch(cfbot_branch, branchManager=branchManager)
-    Workflow.processBranch(cfbot_branch, branchManager=branchManager)
+    Workflow.processBranch(cfbot_branch, branchManager=branchManager) # init
+    Workflow.processBranch(cfbot_branch, branchManager=branchManager) # sync config, async compile
+    time.sleep(0.5) # wait for async compile to finish
+    # should be enough...don't want to infinite loop or even wait too long
+    #Workflow.processBranch(cfbot_branch, branchManager=branchManager) # compile done
+    Workflow.processBranch(cfbot_branch, branchManager=branchManager) # compiled
     cfbot_branch.save()
 
 def mock_test(patch_id):

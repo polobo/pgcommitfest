@@ -885,6 +885,7 @@
         }
 
         function reloadAllTables() {
+            fetchBranchHistory(null);
             fetchOpenPatches();
             fetchBranches();
             fetchQueue();

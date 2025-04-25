@@ -1431,7 +1431,7 @@ class PatchApplier:
         self.working_dir = working_dir
         self.repo_dir = repo_dir
 
-    def git_shortstat(self, from_commit, to_commit):
+    def git_shortstat(self, branch, from_commit, to_commit):
         try:
             result = subprocess.run(
                 ["git", "-C", self.repo_dir, "diff", "--shortstat", from_commit, to_commit],
@@ -1543,13 +1543,11 @@ class PatchApplier:
                 capture_output=True,
                 text=True
             )
-            print(f"Apply script output:\n{result.stdout}\n{result.stderr}")
             payload["apply_result"] = "Success"
             payload["stdout"] = result.stdout
             payload["stderr"] = result.stderr
             return True
         except subprocess.CalledProcessError as e:
-            print(f"Error running apply script:\n{e.stdout}\n{e.stderr}")
             payload["apply_result"] = "Failure"
             payload["stdout"] = e.stdout
             payload["stderr"] = e.stderr
@@ -1655,9 +1653,9 @@ class PatchApplier:
         else:
             failed = False
 
-        branch.patch_count = self.get_patch_count()
-        first_additions, first_deletions = self.git_shortstat("origin/master", "HEAD~%s" % (branch.patch_count - 1,))
-        all_additions, all_deletions = self.git_shortstat("origin/master", "HEAD")
+        branch.patch_count = self.get_patch_count(branch)
+        first_additions, first_deletions = self.git_shortstat(branch, "origin/master", "HEAD~%s" % (branch.patch_count - 1,))
+        all_additions, all_deletions = self.git_shortstat(branch, "origin/master", "HEAD")
 
         if not failed:
             if self.convert_to_merge_commit(branch):
@@ -1666,8 +1664,8 @@ class PatchApplier:
                 failed = True
 
         if not failed:
-            branch.commit_id = self.get_head_commit_sha()
-            branch.base_commit_sha = self.get_base_commit_sha()
+            branch.commit_id = self.get_head_commit_sha(branch)
+            branch.base_commit_sha = self.get_base_commit_sha(branch)
 
             apply_results = {
                 "merge_commit_sha": branch.commit_id,
@@ -1697,9 +1695,9 @@ class PatchApplier:
         return failed
 
     def get_delay(self, branch):
-        return 0
+        return None
 
-    def get_patch_count(self):
+    def get_patch_count(self, branch):
         # In particular since an input file can be an archive of patches
         # we need to count the number of patches found in the directory
         # though possible this can be confirmed/gotten in other ways.
@@ -1710,7 +1708,7 @@ class PatchApplier:
         import os
         return sum(1 for file in os.listdir(self.working_dir) if file.endswith((".diff", ".patch")))
 
-    def get_head_commit_sha(self):
+    def get_head_commit_sha(self, branch):
         """
         Simulate retrieving the merge commit SHA after a successful compilation.
         """
@@ -1726,7 +1724,7 @@ class PatchApplier:
         except subprocess.CalledProcessError as e:
             raise Exception(f"Failed to retrieve base commit SHA: {e.stderr.strip()}")
 
-    def get_base_commit_sha(self):
+    def get_base_commit_sha(self, branch):
         """
         Retrieve the base commit SHA from the template directory.
         """
@@ -1772,6 +1770,39 @@ class PatchBurner:
 
         return True
 
+    def do_configure_sync(self, branch):
+        prefix_dir = os.path.join(self.working_dir, "install")
+        configure_result = subprocess.run(
+            ["meson", "setup", "build", f"--prefix={prefix_dir}"],
+            cwd=self.repo_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        return configure_result
+
+    def do_compile_async(self, branch, compile_task, signal_done):
+        build_dir = os.path.join(self.repo_dir, "build")
+        ninja_result = subprocess.run(
+            ["ninja"],
+            cwd=build_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        signal_done(branch, compile_task, ninja_result)
+        return
+
+    def signal_done_cb(self, branch, compile_task, compile_result):
+        compile_task.payload = {
+            "stdout": compile_result.stdout,
+            "stderr": compile_result.stderr,
+        }
+        compile_task.status = "COMPLETED" if compile_result.returncode == 0 else "FAILED"
+
+        compile_task.save()
+
+
     def is_done(self, branch):
         """
         Filter for "Compile", "Configure", and "Make" tasks, perform their respective work, and update their payloads.
@@ -1815,14 +1846,8 @@ class PatchBurner:
             )
 
             try:
-                prefix_dir = os.path.join(self.working_dir, "install")
-                configure_result = subprocess.run(
-                    ["meson", "setup", "build", f"--prefix={prefix_dir}"],
-                    cwd=self.repo_dir,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                )
+                configure_result = self.do_configure_sync(branch)
+                print(configure_result)
                 configure_task.payload = {
                     "stdout": configure_result.stdout,
                     "stderr": configure_result.stderr,
@@ -1830,6 +1855,7 @@ class PatchBurner:
                 configure_task.status = "COMPLETED" if configure_result.returncode == 0 else "FAILED"
             except Exception as e:
                 configure_task.payload = {"error": str(e)}
+                print(e)
                 configure_task.status = "FAILED"
             configure_task.save()
 
@@ -1851,23 +1877,10 @@ class PatchBurner:
             )
             def run_make_task():
                 try:
-                    build_dir = os.path.join(self.repo_dir, "build")
-                    make_result = subprocess.run(
-                        ["ninja"],
-                        cwd=build_dir,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True,
-                    )
-                    make_task.payload = {
-                        "stdout": make_result.stdout,
-                        "stderr": make_result.stderr,
-                    }
-                    make_task.status = "COMPLETED" if make_result.returncode == 0 else "FAILED"
+                    self.do_compile_async(branch, make_task, signal_done=self.signal_done_cb)
                 except Exception as e:
                     make_task.payload = {"error": str(e)}
                     make_task.status = "FAILED"
-                make_task.save()
 
             import threading
             threading.Thread(target=run_make_task).start()
