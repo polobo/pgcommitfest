@@ -1881,6 +1881,7 @@ class PatchBurner:
                 except Exception as e:
                     make_task.payload = {"error": str(e)}
                     make_task.status = "FAILED"
+                make_task.save()
 
             import threading
             threading.Thread(target=run_make_task).start()
@@ -1915,6 +1916,27 @@ class PatchTester:
     def __init__(self, working_dir, repo_dir):
         self.working_dir = working_dir
         self.repo_dir = repo_dir
+
+    def do_compile_async(self, branch, test_task, signal_done):
+        build_dir = os.path.join(self.repo_dir, "build")
+        test_result = subprocess.run(
+            ["meson", "test"],
+            cwd=build_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        signal_done(branch, test_task, test_result)
+        return
+
+    def signal_done_cb(self, branch, test_task, test_result):
+        test_task.payload = {
+            "stdout": test_result.stdout,
+            "stderr": test_result.stderr,
+        }
+        test_task.status = "COMPLETED" if test_result.returncode == 0 else "FAILED"
+
+        test_task.save()
 
     def begin(self, branch):
         """
@@ -1977,19 +1999,7 @@ class PatchTester:
             )
             def run_test_task():
                 try:
-                    build_dir = os.path.join(self.repo_dir, "build")
-                    test_result = subprocess.run(
-                        ["meson", "test"],
-                        cwd=build_dir,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True,
-                    )
-                    test_task.payload = {
-                        "stdout": test_result.stdout,
-                        "stderr": test_result.stderr,
-                    }
-                    test_task.status = "COMPLETED" if test_result.returncode == 0 else "FAILED"
+                    self.do_test_async(branch, test_task, signal_done=self.signal_done_cb)
                 except Exception as e:
                     test_task.payload = {"error": str(e)}
                     test_task.status = "FAILED"

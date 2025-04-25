@@ -207,6 +207,17 @@ class TestPatchTester(PatchTester):
     def get_delay(self, branch):
         return None
 
+    def do_test_async(self, branch, test_task, signal_done):
+        print("Testing...")
+        with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/test.out"), "r") as stdout_file:
+            test_result = type("TestResult", (object,), {
+            "returncode": 0,
+            "stdout": stdout_file.read(),
+            "stderr": ""
+            })()
+        signal_done(branch, test_task, test_result)
+        return
+
 branchManager = BranchManager(
     applier=TestPatchApplier(),
     burner=TestPatchCompiler(),
@@ -233,6 +244,8 @@ def mock_compile(patch_id):
 def mock_test(patch_id):
     cfbot_branch = CfbotBranch.objects.filter(patch_id=patch_id).first()
     Workflow.processBranch(cfbot_branch, branchManager=branchManager)
+    Workflow.processBranch(cfbot_branch, branchManager=branchManager)
+    time.sleep(0.5) # see mock_compile
     Workflow.processBranch(cfbot_branch, branchManager=branchManager)
     cfbot_branch.save()
 
