@@ -62,12 +62,6 @@
           <h3>Details</h3>
           <div id="json-keys">
               <strong>ID:</strong> <span id="json-id"></span><br>
-              <strong>Patch ID:</strong> <span id="json-patch-id"></span><br>
-              <strong>Message ID:</strong> <span id="json-message-id"></span><br>
-              <strong>Processed Date:</strong> <span id="json-processed-date"></span><br>
-              <strong>Ignore Date:</strong> <span id="json-ignore-date"></span><br>
-              <strong>ll_prev:</strong> <span id="json-ll-prev"></span><br>
-              <strong>ll_next:</strong> <span id="json-ll-next"></span><br>
               <strong>Attachments:</strong>
               <ul id="json-attachments">
                   <!-- Attachment list will be dynamically populated -->
@@ -132,8 +126,24 @@
     </div>
 </div>
 
+<div>
+ <strong>Selected Task ID:</strong> <span id="selected-task-id">None</span>
+</div>
+
+<div>
+ <button class="task-status-btn" data-status="CREATED">Set to Created</button>
+ <button class="task-status-btn" data-status="NEEDS_APPROVAL">Set to Needs Approval</button>
+ <button class="task-status-btn" data-status="TRIGGERED">Set to Triggered</button>
+ <button class="task-status-btn" data-status="EXECUTING">Set to Executing</button>
+ <button class="task-status-btn" data-status="FAILED">Set to Failed</button>
+ <button class="task-status-btn" data-status="COMPLETED">Set to Completed</button>
+ <button class="task-status-btn" data-status="SCHEDULED">Set to Scheduled</button>
+ <button class="task-status-btn" data-status="ABORTED">Set to Aborted</button>
+ <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
+</div>
+
 <div style="display: flex; gap: 20px; margin-top: 20px;">
-    <div style="flex: 70%;">
+    <div style="flex: 50%;">
         <div>CFBot Tasks</div>
         <table border="1" id="cfbot-tasks-table" style="width: 100%; margin-bottom: 20px;">
             <thead>
@@ -153,43 +163,20 @@
             </tbody>
         </table>
     </div>
-    <div id="task-json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+    <div id="task-json-display" style="flex: 50%; border: 1px solid #ccc; padding: 10px;">
         <h3>Task Details</h3>
         <div id="task-json-keys">
-            <strong>Task ID:</strong> <span id="task-json-id"></span><br>
-            <strong>Task Name:</strong> <span id="task-json-name"></span><br>
-            <strong>Patch ID:</strong> <span id="task-json-patch-id"></span><br>
-            <strong>Branch ID:</strong> <span id="task-json-branch-id"></span><br>
-            <strong>Position:</strong> <span id="task-json-position"></span><br>
-            <strong>Status:</strong> <span id="task-json-status"></span><br>
-            <strong>Created:</strong> <span id="task-json-created"></span><br>
-            <strong>Modified:</strong> <span id="task-json-modified"></span><br>
             <strong>Payload:</strong>
             <pre id="task-json-payload" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd;"></pre>
+            <!--
             <strong>Apply Output:</strong>
             <textarea id="task-json-stdout" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            -->
             <strong>Apply Error:</strong>
-            <textarea id="task-json-stderr" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            <textarea id="task-json-stderr" style="width: 100%; overflow: hidden; resize: none; white-space: pre-wrap;" readonly></textarea>
         </div>
     </div>
 </div>
-
-<div>
-    <strong>Selected Task ID:</strong> <span id="selected-task-id">None</span>
-</div>
-
-<div>
-    <button class="task-status-btn" data-status="CREATED">Set to Created</button>
-    <button class="task-status-btn" data-status="NEEDS_APPROVAL">Set to Needs Approval</button>
-    <button class="task-status-btn" data-status="TRIGGERED">Set to Triggered</button>
-    <button class="task-status-btn" data-status="EXECUTING">Set to Executing</button>
-    <button class="task-status-btn" data-status="FAILED">Set to Failed</button>
-    <button class="task-status-btn" data-status="COMPLETED">Set to Completed</button>
-    <button class="task-status-btn" data-status="SCHEDULED">Set to Scheduled</button>
-    <button class="task-status-btn" data-status="ABORTED">Set to Aborted</button>
-    <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
-</div>
-
 
 <style>
     .selected-row {
@@ -255,16 +242,8 @@
 
         function clearTaskDisplay() {
             // Clear the task JSON display
-            document.getElementById("task-json-id").textContent = "";
-            document.getElementById("task-json-name").textContent = "";
-            document.getElementById("task-json-patch-id").textContent = "";
-            document.getElementById("task-json-branch-id").textContent = "";
-            document.getElementById("task-json-position").textContent = "";
-            document.getElementById("task-json-status").textContent = "";
-            document.getElementById("task-json-created").textContent = "";
-            document.getElementById("task-json-modified").textContent = "";
             document.getElementById("task-json-payload").textContent = "";
-            document.getElementById("task-json-stdout").value = "";
+            // document.getElementById("task-json-stdout").value = "";
             document.getElementById("task-json-stderr").value = "";
         }
 
@@ -489,24 +468,16 @@
             if (taskDetails.payload.stdout) delete taskDetails.payload.stdout;
             if (taskDetails.payload.stderr) delete taskDetails.payload.stderr;
 
-            document.getElementById("task-json-id").textContent = taskDetails.id || "None";
-            document.getElementById("task-json-name").textContent = taskDetails.name || "None";
-            document.getElementById("task-json-patch-id").textContent = taskDetails.patchId || "None";
-            document.getElementById("task-json-branch-id").textContent = taskDetails.branchId || "None";
-            document.getElementById("task-json-position").textContent = taskDetails.position || "None";
-            document.getElementById("task-json-status").textContent = taskDetails.status || "None";
-            document.getElementById("task-json-created").textContent = taskDetails.created || "None";
-            document.getElementById("task-json-modified").textContent = taskDetails.modified || "None";
             document.getElementById("task-json-payload").textContent = JSON.stringify(taskDetails.payload, null, 2) || "None";
 
             // Display apply_out and apply_error in text boxes
-            const applyOutputBox = document.getElementById("task-json-stdout");
+            //const applyOutputBox = document.getElementById("task-json-stdout");
             const applyErrorBox = document.getElementById("task-json-stderr");
-            applyOutputBox.value = applyOutput.join("\n");
+            //applyOutputBox.value = applyOutput.join("\n");
             applyErrorBox.value = applyError.join("\n");
 
             // Auto-resize textareas to fit content
-            autoResizeTextarea(applyOutputBox);
+            // autoResizeTextarea(applyOutputBox);
             autoResizeTextarea(applyErrorBox);
         }
 
@@ -586,12 +557,6 @@
 
         function updateJsonDisplay(data) {
             document.getElementById("json-id").textContent = data.id || "";
-            document.getElementById("json-patch-id").textContent = data.patch_id || "";
-            document.getElementById("json-message-id").textContent = data.message_id || "";
-            document.getElementById("json-processed-date").textContent = data.processed_date || "";
-            document.getElementById("json-ignore-date").textContent = data.ignore_date || "";
-            document.getElementById("json-ll-prev").textContent = data.ll_prev || "";
-            document.getElementById("json-ll-next").textContent = data.ll_next || "";
 
             const attachmentsList = document.getElementById("json-attachments");
             attachmentsList.innerHTML = ""; // Clear existing list
