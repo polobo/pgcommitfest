@@ -122,7 +122,6 @@ def create_patches():
     for patch in [patch2, patch3, patch4, patch5, patch6]:
         if patch is None:
             continue
-        print(f"Adding patch {patch.id} to queue")
         queue.insert_item(patch.id, patch.patchset_messageid)
 
     # new
@@ -216,7 +215,6 @@ class TestPatchCompiler(AbstractPatchCompiler):
         return None
 
     def do_compile_async(self, branch, compile_task, signal_done):
-        print("Compiling...")
         with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/configure.out"), "r") as stdout_file:
             compile_result = type("CompileResult", (object,), {
             "returncode": 0,
@@ -247,7 +245,6 @@ class TestPatchTester(AbstractPatchTester):
         return None
 
     def do_test_async(self, branch, test_task, signal_done):
-        print("Testing...")
         with open(os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/test.out"), "r") as stdout_file:
             test_result = type("TestResult", (object,), {
             "returncode": 0,

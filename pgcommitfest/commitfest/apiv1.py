@@ -191,7 +191,7 @@ def process_branch(request, branch_id):
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
-    branch_manager = Workflow.getBranchManager()
+    branch_manager = Workflow.getBranchManager(branch)
     new_branch, delay_for = branch_manager.process(branch)
 
     return apiResponse(request, {"message": f"Branch {new_branch.branch_name} has been created with status {new_branch.status}."})
@@ -237,7 +237,6 @@ def add_test_data(request):
     from .fixtures.protocol_6 import load
     # Load test data from fixtures
     load.create_patches()
-    print("Test data added successfully.")
     return apiResponse(request, {"message": "Test data added successfully."})
 
 
@@ -248,9 +247,9 @@ def create_branch(request):
     patch_id = request.GET.get("patch_id")
     message_id = request.GET.get("message_id")
 
-    branch = Workflow.create_branch(patch_id, message_id)
+    branch = Workflow.createBranch(patch_id, message_id)
 
-    return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch.name}' created for patch_id {patch_id} with message_id {message_id}."})
+    return apiResponse(request, {"branch_id": branch.branch_id, "message": f"Branch '{branch.branch_name}' created for patch_id {patch_id} with message_id {message_id}."})
 
 
 def fetch_branch_history(request):
@@ -310,7 +309,7 @@ def create_patch(request):
     )
 
     for attachment in body_json.get("fileset"):
-        MailThreadAttachment.objects.create(
+        MailThreadAttachment.objects.get_or_create(
             mailthread=mailthread,
             messageid=body_json.get("patch_message_id"),
             attachmentid=attachment["attachment_id"],
@@ -386,6 +385,7 @@ def remove_all_patches(request):
     q.current_queue_item = None
     q.save()
     MailThreadAttachment.objects.all().delete()
+    MailThread.objects.all().delete()
     PatchOnCommitFest.objects.all().delete()
     Patch.objects.all().delete()
     return apiResponse(request, {"message": "All patches removed successfully."})
@@ -417,7 +417,6 @@ def fetch_task_commands(request, task_id):
     """
     Fetch commands for a specific task.
     """
-    print(f"Fetching commands for task ID: {task_id}")
     task = get_object_or_404(CfbotTask, id=task_id)
     commands = CfbotTaskCommand.objects.filter(task=task).order_by("id")
     command_list = [

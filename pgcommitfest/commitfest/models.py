@@ -1,5 +1,6 @@
 import os
 import shutil
+import traceback
 from django.conf import settings
 import requests
 from django.contrib.auth.models import User
@@ -1226,18 +1227,17 @@ class Workflow:
 
         return True
 
-    @classmethod
-    def getBranchManager(cls):
+    def getBranchManager(branch):
         """
         Retrieve an instance of BranchManager.
         """
-        patchApplier = getLocalPatchApplier()
-        patchBurner = getLocalPatchCompiler()
-        patchTester = getLocalPatchTester()
+        patchApplier = getLocalPatchApplier(branch)
+        patchBurner = getLocalPatchCompiler(branch)
+        patchTester = getLocalPatchTester(branch)
         notifier = getNotifier()
         return BranchManager(patchApplier, patchBurner, patchTester, notifier)
 
-    @staticmethod
+
     def createBranch(patch_id, message_id):
         if not patch_id or not message_id:
             raise ValueError("Patch ID and Message ID are required.")
@@ -1275,9 +1275,11 @@ class Workflow:
         if created:
             CfbotBranchHistory.add_branch_to_history(branch)
 
+        return branch
+
     def processBranch(branch, branchManager = None):
         if not branchManager:
-            branchManager = Workflow.getBranchManager()
+            branchManager = Workflow.getBranchManager(branch)
         return branchManager.process(branch)
 
 class BranchManager:
@@ -1554,6 +1556,8 @@ class AbstractPatchApplier:
                     apply_task.status = "ABORTED"
                     apply_task.payload = {"error": str(e)}
                     apply_task.save()
+                    print(f"Error in run_apply_task: {e}")
+                    traceback.print_exc()
 
             branch.patch_count = CfbotTaskCommand.objects.filter(
                 task=apply_task,
@@ -1716,7 +1720,6 @@ class AbstractPatchCompiler:
 
             try:
                 configure_result = self.do_configure_sync(branch)
-                print(configure_result)
                 configure_task.payload = {
                     "stdout": configure_result.stdout,
                     "stderr": configure_result.stderr,
@@ -1966,7 +1969,6 @@ class LocalPatchApplier(AbstractPatchApplier):
         super().__init__()
         self.base_dir = base_dir
         self.branch_subdir = branch_subdir
-        self.APPLY_SCRIPT_SRC = os.path.join(base_dir, self.APPLY_SCRIPT_SRC)
         self.template_dir = template_dir
         self.working_dir = working_dir
         self.repo_dir = repo_dir
@@ -2021,7 +2023,7 @@ class LocalPatchApplier(AbstractPatchApplier):
             raise FileNotFoundError(f"Template directory '{self.template_dir}' does not contain a .git directory.")
 
 
-        if os.exists(os.path.join(self.base_dir, self.branch_subdir)):
+        if os.path.exists(os.path.join(self.base_dir, self.branch_subdir)):
             shutil.rmtree(os.path.join(self.base_dir, self.branch_subdir))
 
         os.makedirs(os.path.join(self.base_dir, self.branch_subdir))
@@ -2107,7 +2109,7 @@ class LocalPatchApplier(AbstractPatchApplier):
         Convert the branch to a merge commit.
         """
         msg_file = os.path.join(self.working_dir, "merge_commit_msg.txt")
-        commit_id = self.get_head_commit_sha()
+        commit_id = self.get_head_commit_sha(branch)
 
         # Write a message to the msg_file
         with open(msg_file, "w") as f:
@@ -2220,7 +2222,7 @@ class LocalPatchTester(AbstractPatchTester):
         self.working_dir = working_dir
         self.repo_dir = repo_dir
 
-    def do_compile_async(self, branch, test_task, signal_done):
+    def do_test_async(self, branch, test_task, signal_done):
         build_dir = os.path.join(self.repo_dir, "build")
         test_result = subprocess.run(
             ["meson", "test"],
@@ -2232,15 +2234,6 @@ class LocalPatchTester(AbstractPatchTester):
         signal_done(branch, test_task, test_result)
         return
 
-    def signal_done_cb(self, branch, test_task, test_result):
-        test_task.payload = {
-            "stdout": test_result.stdout,
-            "stderr": test_result.stderr,
-        }
-        test_task.status = "COMPLETED" if test_result.returncode == 0 else "FAILED"
-
-        test_task.save()
-
     def get_delay(self, branch):
         return 60
 
@@ -2249,24 +2242,24 @@ def getLocalPatchApplier(branch):
     path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchApplier(
         path_base,
-        branch.branch_id,
+        str(branch.branch_id),
         os.path.join(path_base, "template", "postgres"),
-        os.path.join(path_base, branch.patch_id, "work"),
-        os.path.join(path_base, branch.patch_id, "postgres"),
+        os.path.join(path_base, str(branch.branch_id), "work"),
+        os.path.join(path_base, str(branch.branch_id), "postgres"),
     )
 
 def getLocalPatchCompiler(branch):
     path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchCompiler(
-        os.path.join(path_base, branch.patch_id, "work"),
-        os.path.join(path_base, branch.patch_id, "postgres"),
+        os.path.join(path_base, str(branch.branch_id), "work"),
+        os.path.join(path_base, str(branch.branch_id), "postgres"),
     )
 
 def getLocalPatchTester(branch):
     path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchTester(
-        os.path.join(path_base, branch.patch_id, "work"),
-        os.path.join(path_base, branch.patch_id, "postgres"),
+        os.path.join(path_base, str(branch.branch_id), "work"),
+        os.path.join(path_base, str(branch.branch_id), "postgres"),
     )
 
 def getNotifier():
