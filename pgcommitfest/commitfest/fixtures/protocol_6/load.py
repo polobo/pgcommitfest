@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from pgcommitfest.commitfest.models import (
-    BranchManager, CfbotTask, Notifier,
+    BranchManager, CfbotTask, CfbotTaskArtifact, Notifier,
     AbstractPatchApplier, AbstractPatchCompiler, PatchOnCommitFest,
     AbstractPatchTester, Workflow, CommitFest,
     Patch, Topic, TargetVersion,
@@ -62,10 +62,18 @@ def create_patches():
         targetversion=target_version,
     )
 
+    # Set specific patches to None to prevent them from being processed
+    patch1 = None
+    patch2 = None
+    patch3 = None
+    #patch4 = None
+    patch5 = None
+    patch6 = None
+
     # Create threads for each patch using a comprehension
     patches = [patch1, patch2, patch3, patch4, patch5, patch6]
     threads = [
-        MailThread.objects.get_or_create(
+        None if patch is None else MailThread.objects.get_or_create(
             messageid=f"thread-message-id-{10000+patch.id}",
             subject=f"Thread for {patch.name}",
             firstmessage=f"2023-01-01T00:00:00Z",
@@ -79,6 +87,8 @@ def create_patches():
     ]
 
     for patch in patches:
+        if patch is None:
+            continue
         poc = PatchOnCommitFest(
             patch=patch, commitfest=draft_cf, enterdate=datetime.now()
         )
@@ -86,10 +96,14 @@ def create_patches():
 
     # Associate threads with their respective patches
     for patch, thread in zip(patches, threads):
+        if patch is None:
+            continue
         patch.mailthread_set.add(thread)
 
     # Add an attachment to each thread
     for patch, thread in zip(patches, threads):
+        if patch is None:
+            continue
         MailThreadAttachment.objects.get_or_create(
             mailthread=thread,
             messageid=f"thread-message-id-{10000+patch.id}",
@@ -106,27 +120,33 @@ def create_patches():
         patch.save()
 
     for patch in [patch2, patch3, patch4, patch5, patch6]:
-    #for patch in [patch5]:
+        if patch is None:
+            continue
         print(f"Adding patch {patch.id} to queue")
         queue.insert_item(patch.id, patch.patchset_messageid)
 
     # new
     for patch in [patch3, patch4, patch5, patch6]:
-    #for patch in [patch5]:
+        if patch is None:
+            continue
         Workflow.createBranch(patch.id, patch.patchset_messageid)
 
     # applying-applied
     for patch in [patch4, patch5, patch6]:
-    #for patch in [patch5]:
+        if patch is None:
+            continue
         mock_apply(patch)
 
     # compiling-compiled
     for patch in [patch5, patch6]:
-    #for patch in [patch5]:
+        if patch is None:
+            continue
         mock_compile(patch)
 
     # testing-tested
     for patch in [patch6]:
+        if patch is None:
+            continue
         mock_test(patch)
 
 class TestPatchApplier(AbstractPatchApplier):
@@ -144,7 +164,16 @@ class TestPatchApplier(AbstractPatchApplier):
     def do_apply_async(self, branch, apply_task, signal_done):
         return
 
-    def download_and_save(self, attachment):
+    def download_and_save(self, download_task, attachment):
+        fixture_file = os.path.join(settings.BASE_DIR, "commitfest/fixtures/protocol_6/v1-0001-PATCH-protocol-6.patch")
+        CfbotTaskArtifact.objects.create(
+            task=download_task,
+            name=attachment["filename"],
+            path=fixture_file,
+            size=os.path.getsize(fixture_file),
+            body=None,
+            payload=attachment,
+        )
         attachment["download_result"] = "Success"
         return True
 
