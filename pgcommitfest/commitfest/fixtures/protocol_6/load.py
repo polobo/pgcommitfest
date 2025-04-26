@@ -141,6 +141,9 @@ class TestPatchApplier(AbstractPatchApplier):
     def initialize_directories(self, branch):
         pass
 
+    def do_apply_async(self, branch, apply_task, signal_done):
+        return
+
     def download_and_save(self, attachment):
         attachment["download_result"] = "Success"
         return True
@@ -235,6 +238,9 @@ branchManager = BranchManager(
 def mock_apply(patch_id):
     cfbot_branch = CfbotBranch.objects.filter(patch_id=patch_id).first()
     Workflow.processBranch(cfbot_branch, branchManager=branchManager)
+    time.sleep(0.5)
+    Workflow.processBranch(cfbot_branch, branchManager=branchManager)
+    time.sleep(0.5)
     Workflow.processBranch(cfbot_branch, branchManager=branchManager)
     cfbot_branch.save()
 

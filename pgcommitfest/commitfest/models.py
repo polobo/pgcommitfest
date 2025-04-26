@@ -12,7 +12,7 @@ from datetime import datetime
 import json
 import subprocess
 import re
-
+import threading
 
 from pgcommitfest.userprofile.models import UserProfile
 
@@ -1453,42 +1453,63 @@ class AbstractPatchApplier:
         if existing_tasks:
             return False
 
-        self.initialize_directories(branch)
+        apply_task = CfbotTask.objects.create(
+            task_id=f"Download-{branch.branch_id}",
+            task_name="Download",
+            patch=branch.patch,
+            branch_id=branch.branch_id,
+            position=1,
+            status="EXECUTING",
+            payload=None,
+        )
 
-        patch = branch.patch
-        attachments = patch.get_attachments()
-        patch_count = 0
-        fail_count = 0
-        for position, attachment in enumerate(attachments, start=1):
-            attachment["date"] = attachment["date"].isoformat() # XXX: hack for JSONField usage
-            if attachment.get("ispatch") and fail_count == 0:
-                patch_count += 1
-                result = self.download_and_save(attachment)
-                if not result: fail_count += 1
-                task = CfbotTask.objects.create(
-                    task_id=attachment["filename"],
-                    task_name=f"Patchset File",
-                    patch_id=patch.id,
-                    branch_id=branch.branch_id,
-                    position=position,
-                    status="EXECUTING" if result else "FAILED", # testing setup, mark all as completed right away.
-                    payload=attachment,
-                )
-            else:
-                task = CfbotTask.objects.create(
-                    task_id=attachment["filename"],
-                    task_name=f"Patchset File",
-                    patch_id=patch.id,
-                    branch_id=branch.branch_id,
-                    position=position,
-                    status="IGNORED",
-                    payload=attachment,
-                )
+        def run_download_task():
 
-        # Abort if none of the files are patches.  Should never have gotten this far.
-        # Also, all must d/l correctly.
-        if patch_count == 0 or fail_count > 0:
-            return False
+            self.initialize_directories(branch)
+
+            patch = branch.patch
+            attachments = patch.get_attachments()
+            patch_count = 0
+            fail_count = 0
+            try:
+                for position, attachment in enumerate(attachments, start=1):
+                    attachment["date"] = attachment["date"].isoformat() # XXX: hack for JSONField usage
+                    if attachment.get("ispatch") and fail_count == 0:
+                        patch_count += 1
+                        result = self.download_and_save(attachment)
+                        if not result: fail_count += 1
+                        task = CfbotTask.objects.create(
+                            task_id=attachment["filename"],
+                            task_name=f"Patchset File",
+                            patch_id=patch.id,
+                            branch_id=branch.branch_id,
+                            position=position + 1,
+                            status="EXECUTING" if result else "FAILED",
+                            payload=attachment,
+                        )
+                    else:
+                        task = CfbotTask.objects.create(
+                            task_id=attachment["filename"],
+                            task_name=f"Other File",
+                            patch_id=patch.id,
+                            branch_id=branch.branch_id,
+                            position=position,
+                            status="IGNORED",
+                            payload=attachment,
+                        )
+                apply_task.status = "COMPLETED" if fail_count == 0 else "FAILED"
+            except Exception as e:
+                # Handle exceptions and mark tasks as failed
+                for task in CfbotTask.objects.filter(branch_id=branch.branch_id, task_name="Patchset File"):
+                    task.status = "ABORTED"
+                    task.save()
+                # do this last so it refelcts the aborts on the file downloads
+                apply_task.status = "ABORTED"
+                apply_task.payload = {"error": str(e)}
+            finally:
+                apply_task.save()
+
+        threading.Thread(target=run_download_task).start()
 
         return True
 
@@ -1497,16 +1518,50 @@ class AbstractPatchApplier:
         Check if all tasks for the branch are completed and apply patches for tasks with the name 'Patchset File'.
         """
         tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
-        for task in tasks:
-            if task.task_name == "Patchset File":
-                if self.perform_apply(task.task_id, task.payload):
-                    task.status = "COMPLETED"
-                else:
-                    task.status = "FAILED"
+        if all(task.is_done() for task in tasks):
+            return True
 
-                task.save()
+        download_task = CfbotTask.objects.filter(branch_id=branch.branch_id, task_name="Download").first()
+        if download_task.is_done() and branch.patch_count is None:
+            branch.patch_count = CfbotTask.objects.filter(branch_id=branch.branch_id, task_name="Patchset File").count()
+            branch.save()
+            apply_task = CfbotTask.objects.create(
+                task_id=f"Apply-{branch.branch_id}",
+                task_name="Apply",
+                patch=branch.patch,
+                branch_id=branch.branch_id,
+                position=CfbotTask.objects.filter(branch_id=branch.branch_id).count() + 1,
+                status="EXECUTING",
+                payload=None,
+            )
+            def run_apply_task():
+                try:
+                    has_failed = False
+                    for task in tasks:
+                        if task.task_name == "Patchset File":
+                            if not has_failed and self.perform_apply(task.task_id, task.payload):
+                                task.status = "COMPLETED"
+                            else:
+                                if has_failed > 0:
+                                    task.status = "IGNORED"
+                                else:
+                                    has_failed = True
+                                    task.status = "FAILED"
 
-        return True
+                            task.save()
+                    apply_task.status = "COMPLETED" if not has_failed else "FAILED"
+                    apply_task.save()
+                except Exception as e:
+                    for task in CfbotTask.objects.filter(branch_id=branch.branch_id, task_name="Patchset File", status="EXECUTING"):
+                        task.status = "ABORTED"
+                        task.save()
+                        apply_task.status = "ABORTED"
+                        apply_task.payload = {"error": str(e)}
+                        apply_task.save()
+
+            threading.Thread(target=run_apply_task).start()
+
+        return False
 
     def did_fail(self, branch):
         """
@@ -1547,17 +1602,15 @@ class AbstractPatchApplier:
             branch.all_additions = apply_results["all_additions"]
             branch.all_deletions = apply_results["all_deletions"]
 
-        CfbotTask.objects.create(
-            task_id=f"Apply Result Payload",
-            task_name="Apply Result",
-            patch=branch.patch,
-            branch_id=branch.branch_id,
-            position=len(tasks) + 1,
-            status="COMPLETED" if not failed else "FAILED",
-            payload=apply_results if not failed else None,
-        )
-
         return failed
+
+    def signal_done_cb(self, branch, apply_task, apply_result):
+        apply_task.payload = {
+            "stdout": apply_result.stdout,
+            "stderr": apply_result.stderr,
+        }
+        apply_task.status = "COMPLETED" if apply_result.returncode == 0 else "FAILED"
+        apply_task.save()
 
     def initialize_directories(self, branch):
         raise NotImplementedError("Abstract Method")
@@ -1697,7 +1750,7 @@ class AbstractPatchCompiler:
                     make_task.status = "FAILED"
                 make_task.save()
 
-            import threading
+
             threading.Thread(target=run_make_task).start()
 
         if make_is_done and configure_is_done:
@@ -1817,7 +1870,7 @@ class AbstractPatchTester:
                 # need to either bring the concept over from cfbot
                 # or figure out something else.
 
-            import threading
+
             threading.Thread(target=run_test_task).start()
 
         if test_is_done:
