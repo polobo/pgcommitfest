@@ -1011,7 +1011,7 @@ class CfbotTaskArtifact(models.Model):
 # Workflow provides access to the elements required to support
 # the workflow this application is built for.  These elements exist
 # independent of what the user is presently seeing on their page.
-class Workflow(models.Model):
+class Workflow:
     def get_poc_for_patchid_or_404(patchid):
         return get_object_or_404(
             Patch.objects.select_related(), pk=patchid
@@ -1302,15 +1302,6 @@ class BranchManager:
         for task in tasks:
             task.delete()
 
-    # try to make idiomatic usage
-    # self.action.begin / failure to begin is action-aborted
-    # self.action.is_done / success is "past tense" (applied, compiled, tested)
-    # self.action.did_fail / failure is action-failed
-    # need to pass in PatchApplier too then
-    # Returns delay_for - the number of "seconds?" to wait before attempting the next
-    # processing action on this branch.  0 means no delay needed.  Typically non-zero
-    # only if the active action replies it is not done yet.  None means re-processing
-    # is not required - the branch is at an end state, either finished or aborted/failed
     def process(self, branch):
         if not branch:
             raise ValueError("Branch cannot be None.")
@@ -1320,7 +1311,6 @@ class BranchManager:
         Process the given branch by creating a new branch instance with updated status.
         The input branch remains unaltered.
         """
-        print(branch)
         old_branch = self.cloneBranch(branch)
         if old_branch.status == "new":
             # Intentional non-clearing of tasks here.
@@ -1435,13 +1425,8 @@ class AbstractPatchApplier:
     """
     A class responsible for applying patches to branches.
     """
-    def __init__(self, template_dir, working_dir, repo_dir):
-        """
-        Initialize the PatchApplier with directory paths.
-        """
-        self.template_dir = template_dir
-        self.working_dir = working_dir
-        self.repo_dir = repo_dir
+    def __init__(self):
+        pass
 
     @transaction.atomic
     def begin(self, branch):
@@ -1663,9 +1648,8 @@ class AbstractPatchCompiler:
     """
     A class responsible for burning patches.
     """
-    def __init__(self, working_dir, repo_dir):
-        self.working_dir = working_dir
-        self.repo_dir = repo_dir
+    def __init__(self):
+        pass
 
     def begin(self, branch):
         """
@@ -1812,9 +1796,8 @@ class AbstractPatchTester:
     """
     A class responsible for testing patches.
     """
-    def __init__(self, working_dir, repo_dir):
-        self.working_dir = working_dir
-        self.repo_dir = repo_dir
+    def __init__(self):
+        pass
 
     def begin(self, branch):
         """
@@ -1979,8 +1962,11 @@ class LocalPatchApplier(AbstractPatchApplier):
     RE_ADDITIONS = re.compile(r"(\d+) insertion")
     RE_DELETIONS = re.compile(r"(\d+) deletion")
 
-    def __init__(self, template_dir, working_dir, repo_dir):
+    def __init__(self, base_dir, branch_subdir, template_dir, working_dir, repo_dir):
         super().__init__()
+        self.base_dir = base_dir
+        self.branch_subdir = branch_subdir
+        self.APPLY_SCRIPT_SRC = os.path.join(base_dir, self.APPLY_SCRIPT_SRC)
         self.template_dir = template_dir
         self.working_dir = working_dir
         self.repo_dir = repo_dir
@@ -2018,11 +2004,8 @@ class LocalPatchApplier(AbstractPatchApplier):
         Check and clear the working and repository directories if they exist.
         Raise FileNotFoundError if they do not exist.
         """
-        if not os.path.exists(self.working_dir):
-            raise FileNotFoundError(f"Working directory '{self.working_dir}' does not exist.")
-
-        if not os.path.exists(self.repo_dir):
-            raise FileNotFoundError(f"Repository directory '{self.repo_dir}' does not exist.")
+        if not os.path.exists(self.base_dir):
+            raise FileNotFoundError(f"Base directory '{self.base_dir}' does not exist.")
 
         """
         Ensure the template directory exists, is non-empty, and contains a .git directory.
@@ -2037,9 +2020,13 @@ class LocalPatchApplier(AbstractPatchApplier):
         if not os.path.exists(git_dir):
             raise FileNotFoundError(f"Template directory '{self.template_dir}' does not contain a .git directory.")
 
-        shutil.rmtree(self.working_dir)
-        shutil.rmtree(self.repo_dir)
+
+        if os.exists(os.path.join(self.base_dir, self.branch_subdir)):
+            shutil.rmtree(os.path.join(self.base_dir, self.branch_subdir))
+
+        os.makedirs(os.path.join(self.base_dir, self.branch_subdir))
         os.makedirs(self.working_dir)
+
         # Copy the template directory to the working directory
         shutil.copytree(self.template_dir, self.repo_dir)
 
@@ -2071,6 +2058,14 @@ class LocalPatchApplier(AbstractPatchApplier):
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
+            CfbotTaskArtifact.objects.create(
+                task=download_task,
+                name=attachment["filename"],
+                path=file_path,
+                size=os.path.getsize(file_path),
+                body=None,
+                payload=attachment,
+            )
             return True
         except Exception as e:
             print(f"Error downloading or saving file {attachment['filename']}: {e}")
@@ -2249,27 +2244,29 @@ class LocalPatchTester(AbstractPatchTester):
     def get_delay(self, branch):
         return 60
 
-path_template_dir = "/home/davidj/cfapp-temp/template/postgres/"
-path_working_dir = "/home/davidj/cfapp-temp/work/"
-path_repo_dir = "/home/davidj/cfapp-temp/postgres/"
 
-def getLocalPatchApplier():
+def getLocalPatchApplier(branch):
+    path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchApplier(
-        path_template_dir,
-        path_working_dir,
-        path_repo_dir,
+        path_base,
+        branch.branch_id,
+        os.path.join(path_base, "template", "postgres"),
+        os.path.join(path_base, branch.patch_id, "work"),
+        os.path.join(path_base, branch.patch_id, "postgres"),
     )
 
-def getLocalPatchCompiler():
+def getLocalPatchCompiler(branch):
+    path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchCompiler(
-        path_working_dir,
-        path_repo_dir,
+        os.path.join(path_base, branch.patch_id, "work"),
+        os.path.join(path_base, branch.patch_id, "postgres"),
     )
 
-def getLocalPatchTester():
+def getLocalPatchTester(branch):
+    path_base = "/home/davidj/cfapp-temp/"
     return LocalPatchTester(
-        path_working_dir,
-        path_repo_dir,
+        os.path.join(path_base, branch.patch_id, "work"),
+        os.path.join(path_base, branch.patch_id, "postgres"),
     )
 
 def getNotifier():

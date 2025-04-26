@@ -156,7 +156,7 @@ class TestPatchApplier(AbstractPatchApplier):
     # def did_fail(self, branch):
 
     def __init__(self):
-        super().__init__(None, None, None)
+        super().__init__()
 
     def initialize_directories(self, branch):
         pass
@@ -210,7 +210,7 @@ class TestPatchCompiler(AbstractPatchCompiler):
     # def is_done(self, branch):
     # def did_fail(self, branch):
     def __init__(self):
-        super().__init__(None, None)
+        super().__init__()
 
     def get_delay(self, branch):
         return None
@@ -241,7 +241,7 @@ class TestPatchTester(AbstractPatchTester):
     # def is_done(self, branch):
     # def did_fail(self, branch):
     def __init__(self):
-        super().__init__(None, None)
+        super().__init__()
 
     def get_delay(self, branch):
         return None
