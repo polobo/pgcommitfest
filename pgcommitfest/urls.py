@@ -8,7 +8,7 @@ import pgcommitfest.commitfest.lookups as lookups
 import pgcommitfest.commitfest.reports as reports
 import pgcommitfest.commitfest.views as views
 import pgcommitfest.userprofile.views
-from pgcommitfest.commitfest.apiv1 import enqueue_patch
+
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -17,6 +17,7 @@ admin.autodiscover()
 
 urlpatterns = [
     re_path(r"^$", views.home),
+    re_path(r"^api/v1/cfbot/enqueue_patch$", apiv1.enqueue_patch),
     re_path(r"^api/v1/commitfest/active$", apiv1.active_commitfests),
     re_path(r"^api/v1/commitfest/fetch_open_patches$", apiv1.fetch_open_patches),
     re_path(r"^api/v1/commitfest/remove_all_patches$", apiv1.remove_all_patches),
@@ -84,5 +85,4 @@ urlpatterns = [
     # re_path(r'^admin/doc/', include('django.contrib.admindocs.urls)),
     # Uncomment the next line to enable the admin:
     re_path(r"^admin/", admin.site.urls),
-    re_path(r"^api/v1/cfbot/enqueue_patch$", enqueue_patch),
 ]
