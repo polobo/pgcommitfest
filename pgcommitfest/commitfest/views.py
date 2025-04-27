@@ -44,9 +44,9 @@ from .models import (
     Patch,
     PatchHistory,
     PatchOnCommitFest,
-    Workflow,
 )
 
+from .workflow import Workflow
 
 def home(request):
     commitfests = list(CommitFest.objects.all())

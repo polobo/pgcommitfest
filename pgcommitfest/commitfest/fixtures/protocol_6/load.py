@@ -2,15 +2,17 @@ import os
 
 from django.conf import settings
 from pgcommitfest.commitfest.models import (
-    BranchManager, CfbotTask, CfbotTaskArtifact, Notifier,
-    AbstractPatchApplier, AbstractPatchCompiler, PatchOnCommitFest,
-    AbstractPatchTester, Workflow, CommitFest,
+    CfbotTask, CfbotTaskArtifact,
+    PatchOnCommitFest,
+    CommitFest,
     Patch, Topic, TargetVersion,
     CfbotQueue, CfbotQueueItem, CfbotBranch,
     MailThread, MailThreadAttachment
 )
 from datetime import datetime
 import time
+
+from pgcommitfest.commitfest.workflow import Workflow, BranchManager
 
 
 def create_patches():
@@ -63,12 +65,12 @@ def create_patches():
     )
 
     # Set specific patches to None to prevent them from being processed
-    patch1 = None
-    patch2 = None
-    patch3 = None
-    #patch4 = None
-    patch5 = None
-    patch6 = None
+    # patch1 = None
+    # patch2 = None
+    # patch3 = None
+    # patch4 = None
+    # patch5 = None
+    # patch6 = None
 
     # Create threads for each patch using a comprehension
     patches = [patch1, patch2, patch3, patch4, patch5, patch6]
@@ -148,7 +150,7 @@ def create_patches():
             continue
         mock_test(patch)
 
-class TestPatchApplier(AbstractPatchApplier):
+class TestPatchApplier(BranchManager.PatchApplierTemplate):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
@@ -203,7 +205,7 @@ class TestPatchApplier(AbstractPatchApplier):
         return None
 
 
-class TestPatchCompiler(AbstractPatchCompiler):
+class TestPatchCompiler(BranchManager.PatchCompilerTemplate):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
@@ -233,7 +235,7 @@ class TestPatchCompiler(AbstractPatchCompiler):
             })()
         return configure_result
 
-class TestPatchTester(AbstractPatchTester):
+class TestPatchTester(BranchManager.PatchTesterTemplate):
     # Standard API is being tested, just need to implement constant results
     # def begin(self, branch):
     # def is_done(self, branch):
@@ -256,9 +258,9 @@ class TestPatchTester(AbstractPatchTester):
 
 branchManager = BranchManager(
     applier=TestPatchApplier(),
-    burner=TestPatchCompiler(),
+    compiler=TestPatchCompiler(),
     tester=TestPatchTester(),
-    notifier=Notifier(),
+    notifier=BranchManager.Notifier(),
 )
 
 def mock_apply(patch_id):

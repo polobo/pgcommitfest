@@ -14,7 +14,6 @@ from django.contrib.auth.models import User
 
 from .models import (
     Topic,
-    Workflow,
     CfbotQueue,
     CfbotQueueItem,
     CfbotBranch,
@@ -28,6 +27,9 @@ from .models import (
     CfbotTaskCommand,
     CfbotTaskArtifact,
 )
+
+from .workflow import Workflow, BranchManager
+from .branchmanager_local import get_branch_manager
 
 from .util import datetime_serializer
 
@@ -191,7 +193,7 @@ def process_branch(request, branch_id):
         return apiResponse(request, {"error": "Invalid method"}, status=405)
 
     branch = get_object_or_404(CfbotBranch, branch_id=branch_id)
-    branch_manager = Workflow.getBranchManager(branch)
+    branch_manager = get_branch_manager(branch)
     new_branch, delay_for = branch_manager.process(branch)
 
     return apiResponse(request, {"message": f"Branch {new_branch.branch_name} has been created with status {new_branch.status}."})

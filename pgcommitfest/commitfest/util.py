@@ -48,5 +48,5 @@ class DiffableModel(object):
 
 def datetime_serializer(obj):
     if isinstance(obj, datetime):
-        return obj.strftime("%Y-%m-%dT%H:%M:%S%z")
+        return obj.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
     raise TypeError("Type not serializable")

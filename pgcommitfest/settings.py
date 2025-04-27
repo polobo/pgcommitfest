@@ -160,6 +160,9 @@ ARCHIVES_BASE = ARCHIVES_PROTO + "://" + ARCHIVES_SERVER + ":" + ARCHIVES_PORT
 ARCHIVES_HOST = "archives.postgresql.org"  # Host: header to send
 ARCHIVES_APIKEY = None
 
+FILE_FETCH_URL_BASE = ARCHIVES_BASE + "/message-id/attachment/"
+LOCAL_PATCH_BURNER_DIR = "/tmp/patchburner/"
+
 # Email address to pgsql-hackers. Set to something local to test maybe?
 HACKERS_EMAIL = "pgsql-hackers-testing@localhost"
 
