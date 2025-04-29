@@ -1,0 +1,9 @@
+{
+  "patch_count": 1,
+  "all_additions": 10,
+  "all_deletions": 4,
+  "base_commit_sha": "e29df428a1dca4112aad640c889a9a54642759c9",
+  "first_additions": 10,
+  "first_deletions": 4,
+  "merge_commit_sha": "473eb7bd581737e34ca4400bc02340cc1474a6cd"
+}

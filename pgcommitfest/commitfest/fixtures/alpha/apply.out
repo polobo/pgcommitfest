@@ -1,0 +1,9 @@
+Thu Apr 24 05:48:37 PM GMT 2025
+Applying patch protocol-6.patch on /home/davidj/cfapp-temp/postgres/ in /home/davidj/cfapp-temp/work
+git version 2.34.1
+Message file is empty. Skipping 'git am'.
+=== using patch to apply /home/davidj/cfapp-temp/work/protocol-6.patch ===
+patching file doc/src/sgml/protocol.sgml
+[cf/16 09b1184d9e] [PATCH]: protocol-6.patch
+ Date: Thu Apr 24 17:48:37 2025 +0000
+ 1 file changed, 10 insertions(+), 4 deletions(-)

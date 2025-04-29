@@ -1,0 +1,967 @@
+{% extends "base.html" %}
+{% block contents %}
+ <div id="response-message" style="margin-bottom: 20px; color: green;"> </div> <!-- Response message -->
+
+ <div style="display: flex; gap: 5px;">
+  <div style="flex: 30%;">
+   <div id="open-patches" style="margin-bottom: 20px;">
+    <button id="remove-all-patches-btn">Remove All Patches</button>
+    <button id="add-test-data-btn">Add Test Data</button>
+    <button id="reload-patches-btn">Reload Patches</button>
+    <h3>Open Patches</h3>
+    <table border="1" id="open-patches-table" style="margin-bottom: 20px;">
+     <thead>
+      <tr>
+       <th>Patch ID</th>
+       <th>Name</th>
+       <th>Status</th>
+       <th>A#</th>
+       <th>In Queue</th>
+       <th>Has Branch</th>
+      </tr>
+     </thead>
+     <tbody>
+              <!-- Table rows will be dynamically populated via AJAX -->
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div style="flex: 70%;">
+   <h2>{{ queue.name }} ( <span id="current-queue-item">{{ queue.current_queue_item }}</span> )</h2>
+
+   <div>
+    <button id="get-and-move-btn">Get and Move</button>
+    <button id="peek-btn">Peek</button>
+    <button id="clear-queue-btn">Clear Queue</button>
+    <button id="create-branch-btn">Create Branch</button>
+   </div>
+
+   <div id="queue" style="display: flex; gap: 20px;">
+    <div style="flex: 70%;">
+     <table border="1" id="queue-table" style="width: 100%;">
+      <thead>
+       <tr>
+        <th>ID</th>
+        <th>Current</th>
+        <th>Patch ID</th>
+        <th>Message ID</th>
+        <th>Processed Date</th>
+        <th>Ignore Date</th>
+        <th>ll_prev</th>
+        <th>ll_next</th>
+        <th>A#</th>
+        <th>Last Base Commit SHA</th>
+       </tr>
+      </thead>
+      <tbody>
+                  <!-- Table rows will be dynamically populated via AJAX -->
+      </tbody>
+     </table>
+    </div>
+    <div id="json-display" style="flex: 30%; border: 1px solid #ccc; padding: 10px;">
+     <h3>Details</h3>
+     <div id="json-keys">
+      <strong>ID:</strong> <span id="json-id"></span><br>
+      <strong>Attachments:</strong>
+      <ul id="json-attachments">
+                  <!-- Attachment list will be dynamically populated -->
+      </ul>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+ <div style="display: flex; gap: 20px;">
+  <div style="flex: 60%;">
+   <div>
+    <strong>Selected Branch ID:</strong> <span id="selected-branch-id">None</span>
+    <button id="process-build-btn">Process Branch</button>
+    <button id="clear-branch-table-btn">Clear Branch Table</button>
+   </div>
+   <div>CI Branches</div>
+   <table border="1" id="ci-branches-table" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+     <tr>
+      <th>Patch ID</th>
+      <th>Branch ID</th>
+      <th>Branch Name</th>
+      <th>Commit ID</th>
+      <th>Status</th>
+      <th>Needs Rebase Since</th>
+      <th>Failing Since</th>
+      <th>Created</th>
+      <th>Modified</th>
+      <th>Task Count</th>
+      <th>First Additions</th>
+      <th>First Deletions</th>
+      <th>All Additions</th>
+      <th>All Deletions</th>
+      <th>Patch Count</th>
+     </tr>
+    </thead>
+    <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+   </table>
+  </div>
+  <div style="flex: 40%;">
+   <div>
+    <button id="clear-branch-history-btn" disabled>Clear Branch History</button>
+   </div>
+   <div>Branch History</div>
+   <table border="1" id="branch-history-table" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+     <tr>
+      <th>Branch ID</th>
+      <th>Status</th>
+      <th>Modified</th>
+      <th>Task Count</th>
+     </tr>
+    </thead>
+    <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+   </table>
+  </div>
+ </div>
+
+ <div>
+  <strong>Selected Task ID:</strong> <span id="selected-task-id">None</span>
+ </div>
+
+ <div>
+  <button class="task-status-btn" data-status="CREATED">Set to Created</button>
+  <button class="task-status-btn" data-status="NEEDS_APPROVAL">Set to Needs Approval</button>
+  <button class="task-status-btn" data-status="TRIGGERED">Set to Triggered</button>
+  <button class="task-status-btn" data-status="EXECUTING">Set to Executing</button>
+  <button class="task-status-btn" data-status="FAILED">Set to Failed</button>
+  <button class="task-status-btn" data-status="COMPLETED">Set to Completed</button>
+  <button class="task-status-btn" data-status="SCHEDULED">Set to Scheduled</button>
+  <button class="task-status-btn" data-status="ABORTED">Set to Aborted</button>
+  <button class="task-status-btn" data-status="ERRORED">Set to Errored</button>
+ </div>
+
+ <div style="display: flex; gap: 20px; margin-top: 20px;">
+  <div style="flex: 50%;">
+   <div>CFBot Tasks</div>
+   <table border="1" id="cfbot-tasks-table" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+     <tr>
+      <th>Task ID</th>
+      <th>Task Name</th>
+      <th>Patch ID</th>
+      <th>Branch ID</th>
+      <th>Position</th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Modified</th>
+     </tr>
+    </thead>
+    <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+   </table>
+   <table id="cfbot-task-commands-table" border="1" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+     <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Type</th>
+      <th>Duration</th>
+     </tr>
+    </thead>
+    <tbody>
+                <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody>
+   </table>
+   <table id="cfbot-task-artifacts-table" border="1" style="width: 100%; margin-bottom: 20px;">
+    <thead>
+     <tr>
+      <th>Name</th>
+      <th>Path</th>
+      <th>Size</th>
+     </tr>
+    </thead>
+    <tbody>
+         <!-- Table rows will be dynamically populated via AJAX -->
+    </tbody></table>
+  </div>
+  <div id="task-json-display" style="flex: 50%; border: 1px solid #ccc; padding: 10px;">
+   <h3>Task Details</h3>
+   <div id="task-json-keys">
+    <strong>Payload:</strong>
+            <pre id="task-json-payload" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd;"></pre>
+            <!--
+            <strong>Apply Output:</strong>
+            <textarea id="task-json-stdout" style="width: 100%; overflow: hidden; resize: none;" readonly></textarea>
+            -->
+    <strong>Apply Error:</strong>
+    <textarea id="task-json-stderr" style="width: 100%; overflow: hidden; resize: none; white-space: pre-wrap;" readonly></textarea>
+   </div>
+  </div>
+ </div>
+
+ <style>
+  .selected-row {
+   background-color: #d3d3d3;
+  }
+
+  .selected-task-row {
+   background-color: #add8e6;
+  }
+ </style>
+
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+   function autoResizeTextarea(textarea) {
+    textarea.style.height = "auto"; // Reset height to calculate scrollHeight
+    textarea.style.height = textarea.scrollHeight + "px"; // Set height to fit content
+   }
+
+   function highlightBranchRow(row) {
+            // Highlight the selected branch row and remove highlight from others
+    const rows = document.querySelectorAll("#ci-branches-table tbody tr");
+    rows.forEach(r => r.classList.remove("selected-row"));
+    row.classList.add("selected-row");
+
+            // Update the selected branch ID label
+    const branchId = row.getAttribute("data-branch-id");
+    document.getElementById("selected-branch-id").textContent = branchId || "None";
+
+            // Enable/disable the clear branch history button based on selection
+    document.getElementById("clear-branch-history-btn").disabled = branchId === "None";
+   }
+
+   function fetchBranchHistory(branchId) {
+    const tableBody = document.getElementById("branch-history-table").getElementsByTagName("tbody")[0];
+    if (!branchId) {
+     tableBody.innerHTML = ""; // Clear existing rows
+     return;
+    }
+    fetch(`/api/v1/cfbot/branch_history?branch_id=${branchId}`)
+     .then(response => response.json())
+     .then(data => {
+      if (data.error) {
+       alert(data.error);
+       return;
+      }
+
+      const tableBody = document.getElementById("branch-history-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.history.forEach(entry => {
+       const row = document.createElement("tr");
+       row.innerHTML = `
+                            <td>${entry.branch_id}</td>
+                            <td>${entry.status}</td>
+                            <td>${entry.modified}</td>
+                            <td>${entry.task_count || 0}</td>
+                        `;
+       tableBody.appendChild(row);
+      });
+     })
+     .catch(error => console.error("Error:", error));
+   }
+
+   function clearTaskDisplay() {
+            // Clear the task JSON display
+    document.getElementById("task-json-payload").textContent = "";
+            // document.getElementById("task-json-stdout").value = "";
+    document.getElementById("task-json-stderr").value = "";
+   }
+
+   function fetchTasksForBranch(branchId) {
+    const tableBody = document.getElementById("cfbot-tasks-table").getElementsByTagName("tbody")[0];
+    if (!branchId) {
+     tableBody.innerHTML = ""; // Clear existing rows
+     clearTaskDisplay(); // Clear the task JSON display
+     return;
+    }
+            // Fetch tasks for the selected branch
+    fetch(`/api/v1/cfbot/tasks?branch_id=${branchId}`)
+     .then(response => response.json())
+     .then(data => {
+      if (data.error) {
+       alert(data.error);
+       return;
+      }
+
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.tasks.forEach((task, index) => {
+       const row = document.createElement("tr");
+       row.setAttribute("data-item-id", task.item_id);
+       row.setAttribute("data-task-id", task.task_id);
+       row.setAttribute("data-task-name", task.task_name);
+       row.setAttribute("data-patch-id", task.patch_id);
+       row.setAttribute("data-branch-id", task.branch_id);
+       row.setAttribute("data-position", task.position);
+       row.setAttribute("data-status", task.status);
+       row.setAttribute("data-created", task.created);
+       row.setAttribute("data-modified", task.modified);
+       row.setAttribute("data-payload", JSON.stringify(task.payload, null, 2));
+       row.innerHTML = `
+                            <td>${task.task_id}</td>
+                            <td>${task.task_name}</td>
+                            <td>${task.patch_id}</td>
+                            <td>${task.branch_id}</td>
+                            <td>${task.position}</td>
+                            <td>${task.status}</td>
+                            <td>${task.created}</td>
+                            <td>${task.modified}</td>
+                        `;
+       row.addEventListener("click", function () {
+        highlightTaskRow(this);
+       });
+
+       tableBody.appendChild(row);
+
+                        // Auto-click the first row
+       if (index === 0) {
+        row.click();
+       }
+      });
+     })
+     .catch(error => console.error("Error:", error));
+   }
+
+   function fetchBranches(selectOnLoad) {
+    fetch("/api/v1/cfbot/branches")
+     .then(response => response.json())
+     .then(data => {
+      if (data.error) {
+       alert(data.error);
+       return;
+      }
+      const tableBody = document.getElementById("ci-branches-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.branches.forEach((branch, index) => {
+       const row = document.createElement("tr");
+       row.setAttribute("data-branch-id", branch.branch_id);
+       row.innerHTML = `
+                            <td>${branch.patch_id}</td>
+                            <td>${branch.branch_id}</td>
+                            <td>${branch.branch_name}</td>
+                            <td>${branch.commit_id || ""}</td>
+                            <td>${branch.status}</td>
+                            <td>${branch.needs_rebase_since || ""}</td>
+                            <td>${branch.failing_since || ""}</td>
+                            <td>${branch.created}</td>
+                            <td>${branch.modified}</td>
+                            <td>${branch.task_count || 0}</td>
+                            <td>${branch.first_additions || ""}</td>
+                            <td>${branch.first_deletions || ""}</td>
+                            <td>${branch.all_additions || ""}</td>
+                            <td>${branch.all_deletions || ""}</td>
+                            <td>${branch.patch_count || ""}</td>
+                        `;
+       row.addEventListener("click", function () {
+        highlightBranchRow(this);
+        fetchTasksForBranch(branch.branch_id);
+        fetchBranchHistory(branch.branch_id);
+       });
+
+       if (index === 0 && !selectOnLoad) {
+        row.click();
+       } else if (selectOnLoad && branch.branch_id == selectOnLoad) {
+        row.click();
+       }
+       tableBody.appendChild(row);
+      });
+     })
+     .catch(error => console.error("Error:", error));
+   }
+   function fetchQueue() {
+          // Fetch the queue table
+    fetch("/api/v1/cfbot/get_queue")
+     .then(response => response.json())
+     .then(data => {
+      if (data.error) {
+       alert(data.error);
+       return;
+      }
+
+      const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.queuetable.forEach(item => {
+       const row = document.createElement("tr");
+       row.setAttribute("data-id", item.id);
+       row.innerHTML = generateRowHTML(item);
+       if (item.is_current) {
+        row.classList.add("current-row");
+       }
+       tableBody.appendChild(row);
+      });
+     })
+     .catch(error => console.error("Error:", error));
+   }
+
+   function fetchOpenPatches() {
+    fetch("/api/v1/commitfest/fetch_open_patches")
+     .then(response => response.json())
+     .then(data => {
+      const tableBody = document.getElementById("open-patches-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.patches.forEach(patch => {
+       const row = document.createElement("tr");
+       row.innerHTML = `
+                            <td><a href="/patch/${patch.id}">${patch.id}</a></td>
+                            <td>${patch.name}</td>
+                            <td>${patch.status}</td>
+                            <td>${patch.attachment_count}</td>
+                            <td>
+                                ${patch.in_queue ? "Yes" : (patch.attachment_count > 0 ? `<button class="enqueue-btn" data-patch-id="${patch.id}">Enqueue</button>` : "No")}
+                            </td>
+                            <td>${patch.has_branch ? "Yes" : "No"}</td>
+                        `;
+       tableBody.appendChild(row);
+      });
+
+      wireUpEnqueueButtons();
+     })
+     .catch(error => console.error("Error fetching open patches:", error));
+   }
+
+   function wireUpEnqueueButtons() {
+    document.querySelectorAll(".enqueue-btn").forEach(button => {
+     button.addEventListener("click", function () {
+      const patchId = this.getAttribute("data-patch-id");
+      enqueuePatch(patchId);
+     });
+    });
+   }
+
+   function enqueuePatch(patchId) {
+    fetch(`/api/v1/cfbot/enqueue_patch`, {
+     method: "POST",
+     headers: {
+      "Content-Type": "application/json",
+     },
+     body: JSON.stringify({ patch_id: patchId }),
+    })
+     .then(response => response.json())
+     .then(data => {
+      const responseMessage = document.getElementById("response-message");
+      if (data.success) {
+       responseMessage.style.color = "green";
+       responseMessage.textContent = "Patch enqueued successfully!";
+       reloadAllTables();
+      } else {
+       responseMessage.style.color = "red";
+       responseMessage.textContent = `Failed to enqueue patch: ${data.error}`;
+      }
+     })
+     .catch(error => {
+      const responseMessage = document.getElementById("response-message");
+      responseMessage.style.color = "red";
+      responseMessage.textContent = "An error occurred while enqueuing the patch.";
+      console.error("Error enqueuing patch:", error);
+     });
+   }
+   function populateTaskDetails(row) {
+            // Highlight the selected task row and remove highlight from others
+    const rows = document.querySelectorAll("#cfbot-tasks-table tbody tr");
+    rows.forEach(r => r.classList.remove("selected-task-row"));
+    row.classList.add("selected-task-row");
+
+            // Update the selected task ID label
+    const taskId = row.getAttribute("data-task-id");
+    document.getElementById("selected-task-id").textContent = taskId || "None";
+
+            // Update the JSON display with task details
+    const taskDetails = {
+     id: row.getAttribute("data-task-id"),
+     name: row.getAttribute("data-task-name"),
+     patchId: row.getAttribute("data-patch-id"),
+     branchId: row.getAttribute("data-branch-id"),
+     position: row.getAttribute("data-position"),
+     status: row.getAttribute("data-status"),
+     created: row.getAttribute("data-created"),
+     modified: row.getAttribute("data-modified"),
+     payload: JSON.parse(row.getAttribute("data-payload")) || {},
+    };
+
+            // Extract and split apply_out and apply_error if they exist
+    const applyOutput = taskDetails.payload.stdout ? taskDetails.payload.stdout.split("\n") : [];
+    const applyError = taskDetails.payload.stderr ? taskDetails.payload.stderr.split("\n") : [];
+    if (taskDetails.payload.stdout) delete taskDetails.payload.stdout;
+    if (taskDetails.payload.stderr) delete taskDetails.payload.stderr;
+
+    document.getElementById("task-json-payload").textContent = JSON.stringify(taskDetails.payload, null, 2) || "None";
+
+            // Display apply_out and apply_error in text boxes
+            //const applyOutputBox = document.getElementById("task-json-stdout");
+    const applyErrorBox = document.getElementById("task-json-stderr");
+            //applyOutputBox.value = applyOutput.join("\n");
+    applyErrorBox.value = applyError.join("\n");
+
+            // Auto-resize textareas to fit content
+            // autoResizeTextarea(applyOutputBox);
+    autoResizeTextarea(applyErrorBox);
+   }
+
+   function populateTaskArtifacts(row) {
+            // Fetch and populate cfbot-task-artifacts-table
+    const taskId = row.getAttribute("data-item-id");
+    fetch(`/api/v1/cfbot/task/${taskId}/artifacts`)
+     .then(response => response.json())
+     .then(data => {
+      const tableBody = document.getElementById("cfbot-task-artifacts-table");
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      if (data.artifacts && data.artifacts.length > 0) {
+       data.artifacts.forEach(artifact => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                                <td>${artifact.name}</td>
+                                <td>${artifact.path}</td>
+                                <td>${artifact.size}</td>
+                            `;
+        tableBody.appendChild(row);
+       });
+      } else {
+       const row = document.createElement("tr");
+       row.innerHTML = `<td colspan="3">No artifacts available</td>`;
+       tableBody.appendChild(row);
+      }
+     })
+     .catch(error => console.error("Error fetching task artifacts:", error));
+   }
+
+   function populateTaskCommands(row) {
+            // Fetch and populate cfbot-task-commands-table
+    const taskId = row.getAttribute("data-item-id");
+    fetch(`/api/v1/cfbot/task/${taskId}/commands`)
+     .then(response => response.json())
+     .then(data => {
+      const tableBody = document.getElementById("cfbot-task-commands-table");
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      if (data.commands && data.commands.length > 0) {
+       data.commands.forEach(command => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                                <td>${command.name}</td>
+                                <td>${command.status}</td>
+                                <td>${command.type}</td>
+                                <td>${command.duration}</td>
+                            `;
+        tableBody.appendChild(row);
+       });
+      } else {
+       const row = document.createElement("tr");
+       row.innerHTML = `<td colspan="4">No commands available</td>`;
+       tableBody.appendChild(row);
+      }
+     })
+     .catch(error => console.error("Error fetching task commands:", error));
+   }
+
+   function highlightTaskRow(row) {
+    populateTaskDetails(row)
+    populateTaskCommands(row)
+    populateTaskArtifacts(row)
+   }
+
+   function wireUpTaskActions() {
+    document.querySelectorAll(".task-status-btn").forEach(button => {
+     button.addEventListener("click", function () {
+      const selectedTaskId = document.getElementById("selected-task-id").textContent;
+      if (selectedTaskId === "None") {
+       alert("Please select a task first.");
+       return;
+      }
+
+      const newStatus = this.getAttribute("data-status");
+      updateTaskStatus(selectedTaskId, newStatus);
+     });
+    });
+   }
+   function updateTaskStatus(taskId, status) {
+    fetch(`/api/v1/cfbot/task/${taskId}/update_status?status=${status}`, {
+     method: "GET",
+    })
+     .then(response => response.json())
+     .then(data => {
+      const responseMessage = document.getElementById("response-message");
+      if (data.message) {
+       responseMessage.textContent = data.message;
+       responseMessage.style.color = "green";
+      } else if (data.error) {
+       responseMessage.textContent = data.error;
+       responseMessage.style.color = "red";
+      }
+
+                    // Optionally, refresh the tasks table
+      const branchId = document.querySelector(".selected-row")?.getAttribute("data-branch-id");
+      if (branchId) {
+       fetchTasksForBranch(branchId);
+      }
+     })
+     .catch(error => {
+      const responseMessage = document.getElementById("response-message");
+      responseMessage.textContent = "An error occurred while updating the task status.";
+      responseMessage.style.color = "red";
+      console.error("Error:", error);
+     });
+   }
+
+   function performPeek() {
+    fetch("/api/v1/cfbot/peek")
+     .then(response => response.json())
+     .then(data => {
+      if (!data.item) {
+                        // Clear the JSON display if no item is returned
+       updateJsonDisplay({});
+       return;
+      }
+
+                    // Update the JSON display with the peeked data
+      updateJsonDisplay(data.item);
+     })
+     .catch(error => console.error("Error:", error));
+   }
+
+   function generateRowHTML(item) {
+    return `
+                <td>${item.id}</td>
+                <td>${item.is_current ? "✔" : ""}</td>
+                <td>${item.patch_id}</td>
+                <td>${item.message_id}</td>
+                <td>${item.processed_date || ""}</td>
+                <td>${item.ignore_date || ""}</td>
+                <td>${item.ll_prev || ""}</td>
+                <td>${item.ll_next || ""}</td>
+                <td>${item.attachments ? item.attachments.length : 0}</td>
+                <td>${item.last_base_commit_sha ? item.last_base_commit_sha.substring(0, 10) : ""}</td>
+            `;
+   }
+
+   function updateJsonDisplay(data) {
+    document.getElementById("json-id").textContent = data.id || "";
+
+    const attachmentsList = document.getElementById("json-attachments");
+    attachmentsList.innerHTML = ""; // Clear existing list
+    if (data.attachments && data.attachments.length > 0) {
+     data.attachments.forEach(attachment => {
+      const li = document.createElement("li");
+      const type = attachment.ispatch ? "[patch]" : "[file]";
+      li.textContent = `${attachment.filename} (id: ${attachment.attachmentid}) ${type}`;
+      attachmentsList.appendChild(li);
+     });
+    }
+   }
+
+   function add_current(id) {
+    const row = document.querySelector(`[data-id='${id}']`);
+    if (row) {
+     row.classList.add("current-row");
+     row.children[1].textContent = "✔";
+    }
+   }
+
+   function remove_current(id) {
+    const row = document.querySelector(`[data-id='${id}']`);
+    if (row) {
+     row.classList.remove("current-row");
+     row.children[1].textContent = "";
+    }
+   }
+
+   function setupProcessBranchButton() {
+    document.getElementById("process-build-btn").addEventListener("click", function () {
+     const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+     if (selectedBranchId === "None") {
+      alert("Please select a branch first.");
+      return;
+     }
+
+     fetch(`/api/v1/cfbot/branches/${selectedBranchId}/process_branch`, {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+       fetchBranches(selectedBranchId); // Refresh the branches table
+       fetchQueue(); // Refresh the queue table since branch processing may change it
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while processing the branch.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
+   function setupGetAndMoveButton() {
+    document.getElementById("get-and-move-btn").addEventListener("click", function () {
+     fetch("/api/v1/cfbot/get_and_move")
+      .then(response => response.json())
+      .then(data => {
+       if (data.error) {
+        alert(data.error);
+        return;
+       }
+
+       fetchQueue(); // Refresh the queue table
+       updateJsonDisplay(data.returned);
+      })
+      .catch(error => console.error("Error:", error));
+    });
+   }
+
+   function setupClearQueueButton() {
+    document.getElementById("clear-queue-btn").addEventListener("click", function () {
+     fetch("/api/test/cfbot/clear_queue", {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+
+                        // Clear the queue table
+       const tableBody = document.getElementById("queue-table").getElementsByTagName("tbody")[0];
+       tableBody.innerHTML = "";
+       document.getElementById("current-queue-item").textContent = "None";
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while clearing the queue.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+     reloadAllTables();
+    });
+   }
+
+   function setupAddTestDataButton() {
+    document.getElementById("add-test-data-btn").addEventListener("click", function () {
+     fetch("/api/test/cfbot/add_test_data", {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+
+       reloadAllTables(); // Refresh the queue table
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while adding test data.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
+   function setupClearBranchTableButton() {
+    document.getElementById("clear-branch-table-btn").addEventListener("click", function () {
+     fetch("/api/test/cfbot/clear_branch_table", {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+       fetchBranches(); // Reload the branches table
+       fetchBranchHistory(null); // Clear the branch history table
+       fetchTasksForBranch(null); // Clear the tasks table
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while clearing the branch table.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
+   function setupCreateBranchButton() {
+    document.getElementById("create-branch-btn").addEventListener("click", function () {
+     fetch("/api/v1/cfbot/get_and_move", {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       if (data.error) {
+        alert(data.error);
+        return;
+       }
+
+       fetchQueue();
+       updateJsonDisplay(data.returned);
+
+       const patchId = data.returned.patch_id;
+       const messageId = data.returned.message_id;
+
+
+       fetch(`/api/test/cfbot/create_branch?patch_id=${patchId}&message_id=${messageId}`, {
+        method: "GET",
+       })
+        .then(response => response.json())
+        .then(data => {
+         const responseMessage = document.getElementById("response-message");
+         if (data.message) {
+          responseMessage.textContent = data.message;
+          responseMessage.style.color = "green";
+         } else if (data.error) {
+          responseMessage.textContent = data.error;
+          responseMessage.style.color = "red";
+         }
+         reloadAllTables(); // Refresh the tables
+        })
+        .catch(error => {
+         const responseMessage = document.getElementById("response-message");
+         responseMessage.textContent = "An error occurred while creating the branch.";
+         responseMessage.style.color = "red";
+         console.error("Error:", error);
+        });
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while fetching the next queue item.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
+   function setupPeekButton() {
+    document.getElementById("peek-btn").addEventListener("click", function () {
+     performPeek();
+    });
+   }
+
+   function setupClearBranchHistoryButton() {
+    document.getElementById("clear-branch-history-btn").addEventListener("click", function () {
+     const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+     if (selectedBranchId === "None") {
+      alert("Please select a branch first.");
+      return;
+     }
+
+     fetch(`/api/test/cfbot/clear_branch_history?branch_id=${selectedBranchId}`, {
+      method: "GET",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+       fetchBranchHistory(selectedBranchId); // Refresh the branch history table
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while clearing the branch history.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
+   function setupRemoveAllPatchesButton() {
+    document.getElementById("remove-all-patches-btn").addEventListener("click", function () {
+     removeAllPatches();
+    });
+   }
+
+   function setupReloadPatchesButton() {
+    document.getElementById("reload-patches-btn").addEventListener("click", function () {
+     reloadAllTables();
+    });
+   }
+
+   function removeAllPatches() {
+    fetch("/api/v1/commitfest/remove_all_patches", {
+     method: "POST",
+     headers: {
+      "Content-Type": "application/json",
+     },
+    })
+     .then(response => response.json())
+     .then(data => {
+      const responseMessage = document.getElementById("response-message");
+      if (data.message) {
+       responseMessage.textContent = data.message;
+       responseMessage.style.color = "green";
+       reloadAllTables();
+      } else if (data.error) {
+       responseMessage.textContent = data.error;
+       responseMessage.style.color = "red";
+      }
+     })
+     .catch(error => {
+      const responseMessage = document.getElementById("response-message");
+      responseMessage.textContent = "An error occurred while removing patches.";
+      responseMessage.style.color = "red";
+      console.error("Error:", error);
+     });
+   }
+
+   function reloadAllTables() {
+    fetchBranchHistory(null);
+    fetchOpenPatches();
+    fetchBranches();
+    fetchQueue();
+    const selectedBranchId = document.getElementById("selected-branch-id").textContent;
+    if (selectedBranchId && selectedBranchId !== "None") {
+     fetchTasksForBranch(selectedBranchId);
+    }
+   }
+
+   function wireUpPage() {
+    setupProcessBranchButton();
+    setupGetAndMoveButton();
+    setupClearQueueButton();
+    setupAddTestDataButton();
+    setupClearBranchTableButton();
+    setupCreateBranchButton();
+    setupPeekButton();
+    setupClearBranchHistoryButton();
+    setupRemoveAllPatchesButton();
+    setupReloadPatchesButton();
+    wireUpTaskActions();
+    reloadAllTables();
+   }
+
+   wireUpPage();
+  });
+ </script>
+
+{% endblock %}

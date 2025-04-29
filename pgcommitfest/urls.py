@@ -14,7 +14,28 @@ admin.autodiscover()
 
 urlpatterns = [
     re_path(r"^$", views.home),
-    re_path(r"^api/test/cfapp/create_patch$", apiv1.create_patch),
+    re_path(r"^api/test/cfapp/create_patch$", apiv1.create_patch),  # Used by pgarchives
+    # All of the CFApp-CFBot API/Ajax endpoints used in cfbot_queue.html
+    re_path(r"^api/v1/cfbot/enqueue_patch$", apiv1.enqueue_patch),
+    re_path(r"^api/v1/commitfest/fetch_open_patches$", apiv1.fetch_open_patches),
+    re_path(r"^api/v1/commitfest/remove_all_patches$", apiv1.remove_all_patches),
+    re_path(r"^api/v1/cfbot/get_and_move$", apiv1.cfbot_get_and_move),
+    re_path(r"^api/v1/cfbot/get_queue$", apiv1.cfbot_get_queue),
+    re_path(r"^api/v1/cfbot/peek$", apiv1.cfbot_peek),
+    re_path(r"^api/v1/cfbot/branches$", apiv1.cfbot_branches),
+    re_path(r"^api/v1/cfbot/tasks$", apiv1.cfbot_tasks),
+    re_path(r"^api/v1/cfbot/task/([^/]+)/update_status$", apiv1.update_task_status),
+    re_path(r"^api/v1/cfbot/task/([^/]+)/commands$", apiv1.fetch_task_commands),
+    re_path(r"^api/v1/cfbot/task/([^/]+)/artifacts$", apiv1.fetch_task_artifacts),
+    re_path(r"^api/v1/cfbot/branches/(\d+)/process_branch$", apiv1.process_branch),
+    re_path(r"^api/v1/cfbot/branch_history$", apiv1.fetch_branch_history),
+    re_path(r"^api/test/cfbot/clear_queue$", apiv1.clear_queue),
+    re_path(r"^api/test/cfbot/add_test_data$", apiv1.add_test_data),
+    re_path(r"^api/test/cfbot/clear_branch_table$", apiv1.clear_branch_table),
+    re_path(r"^api/test/cfbot/create_branch$", apiv1.create_branch),
+    re_path(r"^api/test/cfbot/clear_branch_history$", apiv1.clear_branch_history),
+    # displays an empty cfbot_queue.html page which then loads via endpoints
+    re_path(r"^cfbot_queue/$", views.cfbot_queue),
     re_path(r"^me/$", views.me),
     re_path(r"^archive/$", views.archive),
     re_path(r"^activity(?P<rss>\.rss)?/", views.activity),

@@ -31,6 +31,11 @@
      {%else%}
       <a href="/account/login/?next={{request.path}}">Log in</a>
      {%endif%}
+     {%if user.is_authenticated%}
+      <li class="pull-right active">
+       <a href="/cfbot_queue">CFBot Queue</a>
+      </li>
+     {%endif%}
     </li>
     {%if header_activity%} <li class="pull-right active"><a href="{{header_activity_link}}">{{header_activity}}</a></li>{%endif%}
    </ul>

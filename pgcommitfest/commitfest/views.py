@@ -26,6 +26,7 @@ from pgcommitfest.userprofile.models import UserProfile
 from pgcommitfest.userprofile.util import UserWrapper
 
 from .ajax import _archivesAPI, doAttachThread, refresh_single_thread
+from .cfbot_queue import CfbotQueue
 from .feeds import ActivityFeed
 from .forms import (
     BulkEmailForm,
@@ -43,6 +44,20 @@ from .models import (
     PatchHistory,
     PatchOnCommitFest,
 )
+
+
+@login_required
+def cfbot_queue(request):
+    # Get the queue
+    queue = CfbotQueue.objects.all().first()
+    return render(
+        request,
+        "cfbot_queue.html",
+        {
+            "title": "CFBot Queue",
+            "queue": queue,
+        },
+    )
 
 
 def home(request):

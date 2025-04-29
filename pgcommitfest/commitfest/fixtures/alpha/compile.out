@@ -1,0 +1,2014 @@
+[1/2014] Generating src/include/storage/lwlocknames_h with a custom command
+[2/2014] Generating src/include/utils/wait_event_names with a custom command
+[3/2014] Generating src/include/utils/errcodes with a custom command
+[4/2014] Compiling C object src/port/libpgport.a.p/bsearch_arg.c.o
+[5/2014] Compiling C object src/port/libpgport_srv.a.p/quotes.c.o
+[6/2014] Compiling C object src/port/libpgport_srv.a.p/bsearch_arg.c.o
+[7/2014] Generating src/include/utils/fmgrtab with a custom command
+[8/2014] Compiling C object src/port/libpgport_srv.a.p/chklocale.c.o
+[9/2014] Generating src/include/nodes/nodetags.h with a custom command
+[10/2014] Compiling C object src/port/libpgport_srv.a.p/noblock.c.o
+[11/2014] Generating src/include/utils/probes.h with a custom command (wrapped by meson to capture output)
+[12/2014] Compiling C object src/port/libpgport_srv.a.p/inet_net_ntop.c.o
+[13/2014] Compiling C object src/port/libpgport_srv.a.p/pg_localeconv_r.c.o
+[14/2014] Compiling C object src/port/libpgport_srv.a.p/pg_numa.c.o
+[15/2014] Compiling C object src/port/libpgport_srv.a.p/snprintf.c.o
+[16/2014] Compiling C object src/port/libpgport_srv.a.p/pg_popcount_aarch64.c.o
+[17/2014] Compiling C object src/port/libpgport_srv.a.p/pg_bitutils.c.o
+[18/2014] Compiling C object src/port/libpgport_srv.a.p/path.c.o
+[19/2014] Compiling C object src/port/libpgport_srv.a.p/pgcheckdir.c.o
+[20/2014] Compiling C object src/port/libpgport_srv.a.p/pg_strong_random.c.o
+[21/2014] Compiling C object src/port/libpgport_srv.a.p/pgmkdirp.c.o
+[22/2014] Compiling C object src/port/libpgport_srv.a.p/pgsleep.c.o
+[23/2014] Compiling C object src/port/libpgport_srv.a.p/pgstrsignal.c.o
+[24/2014] Compiling C object src/port/libpgport_srv.a.p/pqsignal.c.o
+[25/2014] Compiling C object src/port/libpgport_srv.a.p/pgstrcasecmp.c.o
+[26/2014] Compiling C object src/port/libpgport_srv.a.p/qsort.c.o
+[27/2014] Compiling C object src/port/libpgport_srv.a.p/strerror.c.o
+[28/2014] Compiling C object src/port/libpgport_srv.a.p/qsort_arg.c.o
+[29/2014] Compiling C object src/port/libpgport_srv.a.p/tar.c.o
+[30/2014] Compiling C object src/port/libpgport_srv.a.p/getpeereid.c.o
+[31/2014] Compiling C object src/port/libpgport_srv.a.p/strlcpy.c.o
+[32/2014] Compiling C object src/port/libpgport_srv.a.p/strlcat.c.o
+[33/2014] Compiling C object src/port/libpgport_srv.a.p/pg_popcount_avx512.c.o
+[34/2014] Compiling C object src/port/libpgport_srv.a.p/timingsafe_bcmp.c.o
+[35/2014] Compiling C object src/port/libpgport_srv.a.p/pg_crc32c_sb8.c.o
+[36/2014] Compiling C object src/port/libpgport.a.p/chklocale.c.o
+[37/2014] Compiling C object src/port/libpgport.a.p/noblock.c.o
+[38/2014] Generating src/include/catalog/generated_catalog_headers with a custom command
+[39/2014] Compiling C object src/port/libpgport.a.p/inet_net_ntop.c.o
+[40/2014] Compiling C object src/port/libpgport.a.p/pg_bitutils.c.o
+[41/2014] Compiling C object src/port/libpgport_srv.a.p/pg_crc32c_sse42_choose.c.o
+[42/2014] Compiling C object src/port/libpgport.a.p/pg_localeconv_r.c.o
+[43/2014] Compiling C object src/port/libpgport.a.p/pg_numa.c.o
+[44/2014] Compiling C object src/port/libpgport.a.p/pg_popcount_aarch64.c.o
+[45/2014] Compiling C object src/port/libpgport.a.p/path.c.o
+[46/2014] Compiling C object src/port/libpgport.a.p/pgmkdirp.c.o
+[47/2014] Compiling C object src/port/libpgport.a.p/pg_strong_random.c.o
+[48/2014] Compiling C object src/port/libpgport.a.p/pgcheckdir.c.o
+[49/2014] Compiling C object src/port/libpgport.a.p/pgsleep.c.o
+[50/2014] Compiling C object src/port/libpgport_srv.a.p/pg_crc32c_sse42.c.o
+[51/2014] Compiling C object src/port/libpgport.a.p/pqsignal.c.o
+[52/2014] Linking static target src/port/libpgport_srv.a
+[53/2014] Compiling C object src/port/libpgport.a.p/pgstrsignal.c.o
+[54/2014] Compiling C object src/port/libpgport.a.p/qsort.c.o
+[55/2014] Compiling C object src/port/libpgport.a.p/pgstrcasecmp.c.o
+[56/2014] Compiling C object src/port/libpgport.a.p/quotes.c.o
+[57/2014] Compiling C object src/port/libpgport.a.p/strerror.c.o
+[58/2014] Compiling C object src/port/libpgport.a.p/qsort_arg.c.o
+[59/2014] Compiling C object src/port/libpgport.a.p/getpeereid.c.o
+[60/2014] Compiling C object src/port/libpgport.a.p/strlcat.c.o
+[61/2014] Compiling C object src/port/libpgport.a.p/tar.c.o
+[62/2014] Compiling C object src/port/libpgport.a.p/strlcpy.c.o
+[63/2014] Compiling C object src/port/libpgport.a.p/timingsafe_bcmp.c.o
+[64/2014] Compiling C object src/port/libpgport.a.p/pg_crc32c_sb8.c.o
+[65/2014] Compiling C object src/port/libpgport_shlib.a.p/bsearch_arg.c.o
+[66/2014] Compiling C object src/port/libpgport.a.p/snprintf.c.o
+[67/2014] Compiling C object src/port/libpgport_shlib.a.p/chklocale.c.o
+[68/2014] Compiling C object src/port/libpgport.a.p/pg_popcount_avx512.c.o
+[69/2014] Compiling C object src/port/libpgport_shlib.a.p/noblock.c.o
+[70/2014] Compiling C object src/port/libpgport_shlib.a.p/inet_net_ntop.c.o
+[71/2014] Compiling C object src/port/libpgport.a.p/pg_crc32c_sse42_choose.c.o
+[72/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_localeconv_r.c.o
+[73/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_numa.c.o
+[74/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_popcount_aarch64.c.o
+[75/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_bitutils.c.o
+[76/2014] Compiling C object src/port/libpgport.a.p/pg_crc32c_sse42.c.o
+[77/2014] Compiling C object src/port/libpgport_shlib.a.p/pgcheckdir.c.o
+[78/2014] Linking static target src/port/libpgport.a
+[79/2014] Compiling C object src/port/libpgport_shlib.a.p/pgmkdirp.c.o
+[80/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_strong_random.c.o
+[81/2014] Compiling C object src/port/libpgport_shlib.a.p/path.c.o
+[82/2014] Compiling C object src/port/libpgport_shlib.a.p/pgstrsignal.c.o
+[83/2014] Compiling C object src/port/libpgport_shlib.a.p/pgsleep.c.o
+[84/2014] Compiling C object src/port/libpgport_shlib.a.p/pqsignal.c.o
+[85/2014] Compiling C object src/port/libpgport_shlib.a.p/pgstrcasecmp.c.o
+[86/2014] Compiling C object src/port/libpgport_shlib.a.p/strerror.c.o
+[87/2014] Compiling C object src/port/libpgport_shlib.a.p/qsort.c.o
+[88/2014] Compiling C object src/port/libpgport_shlib.a.p/quotes.c.o
+[89/2014] Compiling C object src/port/libpgport_shlib.a.p/qsort_arg.c.o
+[90/2014] Compiling C object src/port/libpgport_shlib.a.p/strlcat.c.o
+[91/2014] Compiling C object src/port/libpgport_shlib.a.p/getpeereid.c.o
+[92/2014] Compiling C object src/port/libpgport_shlib.a.p/strlcpy.c.o
+[93/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_popcount_avx512.c.o
+[94/2014] Compiling C object src/port/libpgport_shlib.a.p/tar.c.o
+[95/2014] Compiling C object src/port/libpgport_shlib.a.p/timingsafe_bcmp.c.o
+[96/2014] Generating src/common/kwlist with a custom command
+[97/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_crc32c_sb8.c.o
+[98/2014] Compiling C object src/common/libpgcommon_srv_config_info.a.p/config_info.c.o
+[99/2014] Compiling C object src/common/libpgcommon_srv.a.p/percentrepl.c.o
+[100/2014] Linking static target src/common/libpgcommon_srv_config_info.a
+[101/2014] Compiling C object src/common/libpgcommon_srv.a.p/archive.c.o
+[102/2014] Compiling C object src/common/libpgcommon_srv_ryu.a.p/f2s.c.o
+[103/2014] Compiling C object src/port/libpgport_shlib.a.p/snprintf.c.o
+[104/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_crc32c_sse42_choose.c.o
+[105/2014] Compiling C object src/port/libpgport_shlib.a.p/pg_crc32c_sse42.c.o
+[106/2014] Linking static target src/port/libpgport_shlib.a
+[107/2014] Compiling C object src/common/libpgcommon_srv.a.p/base64.c.o
+[108/2014] Compiling C object src/common/libpgcommon_srv.a.p/binaryheap.c.o
+[109/2014] Compiling C object src/common/libpgcommon_srv_ryu.a.p/d2s.c.o
+[110/2014] Linking static target src/common/libpgcommon_srv_ryu.a
+[111/2014] Compiling C object src/common/libpgcommon_srv.a.p/checksum_helper.c.o
+[112/2014] Compiling C object src/common/libpgcommon_srv.a.p/exec.c.o
+[113/2014] Compiling C object src/common/libpgcommon_srv.a.p/encnames.c.o
+[114/2014] Compiling C object src/common/libpgcommon_srv.a.p/compression.c.o
+[115/2014] Compiling C object src/common/libpgcommon_srv.a.p/file_perm.c.o
+[116/2014] Compiling C object src/common/libpgcommon_srv.a.p/controldata_utils.c.o
+[117/2014] Compiling C object src/common/libpgcommon_srv.a.p/file_utils.c.o
+[118/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSort.c.o
+[119/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeTableFuncscan.c.o
+[120/2014] Compiling C object src/common/libpgcommon_srv.a.p/ip.c.o
+[121/2014] Compiling C object src/common/libpgcommon_srv.a.p/hashfn.c.o
+[122/2014] Compiling C object src/common/libpgcommon_srv.a.p/keywords.c.o
+[123/2014] Compiling C object src/common/libpgcommon_srv.a.p/blkreftable.c.o
+[124/2014] Compiling C object src/common/libpgcommon_srv.a.p/kwlookup.c.o
+[125/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSubqueryscan.c.o
+[126/2014] Compiling C object src/common/libpgcommon_srv.a.p/link-canary.c.o
+[127/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistutil.c.o
+[128/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeTidrangescan.c.o
+[129/2014] Compiling C object src/common/libpgcommon_srv.a.p/md5_common.c.o
+[130/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeTidscan.c.o
+[131/2014] Compiling C object src/common/libpgcommon_srv.a.p/pg_get_line.c.o
+[132/2014] Compiling C object src/common/libpgcommon_srv.a.p/parse_manifest.c.o
+[133/2014] Compiling C object src/common/libpgcommon_srv.a.p/pg_prng.c.o
+[134/2014] Compiling C object src/common/libpgcommon_srv.a.p/pgfnames.c.o
+[135/2014] Compiling C object src/common/libpgcommon_srv.a.p/relpath.c.o
+[136/2014] Compiling C object src/common/libpgcommon_srv.a.p/psprintf.c.o
+[137/2014] Compiling C object src/common/libpgcommon_srv.a.p/pg_lzcompress.c.o
+[138/2014] Compiling C object src/common/libpgcommon_srv.a.p/jsonapi.c.o
+[139/2014] Compiling C object src/common/libpgcommon_srv.a.p/rmtree.c.o
+[140/2014] Compiling C object src/common/libpgcommon_srv.a.p/string.c.o
+[141/2014] Compiling C object src/common/libpgcommon_srv.a.p/saslprep.c.o
+[142/2014] Compiling C object src/common/libpgcommon_srv.a.p/stringinfo.c.o
+[143/2014] Compiling C object src/common/libpgcommon_shlib.a.p/sprompt.c.o
+[144/2014] Compiling C object src/common/libpgcommon_srv.a.p/scram-common.c.o
+[145/2014] Compiling C object src/common/libpgcommon.a.p/pg_get_line.c.o
+[146/2014] Compiling C object src/common/libpgcommon_srv.a.p/username.c.o
+[147/2014] Compiling C object src/common/libpgcommon_srv.a.p/wait_error.c.o
+[148/2014] Compiling C object src/common/libpgcommon_srv.a.p/unicode_category.c.o
+[149/2014] Compiling C object src/common/libpgcommon_srv.a.p/unicode_case.c.o
+[150/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_revmap.c.o
+[151/2014] Compiling C object src/common/libpgcommon_srv.a.p/cryptohash_openssl.c.o
+[152/2014] Compiling C object src/common/libpgcommon_srv.a.p/hmac_openssl.c.o
+[153/2014] Compiling C object src/common/libpgcommon_config_info.a.p/config_info.c.o
+[154/2014] Linking static target src/common/libpgcommon_config_info.a
+[155/2014] Compiling C object src/common/libpgcommon.a.p/archive.c.o
+[156/2014] Compiling C object src/common/libpgcommon_ryu.a.p/f2s.c.o
+[157/2014] Compiling C object src/common/libpgcommon_ryu.a.p/d2s.c.o
+[158/2014] Linking static target src/common/libpgcommon_ryu.a
+[159/2014] Compiling C object src/common/libpgcommon.a.p/base64.c.o
+[160/2014] Compiling C object src/common/libpgcommon_srv.a.p/unicode_norm.c.o
+[161/2014] Compiling C object src/common/libpgcommon.a.p/checksum_helper.c.o
+[162/2014] Compiling C object src/common/libpgcommon.a.p/binaryheap.c.o
+[163/2014] Compiling C object src/common/libpgcommon_srv.a.p/wchar.c.o
+[164/2014] Linking static target src/common/libpgcommon_srv.a
+[165/2014] Compiling C object src/common/libpgcommon.a.p/file_perm.c.o
+[166/2014] Compiling C object src/common/libpgcommon.a.p/encnames.c.o
+[167/2014] Compiling C object src/common/libpgcommon.a.p/exec.c.o
+[168/2014] Compiling C object src/common/libpgcommon.a.p/compression.c.o
+[169/2014] Compiling C object src/common/libpgcommon.a.p/controldata_utils.c.o
+[170/2014] Compiling C object src/common/libpgcommon.a.p/keywords.c.o
+[171/2014] Compiling C object src/common/libpgcommon.a.p/hashfn.c.o
+[172/2014] Compiling C object src/common/libpgcommon.a.p/blkreftable.c.o
+[173/2014] Compiling C object src/common/libpgcommon.a.p/ip.c.o
+[174/2014] Compiling C object src/common/libpgcommon.a.p/kwlookup.c.o
+[175/2014] Compiling C object src/common/libpgcommon.a.p/link-canary.c.o
+[176/2014] Compiling C object src/common/libpgcommon.a.p/md5_common.c.o
+[177/2014] Compiling C object src/common/libpgcommon.a.p/file_utils.c.o
+[178/2014] Compiling C object src/common/libpgcommon.a.p/percentrepl.c.o
+[179/2014] Compiling C object src/common/libpgcommon.a.p/parse_manifest.c.o
+[180/2014] Compiling C object src/common/libpgcommon.a.p/pg_lzcompress.c.o
+[181/2014] Compiling C object src/common/libpgcommon.a.p/pg_prng.c.o
+[182/2014] Compiling C object src/common/libpgcommon_shlib.a.p/hmac_openssl.c.o
+[183/2014] Compiling C object src/common/libpgcommon.a.p/pgfnames.c.o
+[184/2014] Compiling C object src/common/libpgcommon.a.p/psprintf.c.o
+[185/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSetOp.c.o
+[186/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSeqscan.c.o
+[187/2014] Compiling C object src/common/libpgcommon.a.p/relpath.c.o
+[188/2014] Compiling C object src/common/libpgcommon.a.p/string.c.o
+[189/2014] Compiling C object src/common/libpgcommon.a.p/rmtree.c.o
+[190/2014] Compiling C object src/common/libpgcommon.a.p/jsonapi.c.o
+[191/2014] Compiling C object src/common/libpgcommon.a.p/scram-common.c.o
+[192/2014] Compiling C object src/common/libpgcommon.a.p/stringinfo.c.o
+[193/2014] Compiling C object src/common/libpgcommon.a.p/saslprep.c.o
+[194/2014] Compiling C object src/common/libpgcommon.a.p/wait_error.c.o
+[195/2014] Compiling C object src/common/libpgcommon.a.p/username.c.o
+[196/2014] Compiling C object src/common/libpgcommon.a.p/unicode_category.c.o
+[197/2014] Compiling C object src/common/libpgcommon.a.p/unicode_case.c.o
+[198/2014] Compiling C object src/common/libpgcommon.a.p/restricted_token.c.o
+[199/2014] Compiling C object src/common/libpgcommon.a.p/cryptohash_openssl.c.o
+[200/2014] Compiling C object src/common/libpgcommon.a.p/hmac_openssl.c.o
+[201/2014] Compiling C object src/common/libpgcommon.a.p/unicode_norm.c.o
+[202/2014] Compiling C object src/common/libpgcommon.a.p/sprompt.c.o
+[203/2014] Compiling C object src/common/libpgcommon.a.p/fe_memutils.c.o
+[204/2014] Compiling C object src/common/libpgcommon_shlib_config_info.a.p/config_info.c.o
+[205/2014] Compiling C object src/common/libpgcommon.a.p/logging.c.o
+[206/2014] Compiling C object src/common/libpgcommon_shlib.a.p/archive.c.o
+[207/2014] Compiling C object src/common/libpgcommon_shlib.a.p/link-canary.c.o
+[208/2014] Linking static target src/common/libpgcommon_shlib_config_info.a
+[209/2014] Compiling C object src/common/libpgcommon_shlib.a.p/base64.c.o
+[210/2014] Compiling C object src/common/libpgcommon_shlib_ryu.a.p/d2s.c.o
+[211/2014] Compiling C object src/common/libpgcommon_shlib.a.p/binaryheap.c.o
+[212/2014] Compiling C object src/common/libpgcommon_shlib.a.p/checksum_helper.c.o
+[213/2014] Compiling C object src/common/libpgcommon_shlib_ryu.a.p/f2s.c.o
+[214/2014] Linking static target src/common/libpgcommon_shlib_ryu.a
+[215/2014] Compiling C object src/common/libpgcommon_shlib.a.p/compression.c.o
+[216/2014] Compiling C object src/common/libpgcommon.a.p/wchar.c.o
+[217/2014] Compiling C object src/common/libpgcommon_shlib.a.p/file_perm.c.o
+[218/2014] Compiling C object src/common/libpgcommon_shlib.a.p/encnames.c.o
+[219/2014] Compiling C object src/common/libpgcommon_shlib.a.p/controldata_utils.c.o
+[220/2014] Linking static target src/common/libpgcommon.a
+[221/2014] Compiling C object src/common/libpgcommon_shlib.a.p/exec.c.o
+[222/2014] Compiling C object src/common/libpgcommon_shlib.a.p/ip.c.o
+[223/2014] Compiling C object src/common/libpgcommon_shlib.a.p/file_utils.c.o
+[224/2014] Compiling C object src/common/libpgcommon_shlib.a.p/keywords.c.o
+[225/2014] Compiling C object src/common/libpgcommon_shlib.a.p/hashfn.c.o
+[226/2014] Compiling C object src/common/libpgcommon_shlib.a.p/kwlookup.c.o
+[227/2014] Compiling C object src/common/libpgcommon_shlib.a.p/blkreftable.c.o
+[228/2014] Compiling C object src/common/libpgcommon_shlib.a.p/percentrepl.c.o
+[229/2014] Compiling C object src/common/libpgcommon_shlib.a.p/md5_common.c.o
+[230/2014] Compiling C object src/common/libpgcommon_shlib.a.p/pg_get_line.c.o
+[231/2014] Compiling C object src/common/libpgcommon_shlib.a.p/parse_manifest.c.o
+[232/2014] Compiling C object src/common/libpgcommon_shlib.a.p/pg_lzcompress.c.o
+[233/2014] Compiling C object src/common/libpgcommon_shlib.a.p/pgfnames.c.o
+[234/2014] Compiling C object src/common/libpgcommon_shlib.a.p/psprintf.c.o
+[235/2014] Compiling C object src/common/libpgcommon_shlib.a.p/pg_prng.c.o
+[236/2014] Compiling C object src/common/libpgcommon_shlib.a.p/rmtree.c.o
+[237/2014] Compiling C object src/common/libpgcommon_shlib.a.p/relpath.c.o
+[238/2014] Compiling C object src/common/libpgcommon_shlib.a.p/stringinfo.c.o
+[239/2014] Compiling C object src/common/libpgcommon_shlib.a.p/saslprep.c.o
+[240/2014] Compiling C object src/common/libpgcommon_shlib.a.p/jsonapi.c.o
+[241/2014] Compiling C object src/common/libpgcommon_shlib.a.p/string.c.o
+[242/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_reloptions.c.o
+[243/2014] Compiling C object src/common/libpgcommon_shlib.a.p/username.c.o
+[244/2014] Compiling C object src/common/libpgcommon_shlib.a.p/scram-common.c.o
+[245/2014] Compiling C object src/common/libpgcommon_shlib.a.p/wait_error.c.o
+[246/2014] Compiling C object src/common/libpgcommon_shlib.a.p/restricted_token.c.o
+[247/2014] Compiling C object src/common/libpgcommon_shlib.a.p/cryptohash_openssl.c.o
+[248/2014] Compiling C object src/common/libpgcommon_shlib.a.p/unicode_category.c.o
+[249/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_spanish.c.o
+[250/2014] Compiling C object src/common/libpgcommon_shlib.a.p/unicode_norm.c.o
+[251/2014] Compiling C object src/common/libpgcommon_shlib.a.p/unicode_case.c.o
+[252/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_swedish.c.o
+[253/2014] Compiling C object src/common/libpgcommon_excluded_shlib.a.p/fe_memutils.c.o
+[254/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeUnique.c.o
+[255/2014] Compiling C object src/common/libpgcommon_excluded_shlib.a.p/logging.c.o
+[256/2014] Linking static target src/common/libpgcommon_excluded_shlib.a
+[257/2014] Compiling C object src/common/libpgcommon_shlib.a.p/wchar.c.o
+[258/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_tamil.c.o
+[259/2014] Linking static target src/common/libpgcommon_shlib.a
+[260/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_serbian.c.o
+[261/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistvacuum.c.o
+[262/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_attrdef.c.o
+[263/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_partition.c.o
+[264/2014] Generating src/interfaces/libpq/libpq.exports with a custom command
+[265/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_aggregate.c.o
+[266/2014] Generating src/fe_utils/psqlscan with a custom command
+[267/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-auth.c.o
+[268/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-auth-oauth.c.o
+[269/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_parallel.c.o
+[270/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-auth-scram.c.o
+[271/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_multixact.c.o
+[272/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-cancel.c.o
+[273/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_objectaddress.c.o
+[274/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-lobj.c.o
+[275/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-print.c.o
+[276/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-misc.c.o
+[277/2014] Compiling C object src/interfaces/libpq/libpq.a.p/legacy-pqsignal.c.o
+[278/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-secure.c.o
+[279/2014] Compiling C object src/interfaces/libpq/libpq.a.p/pqexpbuffer.c.o
+[280/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-trace.c.o
+[281/2014] Compiling C object src/interfaces/libpq/libpq.a.p/libpq-events.c.o
+[282/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-exec.c.o
+[283/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-connect.c.o
+[284/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-protocol3.c.o
+[285/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-secure-common.c.o
+[286/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-auth-oauth.c.o
+[287/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-auth-scram.c.o
+[288/2014] Compiling C object src/interfaces/libpq/libpq.a.p/fe-secure-openssl.c.o
+[289/2014] Linking static target src/interfaces/libpq/libpq.a
+[290/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-auth.c.o
+[291/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-cancel.c.o
+[292/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-lobj.c.o
+[293/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-misc.c.o
+[294/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-print.c.o
+[295/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-secure.c.o
+[296/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/legacy-pqsignal.c.o
+[297/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/pqexpbuffer.c.o
+[298/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/libpq-events.c.o
+[299/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-trace.c.o
+[300/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-secure-common.c.o
+[301/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-protocol3.c.o
+[302/2014] Compiling C object src/interfaces/libpq/test/libpq_uri_regress.p/libpq_uri_regress.c.o
+[303/2014] Compiling C object src/interfaces/libpq/test/libpq_testclient.p/libpq_testclient.c.o
+[304/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/archive.c.o
+[305/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/astreamer_file.c.o
+[306/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/astreamer_lz4.c.o
+[307/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/astreamer_gzip.c.o
+[308/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-secure-openssl.c.o
+[309/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/astreamer_zstd.c.o
+[310/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-exec.c.o
+[311/2014] Compiling C object src/interfaces/libpq/libpq.so.5.18.p/fe-connect.c.o
+[312/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/astreamer_tar.c.o
+[313/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/conditional.c.o
+[314/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/cancel.c.o
+[315/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/connect_utils.c.o
+[316/2014] Linking target src/interfaces/libpq/libpq.so.5.18
+[317/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/option_utils.c.o
+[318/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/mbprint.c.o
+[319/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/parallel_slot.c.o
+[320/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/meson-generated_.._psqlscan.c.o
+[321/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/query_utils.c.o
+[322/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/simple_list.c.o
+[323/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/recovery_gen.c.o
+[324/2014] Generating src/backend/bootstrap/bootscanner with a custom command
+[325/2014] Generating src/backend/bootstrap/bootparse with a custom command
+[326/2014] Generating symbol file src/interfaces/libpq/libpq.so.5.18.p/libpq.so.5.18.symbols
+[327/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/string_utils.c.o
+[328/2014] Linking target src/interfaces/libpq/test/libpq_testclient
+[329/2014] Linking target src/interfaces/libpq/test/libpq_uri_regress
+[330/2014] Compiling C object src/backend/bootstrap/boot_parser.a.p/meson-generated_.._bootparse.c.o
+[331/2014] Compiling C object src/backend/bootstrap/boot_parser.a.p/meson-generated_.._bootscanner.c.o
+[332/2014] Linking static target src/backend/bootstrap/boot_parser.a
+[333/2014] Compiling C object src/fe_utils/libpgfeutils.a.p/print.c.o
+[334/2014] Linking static target src/fe_utils/libpgfeutils.a
+[335/2014] Compiling C object src/timezone/zic.p/zic.c.o
+[336/2014] Linking target src/timezone/zic
+[337/2014] Compiling C object src/backend/nodes/nodefuncs.a.p/queryjumblefuncs.c.o
+[338/2014] Generating src/timezone/tzdata with a custom command
+[339/2014] Compiling C object src/backend/nodes/nodefuncs.a.p/copyfuncs.c.o
+[340/2014] Generating src/backend/parser/scan with a custom command
+[341/2014] Compiling C object src/backend/nodes/nodefuncs.a.p/equalfuncs.c.o
+[342/2014] Generating src/backend/replication/repl_scanner with a custom command
+[343/2014] Generating src/backend/replication/syncrep_scanner with a custom command
+[344/2014] Generating src/backend/replication/syncrep_gram with a custom command
+[345/2014] Generating src/backend/replication/repl_gram with a custom command
+[346/2014] Compiling C object src/backend/utils/activity/wait_event_names.a.p/wait_event.c.o
+[347/2014] Compiling C object src/backend/utils/activity/wait_event_names.a.p/wait_event_funcs.c.o
+[348/2014] Compiling C object src/backend/replication/repl_parser.a.p/meson-generated_.._repl_gram.c.o
+[349/2014] Compiling C object src/backend/replication/repl_parser.a.p/meson-generated_.._syncrep_gram.c.o
+[350/2014] Linking static target src/backend/utils/activity/wait_event_names.a
+[351/2014] Generating src/backend/utils/adt/jsonpath_scan with a custom command
+[352/2014] Compiling C object src/backend/replication/repl_parser.a.p/meson-generated_.._repl_scanner.c.o
+[353/2014] Compiling C object src/backend/replication/repl_parser.a.p/meson-generated_.._syncrep_scanner.c.o
+[354/2014] Linking static target src/backend/replication/repl_parser.a
+[355/2014] Generating src/backend/utils/misc/guc_scan with a custom command
+[356/2014] Generating src/backend/utils/adt/jsonpath_parse with a custom command
+[357/2014] Compiling C object src/backend/postgres_lib.a.p/meson-generated_.._.._include_utils_fmgrtab.c.o
+[358/2014] Compiling C object src/backend/utils/misc/guc-file.a.p/meson-generated_.._guc-file.c.o
+[359/2014] Linking static target src/backend/utils/misc/guc-file.a
+[360/2014] Compiling C object src/backend/utils/adt/jsonpath.a.p/meson-generated_.._jsonpath_gram.c.o
+[361/2014] Compiling C object src/backend/utils/adt/jsonpath.a.p/meson-generated_.._jsonpath_scan.c.o
+[362/2014] Linking static target src/backend/utils/adt/jsonpath.a
+[363/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_bloom.c.o
+[364/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_inclusion.c.o
+[365/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_minmax.c.o
+[366/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin.c.o
+[367/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_pageops.c.o
+[368/2014] Compiling C object src/backend/nodes/nodefuncs.a.p/outfuncs.c.o
+[369/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_tuple.c.o
+[370/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_validate.c.o
+[371/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_minmax_multi.c.o
+[372/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_bufmask.c.o
+[373/2014] Compiling C object src/backend/postgres_lib.a.p/access_brin_brin_xlog.c.o
+[374/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_attmap.c.o
+[375/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_detoast.c.o
+[376/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_printsimple.c.o
+[377/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_indextuple.c.o
+[378/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_scankey.c.o
+[379/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_relation.c.o
+[380/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_printtup.c.o
+[381/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeBitmapAnd.c.o
+[382/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_heaptuple.c.o
+[383/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_session.c.o
+[384/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_syncscan.c.o
+[385/2014] Compiling C object src/backend/nodes/nodefuncs.a.p/readfuncs.c.o
+[386/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_toast_compression.c.o
+[387/2014] Linking static target src/backend/nodes/nodefuncs.a
+[388/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_tupconvert.c.o
+[389/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_toast_internals.c.o
+[390/2014] Generating src/backend/parser/gram with a custom command
+[391/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginarrayproc.c.o
+[392/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_tupdesc.c.o
+[393/2014] Compiling C object src/backend/parser/parser.a.p/parser.c.o
+[394/2014] Compiling C object src/backend/postgres_lib.a.p/access_common_tidstore.c.o
+[395/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginbtree.c.o
+[396/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginbulk.c.o
+[397/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeAgg.c.o
+[398/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginentrypage.c.o
+[399/2014] Compiling C object src/backend/parser/parser.a.p/meson-generated_.._scan.c.o
+[400/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginfast.c.o
+[401/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginlogic.c.o
+[402/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_gindatapage.c.o
+[403/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginpostinglist.c.o
+[404/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginget.c.o
+[405/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginvacuum.c.o
+[406/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_gininsert.c.o
+[407/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginutil.c.o
+[408/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginscan.c.o
+[409/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginvalidate.c.o
+[410/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistbuildbuffers.c.o
+[411/2014] Compiling C object src/backend/postgres_lib.a.p/access_gin_ginxlog.c.o
+[412/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistbuild.c.o
+[413/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistsplit.c.o
+[414/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gist.c.o
+[415/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistget.c.o
+[416/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistvalidate.c.o
+[417/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistscan.c.o
+[418/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistproc.c.o
+[419/2014] Compiling C object src/backend/postgres_lib.a.p/access_gist_gistxlog.c.o
+[420/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hash_xlog.c.o
+[421/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSubplan.c.o
+[422/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashfunc.c.o
+[423/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hash.c.o
+[424/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashinsert.c.o
+[425/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashsort.c.o
+[426/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashutil.c.o
+[427/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashsearch.c.o
+[428/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashovfl.c.o
+[429/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashpage.c.o
+[430/2014] Compiling C object src/backend/postgres_lib.a.p/access_hash_hashvalidate.c.o
+[431/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_heaptoast.c.o
+[432/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_heapam_xlog.c.o
+[433/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_heapam_visibility.c.o
+[434/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_hio.c.o
+[435/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_heapam_handler.c.o
+[436/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_rewriteheap.c.o
+[437/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_pruneheap.c.o
+[438/2014] Compiling C object src/backend/postgres_lib.a.p/access_index_amapi.c.o
+[439/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_visibilitymap.c.o
+[440/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_type.c.o
+[441/2014] Compiling C object src/backend/postgres_lib.a.p/access_index_amvalidate.c.o
+[442/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtcompare.c.o
+[443/2014] Compiling C object src/backend/postgres_lib.a.p/access_index_genam.c.o
+[444/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_vacuumlazy.c.o
+[445/2014] Compiling C object src/backend/postgres_lib.a.p/access_index_indexam.c.o
+[446/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtdedup.c.o
+[447/2014] Compiling C object src/backend/postgres_lib.a.p/access_heap_heapam.c.o
+[448/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtpreprocesskeys.c.o
+[449/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtree.c.o
+[450/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtinsert.c.o
+[451/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtpage.c.o
+[452/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtsort.c.o
+[453/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtsearch.c.o
+[454/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtvalidate.c.o
+[455/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_brindesc.c.o
+[456/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_clogdesc.c.o
+[457/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_committsdesc.c.o
+[458/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtsplitloc.c.o
+[459/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_dbasedesc.c.o
+[460/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_gindesc.c.o
+[461/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_genericdesc.c.o
+[462/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_gistdesc.c.o
+[463/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_hashdesc.c.o
+[464/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtxlog.c.o
+[465/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_logicalmsgdesc.c.o
+[466/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_mxactdesc.c.o
+[467/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_heapdesc.c.o
+[468/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_nbtdesc.c.o
+[469/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_relmapdesc.c.o
+[470/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_rmgrdesc_utils.c.o
+[471/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_replorigindesc.c.o
+[472/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_seqdesc.c.o
+[473/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_smgrdesc.c.o
+[474/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_spgdesc.c.o
+[475/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_standbydesc.c.o
+[476/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_tblspcdesc.c.o
+[477/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio_target.c.o
+[478/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio_io.c.o
+[479/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_xlogdesc.c.o
+[480/2014] Compiling C object src/backend/postgres_lib.a.p/access_nbtree_nbtutils.c.o
+[481/2014] Compiling C object src/backend/postgres_lib.a.p/access_rmgrdesc_xactdesc.c.o
+[482/2014] Compiling C object src/backend/postgres_lib.a.p/access_sequence_sequence.c.o
+[483/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spginsert.c.o
+[484/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgkdtreeproc.c.o
+[485/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgproc.c.o
+[486/2014] Compiling C object src/backend/postgres_lib.a.p/commands_prepare.c.o
+[487/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgquadtreeproc.c.o
+[488/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgtextproc.c.o
+[489/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgscan.c.o
+[490/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgvalidate.c.o
+[491/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgutils.c.o
+[492/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgvacuum.c.o
+[493/2014] Compiling C object src/backend/postgres_lib.a.p/access_table_table.c.o
+[494/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgdoinsert.c.o
+[495/2014] Compiling C object src/backend/postgres_lib.a.p/access_table_tableamapi.c.o
+[496/2014] Compiling C object src/backend/postgres_lib.a.p/access_table_toast_helper.c.o
+[497/2014] Compiling C object src/backend/postgres_lib.a.p/access_tablesample_tablesample.c.o
+[498/2014] Compiling C object src/backend/postgres_lib.a.p/access_tablesample_bernoulli.c.o
+[499/2014] Compiling C object src/backend/postgres_lib.a.p/access_table_tableam.c.o
+[500/2014] Compiling C object src/backend/postgres_lib.a.p/access_spgist_spgxlog.c.o
+[501/2014] Compiling C object src/backend/postgres_lib.a.p/access_tablesample_system.c.o
+[502/2014] Compiling C object src/backend/parser/parser.a.p/meson-generated_.._gram.c.o
+[503/2014] Linking static target src/backend/parser/parser.a
+[504/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_clog.c.o
+[505/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_generic_xlog.c.o
+[506/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_oid.c.o
+[507/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_commit_ts.c.o
+[508/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_rmgr.c.o
+[509/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_subtrans.c.o
+[510/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_numutils.c.o
+[511/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_slru.c.o
+[512/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_timeline.c.o
+[513/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_transam.c.o
+[514/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_oracle_compat.c.o
+[515/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_twophase_rmgr.c.o
+[516/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_varsup.c.o
+[517/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogbackup.c.o
+[518/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogarchive.c.o
+[519/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogfuncs.c.o
+[520/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xloginsert.c.o
+[521/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_twophase.c.o
+[522/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogstats.c.o
+[523/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xact.c.o
+[524/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogprefetcher.c.o
+[525/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogutils.c.o
+[526/2014] Compiling C object src/backend/postgres_lib.a.p/archive_shell_archive.c.o
+[527/2014] Compiling C object src/backend/postgres_lib.a.p/backup_backup_manifest.c.o
+[528/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogreader.c.o
+[529/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_gzip.c.o
+[530/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_copy.c.o
+[531/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlog.c.o
+[532/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_lz4.c.o
+[533/2014] Compiling C object src/backend/postgres_lib.a.p/access_transam_xlogrecovery.c.o
+[534/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_server.c.o
+[535/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_sink.c.o
+[536/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_progress.c.o
+[537/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_zstd.c.o
+[538/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_incremental.c.o
+[539/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup.c.o
+[540/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_target.c.o
+[541/2014] Compiling C object src/backend/postgres_lib.a.p/backup_basebackup_throttle.c.o
+[542/2014] Compiling C object src/backend/postgres_lib.a.p/backup_walsummaryfuncs.c.o
+[543/2014] Compiling C object src/backend/postgres_lib.a.p/backup_walsummary.c.o
+[544/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_catalog.c.o
+[545/2014] Compiling C object src/backend/postgres_lib.a.p/bootstrap_bootstrap.c.o
+[546/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_numeric.c.o
+[547/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_indexing.c.o
+[548/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_objectaccess.c.o
+[549/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_dependency.c.o
+[550/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_danish.c.o
+[551/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_dutch.c.o
+[552/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_estonian.c.o
+[553/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_aclchk.c.o
+[554/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_english.c.o
+[555/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_finnish.c.o
+[556/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_index.c.o
+[557/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_german.c.o
+[558/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_class.c.o
+[559/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_heap.c.o
+[560/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_cast.c.o
+[561/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_french.c.o
+[562/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_collation.c.o
+[563/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_conversion.c.o
+[564/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_greek.c.o
+[565/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_namespace.c.o
+[566/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_db_role_setting.c.o
+[567/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_constraint.c.o
+[568/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_inherits.c.o
+[569/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_namespace.c.o
+[570/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_largeobject.c.o
+[571/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_depend.c.o
+[572/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_parameter_acl.c.o
+[573/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_enum.c.o
+[574/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_operator.c.o
+[575/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_range.c.o
+[576/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_storage.c.o
+[577/2014] Compiling C object src/backend/postgres_lib.a.p/replication_slotfuncs.c.o
+[578/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_shdepend.c.o
+[579/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_proc.c.o
+[580/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_publication.c.o
+[581/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_pg_subscription.c.o
+[582/2014] Compiling C object src/backend/postgres_lib.a.p/catalog_toasting.c.o
+[583/2014] Compiling C object src/backend/postgres_lib.a.p/commands_amcmds.c.o
+[584/2014] Compiling C object src/backend/postgres_lib.a.p/commands_aggregatecmds.c.o
+[585/2014] Compiling C object src/backend/postgres_lib.a.p/replication_syncrep.c.o
+[586/2014] Compiling C object src/backend/postgres_lib.a.p/commands_alter.c.o
+[587/2014] Compiling C object src/backend/postgres_lib.a.p/replication_walreceiver.c.o
+[588/2014] Compiling C object src/backend/postgres_lib.a.p/commands_collationcmds.c.o
+[589/2014] Compiling C object src/backend/postgres_lib.a.p/commands_comment.c.o
+[590/2014] Compiling C object src/backend/postgres_lib.a.p/commands_cluster.c.o
+[591/2014] Compiling C object src/backend/postgres_lib.a.p/commands_constraint.c.o
+[592/2014] Compiling C object src/backend/postgres_lib.a.p/commands_conversioncmds.c.o
+[593/2014] Compiling C object src/backend/postgres_lib.a.p/commands_async.c.o
+[594/2014] Compiling C object src/backend/postgres_lib.a.p/commands_analyze.c.o
+[595/2014] Compiling C object src/backend/postgres_lib.a.p/commands_copy.c.o
+[596/2014] Compiling C object src/backend/postgres_lib.a.p/commands_createas.c.o
+[597/2014] Compiling C object src/backend/postgres_lib.a.p/commands_copyfrom.c.o
+[598/2014] Compiling C object src/backend/postgres_lib.a.p/commands_copyto.c.o
+[599/2014] Compiling C object src/backend/postgres_lib.a.p/commands_discard.c.o
+[600/2014] Compiling C object src/backend/postgres_lib.a.p/commands_define.c.o
+[601/2014] Compiling C object src/backend/postgres_lib.a.p/commands_explain_dr.c.o
+[602/2014] Compiling C object src/backend/postgres_lib.a.p/commands_copyfromparse.c.o
+[603/2014] Compiling C object src/backend/postgres_lib.a.p/commands_dropcmds.c.o
+[604/2014] Compiling C object src/backend/postgres_lib.a.p/commands_explain_state.c.o
+[605/2014] Compiling C object src/backend/postgres_lib.a.p/commands_explain_format.c.o
+[606/2014] Compiling C object src/backend/postgres_lib.a.p/commands_dbcommands.c.o
+[607/2014] Compiling C object src/backend/postgres_lib.a.p/commands_event_trigger.c.o
+[608/2014] Compiling C object src/backend/postgres_lib.a.p/commands_lockcmds.c.o
+[609/2014] Compiling C object src/backend/postgres_lib.a.p/commands_foreigncmds.c.o
+[610/2014] Compiling C object src/backend/postgres_lib.a.p/commands_functioncmds.c.o
+[611/2014] Compiling C object src/backend/postgres_lib.a.p/commands_matview.c.o
+[612/2014] Compiling C object src/backend/postgres_lib.a.p/commands_extension.c.o
+[613/2014] Compiling C object src/backend/postgres_lib.a.p/commands_operatorcmds.c.o
+[614/2014] Compiling C object src/backend/postgres_lib.a.p/commands_explain.c.o
+[615/2014] Compiling C object src/backend/postgres_lib.a.p/commands_portalcmds.c.o
+[616/2014] Compiling C object src/backend/postgres_lib.a.p/commands_proclang.c.o
+[617/2014] Compiling C object src/backend/postgres_lib.a.p/commands_opclasscmds.c.o
+[618/2014] Generating contrib/seg/segparse with a custom command
+[619/2014] Generating contrib/seg/segscan with a custom command
+[620/2014] Compiling C object src/backend/postgres_lib.a.p/commands_indexcmds.c.o
+[621/2014] Compiling C object contrib/postgres_fdw/postgres_fdw.so.p/shippable.c.o
+[622/2014] Compiling C object src/backend/postgres_lib.a.p/commands_seclabel.c.o
+[623/2014] Compiling C object src/backend/postgres_lib.a.p/commands_schemacmds.c.o
+[624/2014] Compiling C object src/backend/postgres_lib.a.p/commands_policy.c.o
+[625/2014] Compiling C object src/backend/postgres_lib.a.p/commands_publicationcmds.c.o
+[626/2014] Compiling C object src/backend/postgres_lib.a.p/commands_statscmds.c.o
+[627/2014] Compiling C object src/backend/postgres_lib.a.p/commands_sequence.c.o
+[628/2014] Compiling C object src/backend/postgres_lib.a.p/commands_tablespace.c.o
+[629/2014] Compiling C object src/backend/postgres_lib.a.p/commands_subscriptioncmds.c.o
+[630/2014] Compiling C object src/backend/postgres_lib.a.p/commands_tsearchcmds.c.o
+[631/2014] Compiling C object contrib/postgres_fdw/postgres_fdw.so.p/postgres_fdw.c.o
+[632/2014] Compiling C object src/backend/postgres_lib.a.p/commands_vacuumparallel.c.o
+[633/2014] Compiling C object src/backend/postgres_lib.a.p/commands_user.c.o
+[634/2014] Compiling C object src/backend/postgres_lib.a.p/commands_vacuum.c.o
+[635/2014] Compiling C object src/backend/postgres_lib.a.p/commands_typecmds.c.o
+[636/2014] Compiling C object src/backend/postgres_lib.a.p/commands_variable.c.o
+[637/2014] Compiling C object src/backend/postgres_lib.a.p/commands_view.c.o
+[638/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execAsync.c.o
+[639/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execCurrent.c.o
+[640/2014] Compiling C object src/backend/postgres_lib.a.p/commands_trigger.c.o
+[641/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execAmi.c.o
+[642/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execJunk.c.o
+[643/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execIndexing.c.o
+[644/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execGrouping.c.o
+[645/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execParallel.c.o
+[646/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execMain.c.o
+[647/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execPartition.c.o
+[648/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execExpr.c.o
+[649/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execProcnode.c.o
+[650/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execReplication.c.o
+[651/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execScan.c.o
+[652/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execSRF.c.o
+[653/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execExprInterp.c.o
+[654/2014] Compiling C object src/backend/postgres_lib.a.p/executor_instrument.c.o
+[655/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execUtils.c.o
+[656/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_portuguese.c.o
+[657/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_swedish.c.o
+[658/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_spanish.c.o
+[659/2014] Compiling C object src/backend/postgres_lib.a.p/executor_functions.c.o
+[660/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeAppend.c.o
+[661/2014] Compiling C object src/backend/postgres_lib.a.p/executor_execTuples.c.o
+[662/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeCtescan.c.o
+[663/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeBitmapIndexscan.c.o
+[664/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeBitmapOr.c.o
+[665/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeBitmapHeapscan.c.o
+[666/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeCustom.c.o
+[667/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeForeignscan.c.o
+[668/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeFunctionscan.c.o
+[669/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeGather.c.o
+[670/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeGroup.c.o
+[671/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeGatherMerge.c.o
+[672/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeIncrementalSort.c.o
+[673/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeIndexonlyscan.c.o
+[674/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeHashjoin.c.o
+[675/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeLockRows.c.o
+[676/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeLimit.c.o
+[677/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeMaterial.c.o
+[678/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeHash.c.o
+[679/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeIndexscan.c.o
+[680/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeMergeAppend.c.o
+[681/2014] Compiling C object src/backend/postgres_lib.a.p/commands_tablecmds.c.o
+[682/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeNamedtuplestorescan.c.o
+[683/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeMergejoin.c.o
+[684/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeMemoize.c.o
+[685/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeNestloop.c.o
+[686/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeProjectSet.c.o
+[687/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeResult.c.o
+[688/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeRecursiveunion.c.o
+[689/2014] Generating src/backend/snowball/snowball_create with a custom command
+[690/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_yiddish.c.o
+[691/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeSamplescan.c.o
+[692/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeWorktablescan.c.o
+[693/2014] Compiling C object src/backend/utils/mb/conversion_procs/cyrillic_and_mic.so.p/cyrillic_and_mic_cyrillic_and_mic.c.o
+[694/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeValuesscan.c.o
+[695/2014] Linking target src/backend/utils/mb/conversion_procs/cyrillic_and_mic.so
+[696/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_turkish.c.o
+[697/2014] Compiling C object src/backend/postgres_lib.a.p/executor_tqueue.c.o
+[698/2014] Compiling C object src/backend/postgres_lib.a.p/executor_tstoreReceiver.c.o
+[699/2014] Compiling C object src/backend/postgres_lib.a.p/jit_jit.c.o
+[700/2014] Compiling C object src/backend/postgres_lib.a.p/lib_bipartite_match.c.o
+[701/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeModifyTable.c.o
+[702/2014] Compiling C object src/backend/postgres_lib.a.p/foreign_foreign.c.o
+[703/2014] Compiling C object src/backend/postgres_lib.a.p/lib_bloomfilter.c.o
+[704/2014] Compiling C object src/backend/postgres_lib.a.p/lib_ilist.c.o
+[705/2014] Compiling C object src/backend/postgres_lib.a.p/lib_hyperloglog.c.o
+[706/2014] Compiling C object src/backend/postgres_lib.a.p/lib_pairingheap.c.o
+[707/2014] Compiling C object src/backend/postgres_lib.a.p/lib_integerset.c.o
+[708/2014] Compiling C object src/backend/postgres_lib.a.p/lib_dshash.c.o
+[709/2014] Compiling C object src/backend/postgres_lib.a.p/lib_knapsack.c.o
+[710/2014] Compiling C object src/backend/postgres_lib.a.p/lib_rbtree.c.o
+[711/2014] Compiling C object src/backend/postgres_lib.a.p/executor_nodeWindowAgg.c.o
+[712/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_auth-sasl.c.o
+[713/2014] Compiling C object src/backend/postgres_lib.a.p/executor_spi.c.o
+[714/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_be-secure-common.c.o
+[715/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_auth-oauth.c.o
+[716/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_auth-scram.c.o
+[717/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_be-secure.c.o
+[718/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_crypt.c.o
+[719/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_be-fsstubs.c.o
+[720/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_ifaddr.c.o
+[721/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_pqsignal.c.o
+[722/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_pqformat.c.o
+[723/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_pqmq.c.o
+[724/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_auth.c.o
+[725/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_pqcomm.c.o
+[726/2014] Compiling C object src/backend/postgres_lib.a.p/main_main.c.o
+[727/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_extensible.c.o
+[728/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_multibitmapset.c.o
+[729/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_bitmapset.c.o
+[730/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_be-secure-openssl.c.o
+[731/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_makefuncs.c.o
+[732/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_list.c.o
+[733/2014] Compiling C object src/backend/postgres_lib.a.p/libpq_hba.c.o
+[734/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_params.c.o
+[735/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_read.c.o
+[736/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_value.c.o
+[737/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_cx.c.o
+[738/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_copy.c.o
+[739/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_print.c.o
+[740/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_erx.c.o
+[741/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_misc.c.o
+[742/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_mutation.c.o
+[743/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_main.c.o
+[744/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_ox1.c.o
+[745/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_ox2.c.o
+[746/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_eval.c.o
+[747/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_pmx.c.o
+[748/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_px.c.o
+[749/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_random.c.o
+[750/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_pool.c.o
+[751/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_selection.c.o
+[752/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_geqo_geqo_recombination.c.o
+[753/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_tidbitmap.c.o
+[754/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_clausesel.c.o
+[755/2014] Compiling C object src/backend/postgres_lib.a.p/nodes_nodeFuncs.c.o
+[756/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_allpaths.c.o
+[757/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_joinrels.c.o
+[758/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_equivclass.c.o
+[759/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_tidpath.c.o
+[760/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_joinpath.c.o
+[761/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_pathkeys.c.o
+[762/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_indxpath.c.o
+[763/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_path_costsize.c.o
+[764/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_planmain.c.o
+[765/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_planagg.c.o
+[766/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_analyzejoins.c.o
+[767/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_prep_prepagg.c.o
+[768/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_initsplan.c.o
+[769/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_subselect.c.o
+[770/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_prep_prepqual.c.o
+[771/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_setrefs.c.o
+[772/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_prep_preptlist.c.o
+[773/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_prep_prepjointree.c.o
+[774/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_prep_prepunion.c.o
+[775/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_appendinfo.c.o
+[776/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_joininfo.c.o
+[777/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_orclauses.c.o
+[778/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_inherit.c.o
+[779/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_createplan.c.o
+[780/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_paramassign.c.o
+[781/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_placeholder.c.o
+[782/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_plan_planner.c.o
+[783/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_clauses.c.o
+[784/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_predtest.c.o
+[785/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_relnode.c.o
+[786/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_plancat.c.o
+[787/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_restrictinfo.c.o
+[788/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_pathnode.c.o
+[789/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_var.c.o
+[790/2014] Compiling C object src/backend/postgres_lib.a.p/optimizer_util_tlist.c.o
+[791/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_collate.c.o
+[792/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_enr.c.o
+[793/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_cte.c.o
+[794/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_agg.c.o
+[795/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_coerce.c.o
+[796/2014] Compiling C object src/backend/postgres_lib.a.p/parser_analyze.c.o
+[797/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_jsontable.c.o
+[798/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_node.c.o
+[799/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_merge.c.o
+[800/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_clause.c.o
+[801/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_oper.c.o
+[802/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_param.c.o
+[803/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_func.c.o
+[804/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_type.c.o
+[805/2014] Compiling C object src/backend/postgres_lib.a.p/parser_scansup.c.o
+[806/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_target.c.o
+[807/2014] Compiling C object src/backend/postgres_lib.a.p/partitioning_partdesc.c.o
+[808/2014] Compiling C object src/backend/postgres_lib.a.p/port_atomics.c.o
+[809/2014] Compiling C object src/backend/postgres_lib.a.p/port_posix_sema.c.o
+[810/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_expr.c.o
+[811/2014] Compiling C object src/backend/postgres_lib.a.p/port_sysv_shmem.c.o
+[812/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_relation.c.o
+[813/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_auxprocess.c.o
+[814/2014] Compiling C object src/backend/postgres_lib.a.p/partitioning_partprune.c.o
+[815/2014] Compiling C object src/backend/postgres_lib.a.p/partitioning_partbounds.c.o
+[816/2014] Compiling C object src/backend/postgres_lib.a.p/parser_parse_utilcmd.c.o
+[817/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_bgwriter.c.o
+[818/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_bgworker.c.o
+[819/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_fork_process.c.o
+[820/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_autovacuum.c.o
+[821/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_interrupt.c.o
+[822/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_pmchild.c.o
+[823/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_checkpointer.c.o
+[824/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_pgarch.c.o
+[825/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_launch_backend.c.o
+[826/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_startup.c.o
+[827/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regerror.c.o
+[828/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_walwriter.c.o
+[829/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_syslogger.c.o
+[830/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regexport.c.o
+[831/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_walsummarizer.c.o
+[832/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regfree.c.o
+[833/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regprefix.c.o
+[834/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_applyparallelworker.c.o
+[835/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regexec.c.o
+[836/2014] Compiling C object src/backend/postgres_lib.a.p/postmaster_postmaster.c.o
+[837/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgcrypto.c.o
+[838/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-armor.c.o
+[839/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-cfb.c.o
+[840/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-info.c.o
+[841/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-compress.c.o
+[842/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-encrypt.c.o
+[843/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-decrypt.c.o
+[844/2014] Compiling C object src/backend/postgres_lib.a.p/replication_walreceiverfuncs.c.o
+[845/2014] Compiling C object src/backend/postgres_lib.a.p/replication_slot.c.o
+[846/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_conflict.c.o
+[847/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_decode.c.o
+[848/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_launcher.c.o
+[849/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_message.c.o
+[850/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_logicalfuncs.c.o
+[851/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_logical.c.o
+[852/2014] Compiling C object src/backend/postgres_lib.a.p/replication_walsender.c.o
+[853/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_origin.c.o
+[854/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_relation.c.o
+[855/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_proto.c.o
+[856/2014] Compiling C object src/backend/postgres_lib.a.p/regex_regcomp.c.o
+[857/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_snapbuild.c.o
+[858/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_slotsync.c.o
+[859/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_tablesync.c.o
+[860/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteDefine.c.o
+[861/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteRemove.c.o
+[862/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteManip.c.o
+[863/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteSupport.c.o
+[864/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rowsecurity.c.o
+[865/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteSearchCycle.c.o
+[866/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_reorderbuffer.c.o
+[867/2014] Compiling C object src/backend/postgres_lib.a.p/replication_logical_worker.c.o
+[868/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_attribute_stats.c.o
+[869/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_mvdistinct.c.o
+[870/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_relation_stats.c.o
+[871/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_dependencies.c.o
+[872/2014] Compiling C object src/backend/postgres_lib.a.p/rewrite_rewriteHandler.c.o
+[873/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_stat_utils.c.o
+[874/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio_callback.c.o
+[875/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio_funcs.c.o
+[876/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_method_io_uring.c.o
+[877/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_mcv.c.o
+[878/2014] Compiling C object src/backend/postgres_lib.a.p/statistics_extended_stats.c.o
+[879/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio.c.o
+[880/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_method_sync.c.o
+[881/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_aio_init.c.o
+[882/2014] Compiling C object src/backend/postgres_lib.a.p/storage_buffer_buf_init.c.o
+[883/2014] Compiling C object src/backend/postgres_lib.a.p/storage_buffer_buf_table.c.o
+[884/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_read_stream.c.o
+[885/2014] Compiling C object src/backend/postgres_lib.a.p/storage_buffer_freelist.c.o
+[886/2014] Compiling C object src/backend/postgres_lib.a.p/storage_aio_method_worker.c.o
+[887/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_copydir.c.o
+[888/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_fileset.c.o
+[889/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_buffile.c.o
+[890/2014] Compiling C object src/backend/postgres_lib.a.p/storage_buffer_localbuf.c.o
+[891/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_sharedfileset.c.o
+[892/2014] Compiling C object src/backend/postgres_lib.a.p/storage_freespace_indexfsm.c.o
+[893/2014] Compiling C object src/backend/postgres_lib.a.p/storage_freespace_fsmpage.c.o
+[894/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_reinit.c.o
+[895/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_barrier.c.o
+[896/2014] Compiling C object src/backend/postgres_lib.a.p/storage_freespace_freespace.c.o
+[897/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_dsm_registry.c.o
+[898/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_dsm_impl.c.o
+[899/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_ipc.c.o
+[900/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_dsm.c.o
+[901/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_ipci.c.o
+[902/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_latch.c.o
+[903/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_pmsignal.c.o
+[904/2014] Compiling C object src/backend/postgres_lib.a.p/storage_file_fd.c.o
+[905/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_shm_toc.c.o
+[906/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_procsignal.c.o
+[907/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_shm_mq.c.o
+[908/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_sinval.c.o
+[909/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_signalfuncs.c.o
+[910/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_shmem.c.o
+[911/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_sinvaladt.c.o
+[912/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_standby.c.o
+[913/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_waiteventset.c.o
+[914/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_condition_variable.c.o
+[915/2014] Compiling C object src/backend/postgres_lib.a.p/storage_large_object_inv_api.c.o
+[916/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_deadlock.c.o
+[917/2014] Compiling C object src/backend/postgres_lib.a.p/storage_ipc_procarray.c.o
+[918/2014] Compiling C object src/backend/postgres_lib.a.p/storage_buffer_bufmgr.c.o
+[919/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_s_lock.c.o
+[920/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_lmgr.c.o
+[921/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_lwlock.c.o
+[922/2014] Compiling C object src/backend/postgres_lib.a.p/storage_page_checksum.c.o
+[923/2014] Compiling C object src/backend/postgres_lib.a.p/storage_page_itemptr.c.o
+[924/2014] Compiling C object src/backend/postgres_lib.a.p/storage_smgr_bulk_write.c.o
+[925/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_proc.c.o
+[926/2014] Compiling C object src/backend/postgres_lib.a.p/storage_page_bufpage.c.o
+[927/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_lock.c.o
+[928/2014] Compiling C object src/backend/postgres_lib.a.p/storage_smgr_smgr.c.o
+[929/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_cmdtag.c.o
+[930/2014] Compiling C object src/backend/postgres_lib.a.p/storage_sync_sync.c.o
+[931/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_dest.c.o
+[932/2014] Compiling C object src/backend/postgres_lib.a.p/storage_smgr_md.c.o
+[933/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_fastpath.c.o
+[934/2014] Compiling C object src/backend/postgres_lib.a.p/storage_lmgr_predicate.c.o
+[935/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_backend_startup.c.o
+[936/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_dict.c.o
+[937/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_dict_ispell.c.o
+[938/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_dict_simple.c.o
+[939/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_pquery.c.o
+[940/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_regis.c.o
+[941/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_dict_synonym.c.o
+[942/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_ts_locale.c.o
+[943/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_utility.c.o
+[944/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_dict_thesaurus.c.o
+[945/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_to_tsany.c.o
+[946/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_ts_parse.c.o
+[947/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_ts_selfuncs.c.o
+[948/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_ts_typanalyze.c.o
+[949/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_ts_utils.c.o
+[950/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_wparser.c.o
+[951/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_backend_progress.c.o
+[952/2014] Compiling C object src/backend/postgres_lib.a.p/tcop_postgres.c.o
+[953/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_archiver.c.o
+[954/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_backend_status.c.o
+[955/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_backend.c.o
+[956/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_bgwriter.c.o
+[957/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_spell.c.o
+[958/2014] Compiling C object src/backend/postgres_lib.a.p/tsearch_wparser_def.c.o
+[959/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_checkpointer.c.o
+[960/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_function.c.o
+[961/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_database.c.o
+[962/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_io.c.o
+[963/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat.c.o
+[964/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_slru.c.o
+[965/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_wal.c.o
+[966/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_replslot.c.o
+[967/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_subscription.c.o
+[968/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_relation.c.o
+[969/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_xact.c.o
+[970/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_array_expanded.c.o
+[971/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_amutils.c.o
+[972/2014] Compiling C object src/backend/postgres_lib.a.p/utils_activity_pgstat_shmem.c.o
+[973/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_array_typanalyze.c.o
+[974/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_array_selfuncs.c.o
+[975/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_ascii.c.o
+[976/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_arrayutils.c.o
+[977/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_arraysubs.c.o
+[978/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_bool.c.o
+[979/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_char.c.o
+[980/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_cryptohashfuncs.c.o
+[981/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_array_userfuncs.c.o
+[982/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_datum.c.o
+[983/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_cash.c.o
+[984/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_acl.c.o
+[985/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_domains.c.o
+[986/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_encode.c.o
+[987/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_dbsize.c.o
+[988/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_expandeddatum.c.o
+[989/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_enum.c.o
+[990/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_expandedrecord.c.o
+[991/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_date.c.o
+[992/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_format_type.c.o
+[993/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_genfile.c.o
+[994/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_geo_selfuncs.c.o
+[995/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_datetime.c.o
+[996/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_geo_spgist.c.o
+[997/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_arrayfuncs.c.o
+[998/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_inet_cidr_ntop.c.o
+[999/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_float.c.o
+[1000/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_inet_net_pton.c.o
+[1001/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_hbafuncs.c.o
+[1002/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_int8.c.o
+[1003/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_int.c.o
+[1004/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonb_op.c.o
+[1005/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_json.c.o
+[1006/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonb_gin.c.o
+[1007/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonb.c.o
+[1008/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_formatting.c.o
+[1009/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonbsubs.c.o
+[1010/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonb_util.c.o
+[1011/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonpath.c.o
+[1012/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_like.c.o
+[1013/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_lockfuncs.c.o
+[1014/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_mac.c.o
+[1015/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_like_support.c.o
+[1016/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_mac8.c.o
+[1017/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_geo_ops.c.o
+[1018/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_mcxtfuncs.c.o
+[1019/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonpath_exec.c.o
+[1020/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_misc.c.o
+[1021/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_name.c.o
+[1022/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_jsonfuncs.c.o
+[1023/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_multirangetypes_selfuncs.c.o
+[1024/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_network_gist.c.o
+[1025/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_network_spgist.c.o
+[1026/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_network_selfuncs.c.o
+[1027/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_partitionfuncs.c.o
+[1028/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_locale_builtin.c.o
+[1029/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_multirangetypes.c.o
+[1030/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_orderedsetaggs.c.o
+[1031/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_locale_icu.c.o
+[1032/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_locale.c.o
+[1033/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_lsn.c.o
+[1034/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_network.c.o
+[1035/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pseudorandomfuncs.c.o
+[1036/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_locale_libc.c.o
+[1037/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pg_upgrade_support.c.o
+[1038/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_quote.c.o
+[1039/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pseudotypes.c.o
+[1040/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rangetypes_spgist.c.o
+[1041/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rangetypes_selfuncs.c.o
+[1042/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rangetypes_typanalyze.c.o
+[1043/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_pgstatfuncs.c.o
+[1044/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rangetypes_gist.c.o
+[1045/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_regexp.c.o
+[1046/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rangetypes.c.o
+[1047/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_regproc.c.o
+[1048/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_skipsupport.c.o
+[1049/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_ri_triggers.c.o
+[1050/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_rowtypes.c.o
+[1051/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tid.c.o
+[1052/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_trigfuncs.c.o
+[1053/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsginidx.c.o
+[1054/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery_cleanup.c.o
+[1055/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsgistidx.c.o
+[1056/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery.c.o
+[1057/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery_gist.c.o
+[1058/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery_op.c.o
+[1059/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery_rewrite.c.o
+[1060/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsquery_util.c.o
+[1061/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsrank.c.o
+[1062/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsvector.c.o
+[1063/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsvector_parser.c.o
+[1064/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_timestamp.c.o
+[1065/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_uuid.c.o
+[1066/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_selfuncs.c.o
+[1067/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_version.c.o
+[1068/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_waitfuncs.c.o
+[1069/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_varchar.c.o
+[1070/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_tsvector_op.c.o
+[1071/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_windowfuncs.c.o
+[1072/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_varbit.c.o
+[1073/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_xid.c.o
+[1074/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_attoptcache.c.o
+[1075/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_xid8funcs.c.o
+[1076/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_evtcache.c.o
+[1077/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_funccache.c.o
+[1078/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_xml.c.o
+[1079/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_inval.c.o
+[1080/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_catcache.c.o
+[1081/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_partcache.c.o
+[1082/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_ruleutils.c.o
+[1083/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_relfilenumbermap.c.o
+[1084/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_spccache.c.o
+[1085/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_lsyscache.c.o
+[1086/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_relmapper.c.o
+[1087/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_plancache.c.o
+[1088/2014] Compiling C object src/backend/postgres_lib.a.p/utils_error_assert.c.o
+[1089/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_syscache.c.o
+[1090/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_ts_cache.c.o
+[1091/2014] Compiling C object src/backend/postgres_lib.a.p/utils_error_csvlog.c.o
+[1092/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_typcache.c.o
+[1093/2014] Compiling C object src/backend/postgres_lib.a.p/utils_adt_varlena.c.o
+[1094/2014] Compiling C object src/backend/postgres_lib.a.p/utils_error_jsonlog.c.o
+[1095/2014] Compiling C object src/backend/postgres_lib.a.p/utils_fmgr_dfmgr.c.o
+[1096/2014] Compiling C object src/backend/postgres_lib.a.p/utils_hash_pg_crc.c.o
+[1097/2014] Compiling C object src/backend/postgres_lib.a.p/utils_init_globals.c.o
+[1098/2014] Compiling C object src/backend/postgres_lib.a.p/utils_hash_dynahash.c.o
+[1099/2014] Compiling C object src/backend/postgres_lib.a.p/utils_fmgr_funcapi.c.o
+[1100/2014] Compiling C object src/backend/postgres_lib.a.p/utils_cache_relcache.c.o
+[1101/2014] Compiling C object src/backend/postgres_lib.a.p/utils_fmgr_fmgr.c.o
+[1102/2014] Compiling C object src/backend/postgres_lib.a.p/utils_init_usercontext.c.o
+[1103/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mb_stringinfo_mb.c.o
+[1104/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mb_conv.c.o
+[1105/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mb_wstrcmp.c.o
+[1106/2014] Compiling C object src/backend/postgres_lib.a.p/utils_error_elog.c.o
+[1107/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mb_wstrncmp.c.o
+[1108/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_conffiles.c.o
+[1109/2014] Compiling C object src/backend/postgres_lib.a.p/utils_init_miscinit.c.o
+[1110/2014] Compiling C object src/backend/postgres_lib.a.p/utils_init_postinit.c.o
+[1111/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_injection_point.c.o
+[1112/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_help_config.c.o
+[1113/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_guc_funcs.c.o
+[1114/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mb_mbutils.c.o
+[1115/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_guc_tables.c.o
+[1116/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_pg_config.c.o
+[1117/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_pg_rusage.c.o
+[1118/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_pg_controldata.c.o
+[1119/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_queryenvironment.c.o
+[1120/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_rls.c.o
+[1121/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_ps_status.c.o
+[1122/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_stack_depth.c.o
+[1123/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_sampling.c.o
+[1124/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_superuser.c.o
+[1125/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_alignedalloc.c.o
+[1126/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_timeout.c.o
+[1127/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_aset.c.o
+[1128/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_bump.c.o
+[1129/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_tzparser.c.o
+[1130/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_memdebug.c.o
+[1131/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_generation.c.o
+[1132/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_dsa.c.o
+[1133/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_portalmem.c.o
+[1134/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_freepage.c.o
+[1135/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_mcxt.c.o
+[1136/2014] Compiling C object src/backend/postgres_lib.a.p/utils_mmgr_slab.c.o
+[1137/2014] Compiling C object src/backend/postgres_lib.a.p/utils_misc_guc.c.o
+[1138/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_qsort_interruptible.c.o
+[1139/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_sortsupport.c.o
+[1140/2014] Compiling C object src/backend/postgres_lib.a.p/utils_resowner_resowner.c.o
+[1141/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_logtape.c.o
+[1142/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_sharedtuplestore.c.o
+[1143/2014] Compiling C object src/backend/postgres_lib.a.p/utils_time_combocid.c.o
+[1144/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_tuplestore.c.o
+[1145/2014] Compiling C object src/backend/postgres_lib.a.p/.._timezone_pgtz.c.o
+[1146/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_catalan.c.o
+[1147/2014] Compiling C object src/backend/postgres_lib.a.p/.._timezone_strftime.c.o
+[1148/2014] Compiling C object src/backend/postgres_lib.a.p/utils_time_snapmgr.c.o
+[1149/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_danish.c.o
+[1150/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_dutch.c.o
+[1151/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_2_hungarian.c.o
+[1152/2014] Compiling C object src/backend/postgres_lib.a.p/.._timezone_localtime.c.o
+[1153/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_KOI8_R_russian.c.o
+[1154/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_armenian.c.o
+[1155/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_basque.c.o
+[1156/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_catalan.c.o
+[1157/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_tuplesort.c.o
+[1158/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_hindi.c.o
+[1159/2014] Compiling C object src/backend/postgres_lib.a.p/utils_sort_tuplesortvariants.c.o
+[1160/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_irish.c.o
+[1161/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_hungarian.c.o
+[1162/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_arabic.c.o
+[1163/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_indonesian.c.o
+[1164/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_lithuanian.c.o
+[1165/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_nepali.c.o
+[1166/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_italian.c.o
+[1167/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_norwegian.c.o
+[1168/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_portuguese.c.o
+[1169/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_romanian.c.o
+[1170/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_porter.c.o
+[1171/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_finnish.c.o
+[1172/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_english.c.o
+[1173/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_german.c.o
+[1174/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_indonesian.c.o
+[1175/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_french.c.o
+[1176/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_irish.c.o
+[1177/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_norwegian.c.o
+[1178/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_porter.c.o
+[1179/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_italian.c.o
+[1180/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_api.c.o
+[1181/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_ISO_8859_1_basque.c.o
+[1182/2014] Compiling C object src/backend/replication/pgoutput/pgoutput.so.p/pgoutput.c.o
+[1183/2014] Linking target src/backend/replication/pgoutput/pgoutput.so
+[1184/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/dict_snowball.c.o
+[1185/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_stem_UTF_8_russian.c.o
+[1186/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc2004_sjis2004.so.p/euc2004_sjis2004_euc2004_sjis2004.c.o
+[1187/2014] Compiling C object src/backend/snowball/dict_snowball.so.p/libstemmer_utilities.c.o
+[1188/2014] Linking target src/backend/utils/mb/conversion_procs/euc2004_sjis2004.so
+[1189/2014] Compiling C object src/backend/replication/libpqwalreceiver/libpqwalreceiver.so.p/libpqwalreceiver.c.o
+[1190/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc_cn_and_mic.so.p/euc_cn_and_mic_euc_cn_and_mic.c.o
+[1191/2014] Linking target src/backend/utils/mb/conversion_procs/euc_cn_and_mic.so
+[1192/2014] Linking target src/backend/replication/libpqwalreceiver/libpqwalreceiver.so
+[1193/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc_kr_and_mic.so.p/euc_kr_and_mic_euc_kr_and_mic.c.o
+[1194/2014] Linking target src/backend/utils/mb/conversion_procs/euc_kr_and_mic.so
+[1195/2014] Linking target src/backend/snowball/dict_snowball.so
+[1196/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc_jp_and_sjis.so.p/euc_jp_and_sjis_euc_jp_and_sjis.c.o
+[1197/2014] Linking target src/backend/utils/mb/conversion_procs/euc_jp_and_sjis.so
+[1198/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc_tw_and_big5.so.p/euc_tw_and_big5_big5.c.o
+[1199/2014] Compiling C object src/backend/utils/mb/conversion_procs/latin2_and_win1250.so.p/latin2_and_win1250_latin2_and_win1250.c.o
+[1200/2014] Compiling C object src/backend/utils/mb/conversion_procs/latin_and_mic.so.p/latin_and_mic_latin_and_mic.c.o
+[1201/2014] Linking target src/backend/utils/mb/conversion_procs/latin_and_mic.so
+[1202/2014] Linking target src/backend/utils/mb/conversion_procs/latin2_and_win1250.so
+[1203/2014] Compiling C object src/backend/utils/mb/conversion_procs/euc_tw_and_big5.so.p/euc_tw_and_big5_euc_tw_and_big5.c.o
+[1204/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_cyrillic.so.p/utf8_and_cyrillic_utf8_and_cyrillic.c.o
+[1205/2014] Linking target src/backend/utils/mb/conversion_procs/euc_tw_and_big5.so
+[1206/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_big5.so.p/utf8_and_big5_utf8_and_big5.c.o
+[1207/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_cyrillic.so
+[1208/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_big5.so
+[1209/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_euc_cn.so.p/utf8_and_euc_cn_utf8_and_euc_cn.c.o
+[1210/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_euc2004.so.p/utf8_and_euc2004_utf8_and_euc2004.c.o
+[1211/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_euc_cn.so
+[1212/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_euc_kr.so.p/utf8_and_euc_kr_utf8_and_euc_kr.c.o
+[1213/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_euc2004.so
+[1214/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_euc_jp.so.p/utf8_and_euc_jp_utf8_and_euc_jp.c.o
+[1215/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_euc_jp.so
+[1216/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_euc_kr.so
+[1217/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_euc_tw.so.p/utf8_and_euc_tw_utf8_and_euc_tw.c.o
+[1218/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_iso8859.so.p/utf8_and_iso8859_utf8_and_iso8859.c.o
+[1219/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_iso8859_1.so.p/utf8_and_iso8859_1_utf8_and_iso8859_1.c.o
+[1220/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_euc_tw.so
+[1221/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_iso8859.so
+[1222/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_iso8859_1.so
+[1223/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_gbk.so.p/utf8_and_gbk_utf8_and_gbk.c.o
+[1224/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_gbk.so
+[1225/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_gb18030.so.p/utf8_and_gb18030_utf8_and_gb18030.c.o
+[1226/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_sjis.so.p/utf8_and_sjis_utf8_and_sjis.c.o
+[1227/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_sjis.so
+[1228/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_gb18030.so
+[1229/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_johab.so.p/utf8_and_johab_utf8_and_johab.c.o
+[1230/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_johab.so
+[1231/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_sjis2004.so.p/utf8_and_sjis2004_utf8_and_sjis2004.c.o
+[1232/2014] Compiling C object src/bin/initdb/initdb.p/findtimezone.c.o
+[1233/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_sjis2004.so
+[1234/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_win.so.p/utf8_and_win_utf8_and_win.c.o
+[1235/2014] Compiling C object src/backend/utils/mb/conversion_procs/utf8_and_uhc.so.p/utf8_and_uhc_utf8_and_uhc.c.o
+[1236/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_uhc.so
+[1237/2014] Linking target src/backend/utils/mb/conversion_procs/utf8_and_win.so
+[1238/2014] Linking target src/backend/postgres
+[1239/2014] Compiling C object src/bin/pg_basebackup/libpg_basebackup_common.a.p/astreamer_inject.c.o
+[1240/2014] Compiling C object src/bin/pg_archivecleanup/pg_archivecleanup.p/pg_archivecleanup.c.o
+[1241/2014] Linking target src/bin/pg_archivecleanup/pg_archivecleanup
+[1242/2014] Compiling C object src/bin/pg_basebackup/libpg_basebackup_common.a.p/streamutil.c.o
+[1243/2014] Compiling C object src/bin/pg_amcheck/pg_amcheck.p/pg_amcheck.c.o
+[1244/2014] Compiling C object src/bin/pg_basebackup/libpg_basebackup_common.a.p/receivelog.c.o
+[1245/2014] Linking target src/bin/pg_amcheck/pg_amcheck
+[1246/2014] Compiling C object src/bin/initdb/initdb.p/.._.._timezone_localtime.c.o
+[1247/2014] Compiling C object src/bin/initdb/initdb.p/initdb.c.o
+[1248/2014] Compiling C object src/bin/pg_basebackup/libpg_basebackup_common.a.p/walmethods.c.o
+[1249/2014] Linking static target src/bin/pg_basebackup/libpg_basebackup_common.a
+[1250/2014] Linking target src/bin/initdb/initdb
+[1251/2014] Compiling C object src/bin/pg_basebackup/pg_receivewal.p/pg_receivewal.c.o
+[1252/2014] Linking target src/bin/pg_basebackup/pg_receivewal
+[1253/2014] Compiling C object src/bin/pg_basebackup/pg_basebackup.p/pg_basebackup.c.o
+[1254/2014] Compiling C object src/bin/pg_basebackup/pg_recvlogical.p/pg_recvlogical.c.o
+[1255/2014] Compiling C object src/bin/pg_basebackup/pg_createsubscriber.p/pg_createsubscriber.c.o
+[1256/2014] Compiling C object src/bin/pg_checksums/pg_checksums.p/pg_checksums.c.o
+[1257/2014] Linking target src/bin/pg_basebackup/pg_basebackup
+[1258/2014] Linking target src/bin/pg_basebackup/pg_recvlogical
+[1259/2014] Linking target src/bin/pg_checksums/pg_checksums
+[1260/2014] Linking target src/bin/pg_basebackup/pg_createsubscriber
+[1261/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/backup_label.c.o
+[1262/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/pg_combinebackup.c.o
+[1263/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/copy_file.c.o
+[1264/2014] Compiling C object src/bin/pg_config/pg_config.p/pg_config.c.o
+[1265/2014] Linking target src/bin/pg_config/pg_config
+[1266/2014] Compiling C object src/bin/pg_controldata/pg_controldata.p/pg_controldata.c.o
+[1267/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/write_manifest.c.o
+[1268/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/reconstruct.c.o
+[1269/2014] Compiling C object src/bin/pg_combinebackup/pg_combinebackup.p/load_manifest.c.o
+[1270/2014] Linking target src/bin/pg_controldata/pg_controldata
+[1271/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/compress_lz4.c.o
+[1272/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/compress_io.c.o
+[1273/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/compress_zstd.c.o
+[1274/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/compress_gzip.c.o
+[1275/2014] Compiling C object src/bin/pg_ctl/pg_ctl.p/pg_ctl.c.o
+[1276/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/compress_none.c.o
+[1277/2014] Linking target src/bin/pg_combinebackup/pg_combinebackup
+[1278/2014] Linking target src/bin/pg_ctl/pg_ctl
+[1279/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/connectdb.c.o
+[1280/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/filter.c.o
+[1281/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/parallel.c.o
+[1282/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_db.c.o
+[1283/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_custom.c.o
+[1284/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_null.c.o
+[1285/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/dumputils.c.o
+[1286/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_utils.c.o
+[1287/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_directory.c.o
+[1288/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_tar.c.o
+[1289/2014] Compiling C object src/bin/pg_dump/pg_dump.p/pg_dump_sort.c.o
+[1290/2014] Compiling C object src/bin/pg_dump/pg_dump.p/common.c.o
+[1291/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/datapagemap.c.o
+[1292/2014] Compiling C object src/bin/pg_resetwal/pg_resetwal.p/pg_resetwal.c.o
+[1293/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/file_ops.c.o
+[1294/2014] Compiling C object src/bin/pg_dump/pg_restore.p/pg_restore.c.o
+[1295/2014] Linking target src/bin/pg_resetwal/pg_resetwal
+[1296/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/local_source.c.o
+[1297/2014] Compiling C object src/bin/pg_dump/libpgdump_common.a.p/pg_backup_archiver.c.o
+[1298/2014] Compiling C object src/bin/pg_dump/pg_dumpall.p/pg_dumpall.c.o
+[1299/2014] Linking static target src/bin/pg_dump/libpgdump_common.a
+[1300/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/libpq_source.c.o
+[1301/2014] Linking target src/bin/pg_dump/pg_dumpall
+[1302/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/parsexlog.c.o
+[1303/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/filemap.c.o
+[1304/2014] Linking target src/bin/pg_dump/pg_restore
+[1305/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/timeline.c.o
+[1306/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/pg_rewind.c.o
+[1307/2014] Compiling C object src/bin/pg_test_timing/pg_test_timing.p/pg_test_timing.c.o
+[1308/2014] Compiling C object src/bin/pg_test_fsync/pg_test_fsync.p/pg_test_fsync.c.o
+[1309/2014] Linking target src/bin/pg_test_timing/pg_test_timing
+[1310/2014] Linking target src/bin/pg_test_fsync/pg_test_fsync
+[1311/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/dump.c.o
+[1312/2014] Compiling C object src/bin/pg_rewind/pg_rewind.p/.._.._backend_access_transam_xlogreader.c.o
+[1313/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/exec.c.o
+[1314/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/controldata.c.o
+[1315/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/check.c.o
+[1316/2014] Linking target src/bin/pg_rewind/pg_rewind
+[1317/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/file.c.o
+[1318/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/function.c.o
+[1319/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/parallel.c.o
+[1320/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/option.c.o
+[1321/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/pg_upgrade.c.o
+[1322/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/info.c.o
+[1323/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/relfilenumber.c.o
+[1324/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/tablespace.c.o
+[1325/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/server.c.o
+[1326/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/task.c.o
+[1327/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/util.c.o
+[1328/2014] Compiling C object src/bin/pg_upgrade/pg_upgrade.p/version.c.o
+[1329/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/compat.c.o
+[1330/2014] Compiling C object src/bin/pg_verifybackup/pg_verifybackup.p/astreamer_verify.c.o
+[1331/2014] Linking target src/bin/pg_upgrade/pg_upgrade
+[1332/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/rmgrdesc.c.o
+[1333/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_brindesc.c.o
+[1334/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_clogdesc.c.o
+[1335/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_committsdesc.c.o
+[1336/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_dbasedesc.c.o
+[1337/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_genericdesc.c.o
+[1338/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_gistdesc.c.o
+[1339/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_gindesc.c.o
+[1340/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_hashdesc.c.o
+[1341/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/pg_waldump.c.o
+[1342/2014] Compiling C object src/bin/pg_verifybackup/pg_verifybackup.p/pg_verifybackup.c.o
+[1343/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_logicalmsgdesc.c.o
+[1344/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_mxactdesc.c.o
+[1345/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_relmapdesc.c.o
+[1346/2014] Linking target src/bin/pg_verifybackup/pg_verifybackup
+[1347/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_rmgrdesc_utils.c.o
+[1348/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_heapdesc.c.o
+[1349/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_nbtdesc.c.o
+[1350/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_replorigindesc.c.o
+[1351/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_seqdesc.c.o
+[1352/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_smgrdesc.c.o
+[1353/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_standbydesc.c.o
+[1354/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_tblspcdesc.c.o
+[1355/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_spgdesc.c.o
+[1356/2014] Generating src/bin/psql/psqlscanslash with a custom command
+[1357/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_transam_xlogstats.c.o
+[1358/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_xlogdesc.c.o
+[1359/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_rmgrdesc_xactdesc.c.o
+[1360/2014] Generating src/bin/pgbench/exprscan with a custom command
+[1361/2014] Compiling C object src/bin/pg_walsummary/pg_walsummary.p/pg_walsummary.c.o
+[1362/2014] Generating src/bin/pgbench/exprparse with a custom command
+[1363/2014] Generating src/bin/psql/tabcomplete with a custom command
+[1364/2014] Linking target src/bin/pg_walsummary/pg_walsummary
+[1365/2014] Generating src/bin/psql/psql_help with a custom command
+[1366/2014] Compiling C object src/bin/pg_waldump/pg_waldump.p/.._.._backend_access_transam_xlogreader.c.o
+[1367/2014] Compiling C object src/bin/pgbench/pgbench.p/meson-generated_.._exprparse.c.o
+[1368/2014] Linking target src/bin/pg_waldump/pg_waldump
+[1369/2014] Compiling C object src/bin/pgbench/pgbench.p/meson-generated_.._exprscan.c.o
+[1370/2014] Compiling C object src/bin/psql/psql.p/meson-generated_.._psqlscanslash.c.o
+[1371/2014] Compiling C object src/bin/psql/psql.p/meson-generated_.._sql_help.c.o
+[1372/2014] Compiling C object src/bin/psql/psql.p/copy.c.o
+[1373/2014] Compiling C object src/bin/psql/psql.p/crosstabview.c.o
+[1374/2014] Compiling C object src/bin/psql/psql.p/common.c.o
+[1375/2014] Compiling C object src/bin/psql/psql.p/help.c.o
+[1376/2014] Compiling C object src/bin/psql/psql.p/command.c.o
+[1377/2014] Compiling C object src/bin/psql/psql.p/input.c.o
+[1378/2014] Compiling C object src/bin/psql/psql.p/large_obj.c.o
+[1379/2014] Compiling C object src/bin/psql/psql.p/meson-generated_.._tab-complete.c.o
+[1380/2014] Compiling C object src/bin/psql/psql.p/prompt.c.o
+[1381/2014] Compiling C object src/bin/pg_dump/pg_dump.p/pg_dump.c.o
+[1382/2014] Compiling C object src/bin/psql/psql.p/mainloop.c.o
+[1383/2014] Compiling C object src/bin/pgbench/pgbench.p/pgbench.c.o
+[1384/2014] Linking target src/bin/pg_dump/pg_dump
+[1385/2014] Compiling C object src/bin/psql/psql.p/startup.c.o
+[1386/2014] Compiling C object src/bin/psql/psql.p/stringutils.c.o
+[1387/2014] Linking target src/bin/pgbench/pgbench
+[1388/2014] Compiling C object src/bin/scripts/libscripts_common.a.p/common.c.o
+[1389/2014] Compiling C object src/bin/scripts/dropdb.p/dropdb.c.o
+[1390/2014] Compiling C object src/bin/psql/psql.p/variables.c.o
+[1391/2014] Linking static target src/bin/scripts/libscripts_common.a
+[1392/2014] Compiling C object src/bin/scripts/createdb.p/createdb.c.o
+[1393/2014] Linking target src/bin/scripts/dropdb
+[1394/2014] Compiling C object src/bin/scripts/clusterdb.p/clusterdb.c.o
+[1395/2014] Compiling C object src/bin/scripts/createuser.p/createuser.c.o
+[1396/2014] Compiling C object src/bin/scripts/dropuser.p/dropuser.c.o
+[1397/2014] Linking target src/bin/scripts/clusterdb
+[1398/2014] Linking target src/bin/scripts/createdb
+[1399/2014] Linking target src/bin/scripts/dropuser
+[1400/2014] Linking target src/bin/scripts/createuser
+[1401/2014] Compiling C object src/bin/scripts/pg_isready.p/pg_isready.c.o
+[1402/2014] Linking target src/bin/scripts/pg_isready
+[1403/2014] Compiling C object src/bin/scripts/reindexdb.p/reindexdb.c.o
+[1404/2014] Generating src/pl/plpgsql/src/pl_reserved_kwlist with a custom command
+[1405/2014] Generating src/pl/plpgsql/src/pl_unreserved_kwlist with a custom command
+[1406/2014] Compiling C object src/bin/scripts/vacuumdb.p/vacuumdb.c.o
+[1407/2014] Linking target src/bin/scripts/reindexdb
+[1408/2014] Generating src/pl/plperl/plperl_opmask.h with a custom command
+[1409/2014] Linking target src/bin/scripts/vacuumdb
+[1410/2014] Generating src/pl/plpgsql/src/gram with a custom command
+[1411/2014] Generating src/pl/plpgsql/src/plerrcodes with a custom command (wrapped by meson to capture output)
+[1412/2014] Generating src/pl/plperl/SPI.c with a custom command
+[1413/2014] Generating src/pl/plperl/Util.c with a custom command
+[1414/2014] Compiling C object src/bin/psql/psql.p/describe.c.o
+[1415/2014] Generating src/pl/plperl/perlchunks.h with a custom command (wrapped by meson to capture output)
+[1416/2014] Generating src/pl/plpython/spiexceptions.h with a custom command (wrapped by meson to capture output)
+[1417/2014] Linking target src/bin/psql/psql
+[1418/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/pl_scanner.c.o
+[1419/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/pl_comp.c.o
+[1420/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/pl_handler.c.o
+[1421/2014] Compiling C object src/pl/plperl/plperl.so.p/meson-generated_.._Util.c.o
+[1422/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/pl_funcs.c.o
+[1423/2014] Compiling C object src/pl/plperl/plperl.so.p/meson-generated_.._SPI.c.o
+[1424/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_elog.c.o
+[1425/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_cursorobject.c.o
+[1426/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_main.c.o
+[1427/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/meson-generated_.._pl_gram.c.o
+[1428/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_planobject.c.o
+[1429/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_exec.c.o
+[1430/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_resultobject.c.o
+[1431/2014] Compiling C object src/pl/plpgsql/src/plpgsql.so.p/pl_exec.c.o
+[1432/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_plpymodule.c.o
+[1433/2014] Linking target src/pl/plpgsql/src/plpgsql.so
+[1434/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_spi.c.o
+[1435/2014] Generating src/interfaces/ecpg/pgtypeslib/libpgtypes.exports with a custom command
+[1436/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_procedure.c.o
+[1437/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_subxactobject.c.o
+[1438/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/common.c.o
+[1439/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_util.c.o
+[1440/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/datetime.c.o
+[1441/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/timestamp.c.o
+[1442/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/interval.c.o
+[1443/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/common.c.o
+[1444/2014] Compiling C object src/pl/plpython/plpython3.so.p/plpy_typeio.c.o
+[1445/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/numeric.c.o
+[1446/2014] Linking target src/pl/plpython/plpython3.so
+[1447/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/datetime.c.o
+[1448/2014] Compiling C object src/pl/plperl/plperl.so.p/plperl.c.o
+[1449/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.a.p/dt_common.c.o
+[1450/2014] Linking static target src/interfaces/ecpg/pgtypeslib/libpgtypes.a
+[1451/2014] Generating src/interfaces/ecpg/ecpglib/libecpg.exports with a custom command
+[1452/2014] Linking target src/pl/plperl/plperl.so
+[1453/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/interval.c.o
+[1454/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/timestamp.c.o
+[1455/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/numeric.c.o
+[1456/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/error.c.o
+[1457/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/data.c.o
+[1458/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/connect.c.o
+[1459/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/memory.c.o
+[1460/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/descriptor.c.o
+[1461/2014] Compiling C object src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/dt_common.c.o
+[1462/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/typename.c.o
+[1463/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/misc.c.o
+[1464/2014] Linking target src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18
+[1465/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/prepare.c.o
+[1466/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/sqlda.c.o
+[1467/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/connect.c.o
+[1468/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/error.c.o
+[1469/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/data.c.o
+[1470/2014] Generating symbol file src/interfaces/ecpg/pgtypeslib/libpgtypes.so.3.18.p/libpgtypes.so.3.18.symbols
+[1471/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/descriptor.c.o
+[1472/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/memory.c.o
+[1473/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/misc.c.o
+[1474/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/typename.c.o
+[1475/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.a.p/execute.c.o
+[1476/2014] Generating src/interfaces/ecpg/compatlib/libecpg_compat.exports with a custom command
+[1477/2014] Linking static target src/interfaces/ecpg/ecpglib/libecpg.a
+[1478/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/prepare.c.o
+[1479/2014] Generating src/interfaces/ecpg/preproc/pgc.c with a custom command
+[1480/2014] Generating src/interfaces/ecpg/preproc/c_kwlist_d.h with a custom command
+[1481/2014] Generating src/interfaces/ecpg/preproc/preproc.y with a custom command
+[1482/2014] Generating src/interfaces/ecpg/preproc/ecpg_kwlist_d.h with a custom command
+[1483/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/sqlda.c.o
+[1484/2014] Compiling C object src/interfaces/ecpg/compatlib/libecpg_compat.a.p/informix.c.o
+[1485/2014] Linking static target src/interfaces/ecpg/compatlib/libecpg_compat.a
+[1486/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/args.c.o
+[1487/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/err.c.o
+[1488/2014] Compiling C object src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/execute.c.o
+[1489/2014] Compiling C object src/interfaces/ecpg/compatlib/libecpg_compat.so.3.18.p/informix.c.o
+[1490/2014] Linking target src/interfaces/ecpg/ecpglib/libecpg.so.6.18
+[1491/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/io.c.o
+[1492/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/parse.c.o
+[1493/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/lexi.c.o
+[1494/2014] Generating symbol file src/interfaces/ecpg/ecpglib/libecpg.so.6.18.p/libecpg.so.6.18.symbols
+[1495/2014] Compiling C object contrib/amcheck/amcheck.so.p/verify_common.c.o
+[1496/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/pr_comment.c.o
+[1497/2014] Linking target src/interfaces/ecpg/compatlib/libecpg_compat.so.3.18
+[1498/2014] Compiling C object src/tools/pg_bsd_indent/pg_bsd_indent.p/indent.c.o
+[1499/2014] Linking target src/tools/pg_bsd_indent/pg_bsd_indent
+[1500/2014] Compiling C object contrib/auth_delay/auth_delay.so.p/auth_delay.c.o
+[1501/2014] Compiling C object contrib/amcheck/amcheck.so.p/verify_gin.c.o
+[1502/2014] Linking target contrib/auth_delay/auth_delay.so
+[1503/2014] Generating symbol file src/interfaces/ecpg/compatlib/libecpg_compat.so.3.18.p/libecpg_compat.so.3.18.symbols
+[1504/2014] Compiling C object contrib/bloom/bloom.so.p/blcost.c.o
+[1505/2014] Compiling C object contrib/amcheck/amcheck.so.p/verify_heapam.c.o
+[1506/2014] Compiling C object contrib/basic_archive/basic_archive.so.p/basic_archive.c.o
+[1507/2014] Compiling C object contrib/auto_explain/auto_explain.so.p/auto_explain.c.o
+[1508/2014] Linking target contrib/basic_archive/basic_archive.so
+[1509/2014] Linking target contrib/auto_explain/auto_explain.so
+[1510/2014] Compiling C object contrib/bloom/bloom.so.p/blscan.c.o
+[1511/2014] Compiling C object contrib/bloom/bloom.so.p/blinsert.c.o
+[1512/2014] Compiling C object contrib/bloom/bloom.so.p/blvacuum.c.o
+[1513/2014] Compiling C object contrib/bloom/bloom.so.p/blutils.c.o
+[1514/2014] Compiling C object contrib/bloom/bloom.so.p/blvalidate.c.o
+[1515/2014] Linking target contrib/bloom/bloom.so
+[1516/2014] Compiling C object contrib/amcheck/amcheck.so.p/verify_nbtree.c.o
+[1517/2014] Compiling C object contrib/basebackup_to_shell/basebackup_to_shell.so.p/basebackup_to_shell.c.o
+[1518/2014] Linking target contrib/amcheck/amcheck.so
+[1519/2014] Linking target contrib/basebackup_to_shell/basebackup_to_shell.so
+[1520/2014] Compiling C object contrib/bool_plperl/bool_plperl.so.p/bool_plperl.c.o
+[1521/2014] Compiling C object contrib/btree_gin/btree_gin.so.p/btree_gin.c.o
+[1522/2014] Linking target contrib/btree_gin/btree_gin.so
+[1523/2014] Linking target contrib/bool_plperl/bool_plperl.so
+[1524/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_bit.c.o
+[1525/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_bytea.c.o
+[1526/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_bool.c.o
+[1527/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_date.c.o
+[1528/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_cash.c.o
+[1529/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_gist.c.o
+[1530/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_float4.c.o
+[1531/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_enum.c.o
+[1532/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_inet.c.o
+[1533/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_float8.c.o
+[1534/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_int2.c.o
+[1535/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_int4.c.o
+[1536/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_int8.c.o
+[1537/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_interval.c.o
+[1538/2014] Generating src/interfaces/ecpg/preproc/preproc.c with a custom command
+[1539/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_macaddr.c.o
+[1540/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_numeric.c.o
+[1541/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/.._ecpglib_typename.c.o
+[1542/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_macaddr8.c.o
+[1543/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/c_keywords.c.o
+[1544/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_oid.c.o
+[1545/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_text.c.o
+[1546/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/ecpg_keywords.c.o
+[1547/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/keywords.c.o
+[1548/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/ecpg.c.o
+[1549/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/descriptor.c.o
+[1550/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/output.c.o
+[1551/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/parser.c.o
+[1552/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/util.c.o
+[1553/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/variable.c.o
+[1554/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/type.c.o
+[1555/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_ts.c.o
+[1556/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_time.c.o
+[1557/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_utils_num.c.o
+[1558/2014] Generating contrib/cube/cubescan with a custom command
+[1559/2014] Generating contrib/cube/cubeparse with a custom command
+[1560/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_uuid.c.o
+[1561/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/meson-generated_.._pgc.c.o
+[1562/2014] Compiling C object contrib/btree_gist/btree_gist.so.p/btree_utils_var.c.o
+[1563/2014] Compiling C object contrib/citext/citext.so.p/citext.c.o
+[1564/2014] Linking target contrib/citext/citext.so
+[1565/2014] Linking target contrib/btree_gist/btree_gist.so
+[1566/2014] Compiling C object contrib/cube/cube.so.p/meson-generated_.._cubeparse.c.o
+[1567/2014] Compiling C object contrib/dict_int/dict_int.so.p/dict_int.c.o
+[1568/2014] Linking target contrib/dict_int/dict_int.so
+[1569/2014] Compiling C object contrib/cube/cube.so.p/meson-generated_.._cubescan.c.o
+[1570/2014] Compiling C object contrib/earthdistance/earthdistance.so.p/earthdistance.c.o
+[1571/2014] Compiling C object contrib/dict_xsyn/dict_xsyn.so.p/dict_xsyn.c.o
+[1572/2014] Linking target contrib/dict_xsyn/dict_xsyn.so
+[1573/2014] Generating contrib/fuzzystrmatch/daitch_mokotoff with a custom command
+[1574/2014] Linking target contrib/earthdistance/earthdistance.so
+[1575/2014] Compiling C object contrib/fuzzystrmatch/fuzzystrmatch.so.p/daitch_mokotoff.c.o
+[1576/2014] Compiling C object contrib/file_fdw/file_fdw.so.p/file_fdw.c.o
+[1577/2014] Linking target contrib/file_fdw/file_fdw.so
+[1578/2014] Compiling C object contrib/fuzzystrmatch/fuzzystrmatch.so.p/dmetaphone.c.o
+[1579/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_compat.c.o
+[1580/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_gin.c.o
+[1581/2014] Compiling C object contrib/fuzzystrmatch/fuzzystrmatch.so.p/fuzzystrmatch.c.o
+[1582/2014] Compiling C object contrib/cube/cube.so.p/cube.c.o
+[1583/2014] Linking target contrib/fuzzystrmatch/fuzzystrmatch.so
+[1584/2014] Linking target contrib/cube/cube.so
+[1585/2014] Compiling C object src/interfaces/ecpg/preproc/ecpg.p/meson-generated_.._preproc.c.o
+[1586/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_gist.c.o
+[1587/2014] Linking target src/interfaces/ecpg/preproc/ecpg
+[1588/2014] Generating src/interfaces/ecpg/test/preproc/outofscope.c with a custom command
+[1589/2014] Generating src/interfaces/ecpg/test/preproc/pointer_to_struct.c with a custom command
+[1590/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_subs.c.o
+[1591/2014] Generating src/interfaces/ecpg/test/preproc/strings.c with a custom command
+[1592/2014] Compiling C object src/interfaces/ecpg/test/preproc/outofscope.p/meson-generated_.._outofscope.c.o
+[1593/2014] Compiling C object src/interfaces/ecpg/test/preproc/pointer_to_struct.p/meson-generated_.._pointer_to_struct.c.o
+[1594/2014] Linking target src/interfaces/ecpg/test/preproc/outofscope
+[1595/2014] Compiling C object contrib/dblink/dblink.so.p/dblink.c.o
+[1596/2014] Linking target src/interfaces/ecpg/test/preproc/pointer_to_struct
+[1597/2014] Linking target contrib/dblink/dblink.so
+[1598/2014] Compiling C object contrib/hstore_plperl/hstore_plperl.so.p/hstore_plperl.c.o
+[1599/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_io.c.o
+[1600/2014] Linking target contrib/hstore_plperl/hstore_plperl.so
+[1601/2014] Compiling C object contrib/hstore_plpython/hstore_plpython3.so.p/hstore_plpython.c.o
+[1602/2014] Linking target contrib/hstore_plpython/hstore_plpython3.so
+[1603/2014] Compiling C object contrib/intarray/_int.so.p/_int_gin.c.o
+[1604/2014] Compiling C object contrib/hstore/hstore.so.p/hstore_op.c.o
+[1605/2014] Linking target contrib/hstore/hstore.so
+[1606/2014] Compiling C object contrib/intarray/_int.so.p/_int_bool.c.o
+[1607/2014] Compiling C object contrib/intarray/_int.so.p/_int_selfuncs.c.o
+[1608/2014] Compiling C object contrib/intarray/_int.so.p/_int_gist.c.o
+[1609/2014] Compiling C object contrib/intarray/_int.so.p/_int_op.c.o
+[1610/2014] Compiling C object contrib/intarray/_int.so.p/_int_tool.c.o
+[1611/2014] Compiling C object contrib/lo/lo.so.p/lo.c.o
+[1612/2014] Compiling C object contrib/jsonb_plpython/jsonb_plpython3.so.p/jsonb_plpython.c.o
+[1613/2014] Linking target contrib/jsonb_plpython/jsonb_plpython3.so
+[1614/2014] Linking target contrib/lo/lo.so
+[1615/2014] Compiling C object contrib/ltree/ltree.so.p/_ltree_op.c.o
+[1616/2014] Compiling C object contrib/intarray/_int.so.p/_intbig_gist.c.o
+[1617/2014] Compiling C object contrib/ltree/ltree.so.p/crc32.c.o
+[1618/2014] Compiling C object contrib/jsonb_plperl/jsonb_plperl.so.p/jsonb_plperl.c.o
+[1619/2014] Linking target contrib/intarray/_int.so
+[1620/2014] Compiling C object contrib/isn/isn.so.p/isn.c.o
+[1621/2014] Compiling C object contrib/ltree/ltree.so.p/lquery_op.c.o
+[1622/2014] Linking target contrib/isn/isn.so
+[1623/2014] Linking target contrib/jsonb_plperl/jsonb_plperl.so
+[1624/2014] Compiling C object contrib/ltree/ltree.so.p/_ltree_gist.c.o
+[1625/2014] Compiling C object contrib/ltree/ltree.so.p/ltxtquery_op.c.o
+[1626/2014] Compiling C object contrib/oid2name/oid2name.p/oid2name.c.o
+[1627/2014] Compiling C object contrib/ltree/ltree.so.p/ltree_io.c.o
+[1628/2014] Linking target contrib/oid2name/oid2name
+[1629/2014] Compiling C object contrib/ltree_plpython/ltree_plpython3.so.p/ltree_plpython.c.o
+[1630/2014] Compiling C object contrib/ltree/ltree.so.p/ltxtquery_io.c.o
+[1631/2014] Linking target contrib/ltree_plpython/ltree_plpython3.so
+[1632/2014] Compiling C object contrib/ltree/ltree.so.p/ltree_op.c.o
+[1633/2014] Compiling C object contrib/ltree/ltree.so.p/ltree_gist.c.o
+[1634/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/fsmfuncs.c.o
+[1635/2014] Linking target contrib/ltree/ltree.so
+[1636/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/ginfuncs.c.o
+[1637/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/brinfuncs.c.o
+[1638/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/gistfuncs.c.o
+[1639/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/btreefuncs.c.o
+[1640/2014] Compiling C object contrib/passwordcheck/passwordcheck.so.p/passwordcheck.c.o
+[1641/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/hashfuncs.c.o
+[1642/2014] Linking target contrib/passwordcheck/passwordcheck.so
+[1643/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/rawpage.c.o
+[1644/2014] Compiling C object contrib/pageinspect/pageinspect.so.p/heapfuncs.c.o
+[1645/2014] Linking target contrib/pageinspect/pageinspect.so
+[1646/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/crypt-gensalt.c.o
+[1647/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/crypt-md5.c.o
+[1648/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/crypt-des.c.o
+[1649/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-mpi.c.o
+[1650/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/mbuf.c.o
+[1651/2014] Compiling C object contrib/pg_buffercache/pg_buffercache.so.p/pg_buffercache_pages.c.o
+[1652/2014] Linking target contrib/pg_buffercache/pg_buffercache.so
+[1653/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-pubenc.c.o
+[1654/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-pubdec.c.o
+[1655/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-pubkey.c.o
+[1656/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-s2k.c.o
+[1657/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/crypt-sha.c.o
+[1658/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp.c.o
+[1659/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/px-crypt.c.o
+[1660/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/px-hmac.c.o
+[1661/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-pgsql.c.o
+[1662/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/px.c.o
+[1663/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/pgp-mpi-openssl.c.o
+[1664/2014] Compiling C object contrib/pg_freespacemap/pg_freespacemap.so.p/pg_freespacemap.c.o
+[1665/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/crypt-blowfish.c.o
+[1666/2014] Linking target contrib/pg_freespacemap/pg_freespacemap.so
+[1667/2014] Compiling C object contrib/pg_logicalinspect/pg_logicalinspect.so.p/pg_logicalinspect.c.o
+[1668/2014] Compiling C object contrib/pgcrypto/pgcrypto.so.p/openssl.c.o
+[1669/2014] Linking target contrib/pg_logicalinspect/pg_logicalinspect.so
+[1670/2014] Compiling C object contrib/pg_prewarm/pg_prewarm.so.p/pg_prewarm.c.o
+[1671/2014] Compiling C object contrib/pg_overexplain/pg_overexplain.so.p/pg_overexplain.c.o
+[1672/2014] Compiling C object contrib/pgrowlocks/pgrowlocks.so.p/pgrowlocks.c.o
+[1673/2014] Linking target contrib/pgcrypto/pgcrypto.so
+[1674/2014] Linking target contrib/pg_overexplain/pg_overexplain.so
+[1675/2014] Linking target contrib/pgrowlocks/pgrowlocks.so
+[1676/2014] Compiling C object contrib/pg_prewarm/pg_prewarm.so.p/autoprewarm.c.o
+[1677/2014] Compiling C object contrib/pgstattuple/pgstattuple.so.p/pgstatapprox.c.o
+[1678/2014] Linking target contrib/pg_prewarm/pg_prewarm.so
+[1679/2014] Compiling C object contrib/pgstattuple/pgstattuple.so.p/pgstattuple.c.o
+[1680/2014] Compiling C object contrib/pgstattuple/pgstattuple.so.p/pgstatindex.c.o
+[1681/2014] Compiling C object contrib/pg_surgery/pg_surgery.so.p/heap_surgery.c.o
+[1682/2014] Linking target contrib/pg_surgery/pg_surgery.so
+[1683/2014] Linking target contrib/pgstattuple/pgstattuple.so
+[1684/2014] Compiling C object contrib/pg_trgm/pg_trgm.so.p/trgm_gin.c.o
+[1685/2014] Compiling C object contrib/pg_stat_statements/pg_stat_statements.so.p/pg_stat_statements.c.o
+[1686/2014] Compiling C object contrib/pg_trgm/pg_trgm.so.p/trgm_gist.c.o
+[1687/2014] Linking target contrib/pg_stat_statements/pg_stat_statements.so
+[1688/2014] Compiling C object contrib/pg_visibility/pg_visibility.so.p/pg_visibility.c.o
+[1689/2014] Linking target contrib/pg_visibility/pg_visibility.so
+[1690/2014] Compiling C object contrib/pg_trgm/pg_trgm.so.p/trgm_regexp.c.o
+[1691/2014] Compiling C object contrib/pg_walinspect/pg_walinspect.so.p/pg_walinspect.c.o
+[1692/2014] Compiling C object contrib/pg_trgm/pg_trgm.so.p/trgm_op.c.o
+[1693/2014] Linking target contrib/pg_walinspect/pg_walinspect.so
+[1694/2014] Linking target contrib/pg_trgm/pg_trgm.so
+[1695/2014] Compiling C object contrib/seg/seg.so.p/meson-generated_.._segparse.c.o
+[1696/2014] Compiling C object contrib/postgres_fdw/postgres_fdw.so.p/option.c.o
+[1697/2014] Compiling C object contrib/seg/seg.so.p/meson-generated_.._segscan.c.o
+[1698/2014] Compiling C object contrib/spi/insert_username.so.p/insert_username.c.o
+[1699/2014] Linking target contrib/spi/insert_username.so
+[1700/2014] Compiling C object contrib/spi/autoinc.so.p/autoinc.c.o
+[1701/2014] Compiling C object contrib/spi/moddatetime.so.p/moddatetime.c.o
+[1702/2014] Linking target contrib/spi/autoinc.so
+[1703/2014] Compiling C object contrib/seg/seg.so.p/seg.c.o
+[1704/2014] Linking target contrib/spi/moddatetime.so
+[1705/2014] Linking target contrib/seg/seg.so
+[1706/2014] Compiling C object contrib/postgres_fdw/postgres_fdw.so.p/connection.c.o
+[1707/2014] Compiling C object contrib/sslinfo/sslinfo.so.p/sslinfo.c.o
+[1708/2014] Compiling C object contrib/postgres_fdw/postgres_fdw.so.p/deparse.c.o
+[1709/2014] Compiling C object contrib/tcn/tcn.so.p/tcn.c.o
+[1710/2014] Compiling C object contrib/tsm_system_rows/tsm_system_rows.so.p/tsm_system_rows.c.o
+[1711/2014] Linking target contrib/tcn/tcn.so
+[1712/2014] Linking target contrib/postgres_fdw/postgres_fdw.so
+[1713/2014] Linking target contrib/sslinfo/sslinfo.so
+[1714/2014] Linking target contrib/tsm_system_rows/tsm_system_rows.so
+[1715/2014] Compiling C object contrib/spi/refint.so.p/refint.c.o
+[1716/2014] Linking target contrib/spi/refint.so
+[1717/2014] Compiling C object contrib/vacuumlo/vacuumlo.p/vacuumlo.c.o
+[1718/2014] Compiling C object contrib/tsm_system_time/tsm_system_time.so.p/tsm_system_time.c.o
+[1719/2014] Compiling C object contrib/tablefunc/tablefunc.so.p/tablefunc.c.o
+[1720/2014] Linking target contrib/tsm_system_time/tsm_system_time.so
+[1721/2014] Linking target contrib/vacuumlo/vacuumlo
+[1722/2014] Linking target contrib/tablefunc/tablefunc.so
+[1723/2014] Compiling C object src/test/regress/pg_regress.p/pg_regress_main.c.o
+[1724/2014] Compiling C object contrib/test_decoding/test_decoding.so.p/test_decoding.c.o
+[1725/2014] Compiling C object contrib/unaccent/unaccent.so.p/unaccent.c.o
+[1726/2014] Generating src/test/isolation/specscanner with a custom command
+[1727/2014] Linking target contrib/test_decoding/test_decoding.so
+[1728/2014] Linking target contrib/unaccent/unaccent.so
+[1729/2014] Generating src/test/isolation/specparse with a custom command
+[1730/2014] Compiling C object src/test/isolation/pg_isolation_regress.p/isolation_main.c.o
+[1731/2014] Compiling C object src/test/modules/delay_execution/delay_execution.so.p/delay_execution.c.o
+[1732/2014] Compiling C object src/test/isolation/isolationtester.p/meson-generated_.._specparse.c.o
+[1733/2014] Linking target src/test/modules/delay_execution/delay_execution.so
+[1734/2014] Compiling C object src/test/modules/dummy_index_am/dummy_index_am.so.p/dummy_index_am.c.o
+[1735/2014] Compiling C object src/test/isolation/isolationtester.p/meson-generated_.._specscanner.c.o
+[1736/2014] Linking target src/test/modules/dummy_index_am/dummy_index_am.so
+[1737/2014] Compiling C object src/test/regress/pg_regress.p/pg_regress.c.o
+[1738/2014] Compiling C object src/test/modules/dummy_seclabel/dummy_seclabel.so.p/dummy_seclabel.c.o
+[1739/2014] Linking target src/test/regress/pg_regress
+[1740/2014] Linking target src/test/modules/dummy_seclabel/dummy_seclabel.so
+[1741/2014] Compiling C object src/test/isolation/isolationtester.p/isolationtester.c.o
+[1742/2014] Compiling C object src/test/regress/regress.so.p/regress.c.o
+[1743/2014] Linking target src/test/isolation/isolationtester
+[1744/2014] Linking target src/test/regress/regress.so
+[1745/2014] Compiling C object src/test/modules/oauth_validator/oauth_hook_client.p/oauth_hook_client.c.o
+[1746/2014] Compiling C object src/test/modules/oauth_validator/fail_validator.so.p/fail_validator.c.o
+[1747/2014] Linking target src/test/modules/oauth_validator/oauth_hook_client
+[1748/2014] Linking target src/test/modules/oauth_validator/fail_validator.so
+[1749/2014] Compiling C object src/test/modules/oauth_validator/validator.so.p/validator.c.o
+[1750/2014] Compiling C object src/test/modules/oauth_validator/magic_validator.so.p/magic_validator.c.o
+[1751/2014] Compiling C object src/test/isolation/pg_isolation_regress.p/.._regress_pg_regress.c.o
+[1752/2014] Linking target src/test/modules/oauth_validator/validator.so
+[1753/2014] Linking target src/test/modules/oauth_validator/magic_validator.so
+[1754/2014] Linking target src/test/isolation/pg_isolation_regress
+[1755/2014] Compiling C object src/test/modules/test_bloomfilter/test_bloomfilter.so.p/test_bloomfilter.c.o
+[1756/2014] Compiling C object src/test/modules/spgist_name_ops/spgist_name_ops.so.p/spgist_name_ops.c.o
+[1757/2014] Linking target src/test/modules/spgist_name_ops/spgist_name_ops.so
+[1758/2014] Linking target src/test/modules/test_bloomfilter/test_bloomfilter.so
+[1759/2014] Compiling C object src/test/modules/ssl_passphrase_callback/ssl_passphrase_func.so.p/ssl_passphrase_func.c.o
+[1760/2014] Compiling C object src/test/modules/plsample/plsample.so.p/plsample.c.o
+[1761/2014] Compiling C object src/test/modules/test_custom_rmgrs/test_custom_rmgrs.so.p/test_custom_rmgrs.c.o
+[1762/2014] Linking target src/test/modules/plsample/plsample.so
+[1763/2014] Linking target src/test/modules/ssl_passphrase_callback/ssl_passphrase_func.so
+[1764/2014] Compiling C object src/test/modules/libpq_pipeline/libpq_pipeline.p/libpq_pipeline.c.o
+[1765/2014] Linking target src/test/modules/test_custom_rmgrs/test_custom_rmgrs.so
+[1766/2014] Compiling C object src/test/modules/test_copy_callbacks/test_copy_callbacks.so.p/test_copy_callbacks.c.o
+[1767/2014] Compiling C object src/test/modules/test_dsa/test_dsa.so.p/test_dsa.c.o
+[1768/2014] Linking target src/test/modules/test_copy_callbacks/test_copy_callbacks.so
+[1769/2014] Compiling C object src/test/modules/test_dsm_registry/test_dsm_registry.so.p/test_dsm_registry.c.o
+[1770/2014] Linking target src/test/modules/test_dsa/test_dsa.so
+[1771/2014] Linking target src/test/modules/libpq_pipeline/libpq_pipeline
+[1772/2014] Compiling C object src/test/modules/test_aio/test_aio.so.p/test_aio.c.o
+[1773/2014] Linking target src/test/modules/test_dsm_registry/test_dsm_registry.so
+[1774/2014] Compiling C object src/test/modules/test_ddl_deparse/test_ddl_deparse.so.p/test_ddl_deparse.c.o
+[1775/2014] Linking target src/test/modules/test_aio/test_aio.so
+[1776/2014] Linking target src/test/modules/test_ddl_deparse/test_ddl_deparse.so
+[1777/2014] Compiling C object src/test/modules/test_ginpostinglist/test_ginpostinglist.so.p/test_ginpostinglist.c.o
+[1778/2014] Compiling C object src/test/modules/test_escape/test_escape.p/test_escape.c.o
+[1779/2014] Compiling C object src/test/modules/test_json_parser/test_json_parser_perf.p/test_json_parser_perf.c.o
+[1780/2014] Linking target src/test/modules/test_ginpostinglist/test_ginpostinglist.so
+[1781/2014] Compiling C object src/test/modules/test_json_parser/test_json_parser_incremental.p/test_json_parser_incremental.c.o
+[1782/2014] Compiling C object src/test/modules/test_integerset/test_integerset.so.p/test_integerset.c.o
+[1783/2014] Compiling C object src/test/modules/test_json_parser/test_json_parser_incremental_shlib.p/test_json_parser_incremental.c.o
+[1784/2014] Linking target src/test/modules/test_json_parser/test_json_parser_perf
+[1785/2014] Linking target src/test/modules/test_escape/test_escape
+[1786/2014] Linking target src/test/modules/test_integerset/test_integerset.so
+[1787/2014] Linking target src/test/modules/test_json_parser/test_json_parser_incremental
+[1788/2014] Compiling C object src/test/modules/test_parser/test_parser.so.p/test_parser.c.o
+[1789/2014] Linking target src/test/modules/test_json_parser/test_json_parser_incremental_shlib
+[1790/2014] Linking target src/test/modules/test_parser/test_parser.so
+[1791/2014] Compiling C object src/test/modules/test_predtest/test_predtest.so.p/test_predtest.c.o
+[1792/2014] Compiling C object src/test/modules/test_oat_hooks/test_oat_hooks.so.p/test_oat_hooks.c.o
+[1793/2014] Compiling C object src/test/modules/test_lfind/test_lfind.so.p/test_lfind.c.o
+[1794/2014] Linking target src/test/modules/test_oat_hooks/test_oat_hooks.so
+[1795/2014] Compiling C object src/test/modules/test_resowner/test_resowner.so.p/test_resowner_basic.c.o
+[1796/2014] Linking target src/test/modules/test_predtest/test_predtest.so
+[1797/2014] Linking target src/test/modules/test_lfind/test_lfind.so
+[1798/2014] Compiling C object src/test/modules/test_rbtree/test_rbtree.so.p/test_rbtree.c.o
+[1799/2014] Linking target src/test/modules/test_rbtree/test_rbtree.so
+[1800/2014] Compiling C object src/test/modules/test_resowner/test_resowner.so.p/test_resowner_many.c.o
+[1801/2014] Compiling C object src/test/modules/test_rls_hooks/test_rls_hooks.so.p/test_rls_hooks.c.o
+[1802/2014] Linking target src/test/modules/test_resowner/test_resowner.so
+[1803/2014] Linking target src/test/modules/test_rls_hooks/test_rls_hooks.so
+[1804/2014] Compiling C object src/test/modules/test_shm_mq/test_shm_mq.so.p/setup.c.o
+[1805/2014] Compiling C object src/test/modules/test_regex/test_regex.so.p/test_regex.c.o
+[1806/2014] Compiling C object src/test/modules/test_shm_mq/test_shm_mq.so.p/worker.c.o
+[1807/2014] Compiling C object src/test/modules/test_slru/test_slru.so.p/test_multixact.c.o
+[1808/2014] Linking target src/test/modules/test_regex/test_regex.so
+[1809/2014] Compiling C object src/test/modules/test_shm_mq/test_shm_mq.so.p/test.c.o
+[1810/2014] Compiling C object src/test/modules/test_slru/test_slru.so.p/test_slru.c.o
+[1811/2014] Linking target src/test/modules/test_shm_mq/test_shm_mq.so
+[1812/2014] Generating src/interfaces/ecpg/test/compat_informix/charfuncs.c with a custom command
+[1813/2014] Compiling C object src/test/modules/test_radixtree/test_radixtree.so.p/test_radixtree.c.o
+[1814/2014] Linking target src/test/modules/test_slru/test_slru.so
+[1815/2014] Compiling C object src/test/modules/xid_wraparound/xid_wraparound.so.p/xid_wraparound.c.o
+[1816/2014] Linking target src/test/modules/test_radixtree/test_radixtree.so
+[1817/2014] Generating src/interfaces/ecpg/test/compat_informix/dec_test.c with a custom command
+[1818/2014] Linking target src/test/modules/xid_wraparound/xid_wraparound.so
+[1819/2014] Compiling C object src/test/modules/worker_spi/worker_spi.so.p/worker_spi.c.o
+[1820/2014] Compiling C object src/test/modules/test_tidstore/test_tidstore.so.p/test_tidstore.c.o
+[1821/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/charfuncs.p/meson-generated_.._charfuncs.c.o
+[1822/2014] Compiling C object src/interfaces/ecpg/test/pg_regress_ecpg.p/pg_regress_ecpg.c.o
+[1823/2014] Linking target src/test/modules/worker_spi/worker_spi.so
+[1824/2014] Generating src/interfaces/ecpg/test/compat_informix/describe.c with a custom command
+[1825/2014] Linking target src/test/modules/test_tidstore/test_tidstore.so
+[1826/2014] Generating src/interfaces/ecpg/test/compat_informix/intoasc.c with a custom command
+[1827/2014] Generating src/interfaces/ecpg/test/compat_informix/rfmtdate.c with a custom command
+[1828/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/dec_test.p/meson-generated_.._dec_test.c.o
+[1829/2014] Linking target src/interfaces/ecpg/test/compat_informix/charfuncs
+[1830/2014] Generating src/interfaces/ecpg/test/compat_informix/rfmtlong.c with a custom command
+[1831/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/intoasc.p/meson-generated_.._intoasc.c.o
+[1832/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/describe.p/meson-generated_.._describe.c.o
+[1833/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/rfmtdate.p/meson-generated_.._rfmtdate.c.o
+[1834/2014] Linking target src/interfaces/ecpg/test/compat_informix/dec_test
+[1835/2014] Generating src/interfaces/ecpg/test/compat_informix/rnull.c with a custom command
+[1836/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/rfmtlong.p/meson-generated_.._rfmtlong.c.o
+[1837/2014] Linking target src/interfaces/ecpg/test/compat_informix/intoasc
+[1838/2014] Generating src/interfaces/ecpg/test/compat_informix/sqlda.c with a custom command
+[1839/2014] Linking target src/interfaces/ecpg/test/compat_informix/describe
+[1840/2014] Generating src/interfaces/ecpg/test/compat_informix/test_informix.c with a custom command
+[1841/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/rnull.p/meson-generated_.._rnull.c.o
+[1842/2014] Linking target src/interfaces/ecpg/test/compat_informix/rfmtdate
+[1843/2014] Generating src/interfaces/ecpg/test/compat_informix/test_informix2.c with a custom command
+[1844/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/sqlda.p/meson-generated_.._sqlda.c.o
+[1845/2014] Linking target src/interfaces/ecpg/test/compat_informix/rfmtlong
+[1846/2014] Generating src/interfaces/ecpg/test/compat_oracle/char_array.c with a custom command
+[1847/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/test_informix.p/meson-generated_.._test_informix.c.o
+[1848/2014] Compiling C object src/interfaces/ecpg/test/compat_informix/test_informix2.p/meson-generated_.._test_informix2.c.o
+[1849/2014] Linking target src/interfaces/ecpg/test/compat_informix/sqlda
+[1850/2014] Generating src/interfaces/ecpg/test/connect/test1.c with a custom command
+[1851/2014] Compiling C object src/interfaces/ecpg/test/compat_oracle/char_array.p/meson-generated_.._char_array.c.o
+[1852/2014] Linking target src/interfaces/ecpg/test/compat_informix/rnull
+[1853/2014] Generating src/interfaces/ecpg/test/connect/test2.c with a custom command
+[1854/2014] Linking target src/interfaces/ecpg/test/compat_informix/test_informix2
+[1855/2014] Generating src/interfaces/ecpg/test/connect/test3.c with a custom command
+[1856/2014] Linking target src/interfaces/ecpg/test/compat_informix/test_informix
+[1857/2014] Generating src/interfaces/ecpg/test/connect/test4.c with a custom command
+[1858/2014] Generating src/interfaces/ecpg/test/connect/test5.c with a custom command
+[1859/2014] Compiling C object src/interfaces/ecpg/test/connect/test1.p/meson-generated_.._test1.c.o
+[1860/2014] Compiling C object src/interfaces/ecpg/test/connect/test3.p/meson-generated_.._test3.c.o
+[1861/2014] Compiling C object src/interfaces/ecpg/test/connect/test4.p/meson-generated_.._test4.c.o
+[1862/2014] Compiling C object src/interfaces/ecpg/test/connect/test2.p/meson-generated_.._test2.c.o
+[1863/2014] Linking target src/interfaces/ecpg/test/compat_oracle/char_array
+[1864/2014] Linking target src/interfaces/ecpg/test/connect/test2
+[1865/2014] Generating src/interfaces/ecpg/test/pgtypeslib/dt_test.c with a custom command
+[1866/2014] Generating src/interfaces/ecpg/test/pgtypeslib/dt_test2.c with a custom command
+[1867/2014] Linking target src/interfaces/ecpg/test/connect/test1
+[1868/2014] Compiling C object src/interfaces/ecpg/test/connect/test5.p/meson-generated_.._test5.c.o
+[1869/2014] Linking target src/interfaces/ecpg/test/connect/test3
+[1870/2014] Generating src/interfaces/ecpg/test/pgtypeslib/num_test.c with a custom command
+[1871/2014] Linking target src/interfaces/ecpg/test/connect/test4
+[1872/2014] Generating src/interfaces/ecpg/test/pgtypeslib/num_test2.c with a custom command
+[1873/2014] Generating src/interfaces/ecpg/test/pgtypeslib/nan_test.c with a custom command
+[1874/2014] Compiling C object src/interfaces/ecpg/test/pgtypeslib/num_test.p/meson-generated_.._num_test.c.o
+[1875/2014] Linking target src/interfaces/ecpg/test/connect/test5
+[1876/2014] Generating src/interfaces/ecpg/test/preproc/array_of_struct.c with a custom command
+[1877/2014] Compiling C object src/interfaces/ecpg/test/pg_regress_ecpg.p/.._.._.._test_regress_pg_regress.c.o
+[1878/2014] Compiling C object src/interfaces/ecpg/test/pgtypeslib/dt_test2.p/meson-generated_.._dt_test2.c.o
+[1879/2014] Compiling C object src/interfaces/ecpg/test/pgtypeslib/dt_test.p/meson-generated_.._dt_test.c.o
+[1880/2014] Compiling C object src/interfaces/ecpg/test/pgtypeslib/num_test2.p/meson-generated_.._num_test2.c.o
+[1881/2014] Linking target src/interfaces/ecpg/test/pgtypeslib/num_test
+[1882/2014] Linking target src/interfaces/ecpg/test/pgtypeslib/dt_test2
+[1883/2014] Generating src/interfaces/ecpg/test/preproc/autoprep.c with a custom command
+[1884/2014] Linking target src/interfaces/ecpg/test/pgtypeslib/dt_test
+[1885/2014] Generating src/interfaces/ecpg/test/preproc/comment.c with a custom command
+[1886/2014] Compiling C object src/interfaces/ecpg/test/pgtypeslib/nan_test.p/meson-generated_.._nan_test.c.o
+[1887/2014] Linking target src/interfaces/ecpg/test/pg_regress_ecpg
+[1888/2014] Generating src/interfaces/ecpg/test/preproc/cursor.c with a custom command
+[1889/2014] Generating src/interfaces/ecpg/test/preproc/define.c with a custom command
+[1890/2014] Compiling C object src/interfaces/ecpg/test/preproc/array_of_struct.p/meson-generated_.._array_of_struct.c.o
+[1891/2014] Linking target src/interfaces/ecpg/test/pgtypeslib/num_test2
+[1892/2014] Compiling C object src/interfaces/ecpg/test/preproc/comment.p/meson-generated_.._comment.c.o
+[1893/2014] Generating src/interfaces/ecpg/test/preproc/init.c with a custom command
+[1894/2014] Compiling C object src/interfaces/ecpg/test/preproc/autoprep.p/meson-generated_.._autoprep.c.o
+[1895/2014] Linking target src/interfaces/ecpg/test/pgtypeslib/nan_test
+[1896/2014] Linking target src/interfaces/ecpg/test/preproc/array_of_struct
+[1897/2014] Compiling C object src/interfaces/ecpg/test/preproc/init.p/meson-generated_.._init.c.o
+[1898/2014] Linking target src/interfaces/ecpg/test/preproc/comment
+[1899/2014] Generating src/interfaces/ecpg/test/preproc/type.c with a custom command
+[1900/2014] Compiling C object src/interfaces/ecpg/test/preproc/strings.p/meson-generated_.._strings.c.o
+[1901/2014] Compiling C object src/interfaces/ecpg/test/preproc/define.p/meson-generated_.._define.c.o
+[1902/2014] Linking target src/interfaces/ecpg/test/preproc/autoprep
+[1903/2014] Generating src/interfaces/ecpg/test/preproc/variable.c with a custom command
+[1904/2014] Compiling C object src/interfaces/ecpg/test/preproc/cursor.p/meson-generated_.._cursor.c.o
+[1905/2014] Linking target src/interfaces/ecpg/test/preproc/strings
+[1906/2014] Generating src/interfaces/ecpg/test/preproc/whenever.c with a custom command
+[1907/2014] Linking target src/interfaces/ecpg/test/preproc/init
+[1908/2014] Compiling C object src/interfaces/ecpg/test/preproc/type.p/meson-generated_.._type.c.o
+[1909/2014] Generating src/interfaces/ecpg/test/preproc/whenever_do_continue.c with a custom command
+[1910/2014] Linking target src/interfaces/ecpg/test/preproc/define
+[1911/2014] Generating src/interfaces/ecpg/test/sql/array.c with a custom command
+[1912/2014] Compiling C object src/interfaces/ecpg/test/preproc/variable.p/meson-generated_.._variable.c.o
+[1913/2014] Compiling C object src/interfaces/ecpg/test/preproc/whenever_do_continue.p/meson-generated_.._whenever_do_continue.c.o
+[1914/2014] Compiling C object src/interfaces/ecpg/test/preproc/whenever.p/meson-generated_.._whenever.c.o
+[1915/2014] Linking target src/interfaces/ecpg/test/preproc/cursor
+[1916/2014] Generating src/interfaces/ecpg/test/sql/binary.c with a custom command
+[1917/2014] Linking target src/interfaces/ecpg/test/preproc/type
+[1918/2014] Generating src/interfaces/ecpg/test/sql/bytea.c with a custom command
+[1919/2014] Linking target src/interfaces/ecpg/test/preproc/whenever_do_continue
+[1920/2014] Generating src/interfaces/ecpg/test/sql/code100.c with a custom command
+[1921/2014] Compiling C object src/interfaces/ecpg/test/sql/array.p/meson-generated_.._array.c.o
+[1922/2014] Linking target src/interfaces/ecpg/test/preproc/variable
+[1923/2014] Generating src/interfaces/ecpg/test/sql/copystdout.c with a custom command
+[1924/2014] Compiling C object src/interfaces/ecpg/test/sql/binary.p/meson-generated_.._binary.c.o
+[1925/2014] Linking target src/interfaces/ecpg/test/preproc/whenever
+[1926/2014] Generating src/interfaces/ecpg/test/sql/createtableas.c with a custom command
+[1927/2014] Compiling C object src/interfaces/ecpg/test/sql/code100.p/meson-generated_.._code100.c.o
+[1928/2014] Compiling C object src/interfaces/ecpg/test/sql/copystdout.p/meson-generated_.._copystdout.c.o
+[1929/2014] Linking target src/interfaces/ecpg/test/sql/array
+[1930/2014] Generating src/interfaces/ecpg/test/sql/declare.c with a custom command
+[1931/2014] Compiling C object src/interfaces/ecpg/test/sql/bytea.p/meson-generated_.._bytea.c.o
+[1932/2014] Compiling C object src/interfaces/ecpg/test/sql/createtableas.p/meson-generated_.._createtableas.c.o
+[1933/2014] Linking target src/interfaces/ecpg/test/sql/binary
+[1934/2014] Linking target src/interfaces/ecpg/test/sql/code100
+[1935/2014] Generating src/interfaces/ecpg/test/sql/define.c with a custom command
+[1936/2014] Generating src/interfaces/ecpg/test/sql/desc.c with a custom command
+[1937/2014] Linking target src/interfaces/ecpg/test/sql/copystdout
+[1938/2014] Generating src/interfaces/ecpg/test/sql/describe.c with a custom command
+[1939/2014] Linking target src/interfaces/ecpg/test/sql/bytea
+[1940/2014] Generating src/interfaces/ecpg/test/sql/dynalloc.c with a custom command
+[1941/2014] Compiling C object src/interfaces/ecpg/test/sql/declare.p/meson-generated_.._declare.c.o
+[1942/2014] Compiling C object src/interfaces/ecpg/test/sql/define.p/meson-generated_.._define.c.o
+[1943/2014] Linking target src/interfaces/ecpg/test/sql/createtableas
+[1944/2014] Compiling C object src/interfaces/ecpg/test/sql/desc.p/meson-generated_.._desc.c.o
+[1945/2014] Generating src/interfaces/ecpg/test/sql/dynalloc2.c with a custom command
+[1946/2014] Compiling C object src/interfaces/ecpg/test/sql/describe.p/meson-generated_.._describe.c.o
+[1947/2014] Compiling C object src/interfaces/ecpg/test/sql/dynalloc.p/meson-generated_.._dynalloc.c.o
+[1948/2014] Linking target src/interfaces/ecpg/test/sql/describe
+[1949/2014] Generating src/interfaces/ecpg/test/sql/dyntest.c with a custom command
+[1950/2014] Linking target src/interfaces/ecpg/test/sql/desc
+[1951/2014] Linking target src/interfaces/ecpg/test/sql/declare
+[1952/2014] Generating src/interfaces/ecpg/test/sql/execute.c with a custom command
+[1953/2014] Generating src/interfaces/ecpg/test/sql/fetch.c with a custom command
+[1954/2014] Compiling C object src/interfaces/ecpg/test/sql/dynalloc2.p/meson-generated_.._dynalloc2.c.o
+[1955/2014] Linking target src/interfaces/ecpg/test/sql/define
+[1956/2014] Generating src/interfaces/ecpg/test/sql/func.c with a custom command
+[1957/2014] Linking target src/interfaces/ecpg/test/sql/dynalloc
+[1958/2014] Linking target src/interfaces/ecpg/test/sql/dynalloc2
+[1959/2014] Generating src/interfaces/ecpg/test/sql/indicators.c with a custom command
+[1960/2014] Generating src/interfaces/ecpg/test/sql/insupd.c with a custom command
+[1961/2014] Compiling C object src/interfaces/ecpg/test/sql/dyntest.p/meson-generated_.._dyntest.c.o
+[1962/2014] Compiling C object src/interfaces/ecpg/test/sql/func.p/meson-generated_.._func.c.o
+[1963/2014] Compiling C object src/interfaces/ecpg/test/sql/fetch.p/meson-generated_.._fetch.c.o
+[1964/2014] Compiling C object src/interfaces/ecpg/test/sql/execute.p/meson-generated_.._execute.c.o
+[1965/2014] Compiling C object src/interfaces/ecpg/test/sql/indicators.p/meson-generated_.._indicators.c.o
+[1966/2014] Linking target src/interfaces/ecpg/test/sql/dyntest
+[1967/2014] Compiling C object src/interfaces/ecpg/test/sql/insupd.p/meson-generated_.._insupd.c.o
+[1968/2014] Generating src/interfaces/ecpg/test/sql/oldexec.c with a custom command
+[1969/2014] Linking target src/interfaces/ecpg/test/sql/func
+[1970/2014] Generating src/interfaces/ecpg/test/sql/parser.c with a custom command
+[1971/2014] Linking target src/interfaces/ecpg/test/sql/fetch
+[1972/2014] Generating src/interfaces/ecpg/test/sql/prepareas.c with a custom command
+[1973/2014] Generating src/interfaces/ecpg/test/sql/quote.c with a custom command
+[1974/2014] Linking target src/interfaces/ecpg/test/sql/execute
+[1975/2014] Linking target src/interfaces/ecpg/test/sql/indicators
+[1976/2014] Linking target src/interfaces/ecpg/test/sql/insupd
+[1977/2014] Generating src/interfaces/ecpg/test/sql/show.c with a custom command
+[1978/2014] Compiling C object src/interfaces/ecpg/test/sql/parser.p/meson-generated_.._parser.c.o
+[1979/2014] Generating src/interfaces/ecpg/test/sql/sqlda.c with a custom command
+[1980/2014] Compiling C object src/interfaces/ecpg/test/sql/show.p/meson-generated_.._show.c.o
+[1981/2014] Compiling C object src/interfaces/ecpg/test/sql/oldexec.p/meson-generated_.._oldexec.c.o
+[1982/2014] Compiling C object src/interfaces/ecpg/test/sql/quote.p/meson-generated_.._quote.c.o
+[1983/2014] Linking target src/interfaces/ecpg/test/sql/parser
+[1984/2014] Generating src/interfaces/ecpg/test/sql/sqljson.c with a custom command
+[1985/2014] Compiling C object src/interfaces/ecpg/test/sql/sqlda.p/meson-generated_.._sqlda.c.o
+[1986/2014] Compiling C object src/interfaces/ecpg/test/sql/prepareas.p/meson-generated_.._prepareas.c.o
+[1987/2014] Linking target src/interfaces/ecpg/test/sql/oldexec
+[1988/2014] Linking target src/interfaces/ecpg/test/sql/show
+[1989/2014] Generating src/interfaces/ecpg/test/sql/sqljson_jsontable.c with a custom command
+[1990/2014] Generating src/interfaces/ecpg/test/sql/twophase.c with a custom command
+[1991/2014] Linking target src/interfaces/ecpg/test/sql/quote
+[1992/2014] Linking target src/interfaces/ecpg/test/sql/sqlda
+[1993/2014] Generating src/interfaces/ecpg/test/thread/thread_implicit.c with a custom command
+[1994/2014] Generating src/interfaces/ecpg/test/thread/thread.c with a custom command
+[1995/2014] Linking target src/interfaces/ecpg/test/sql/prepareas
+[1996/2014] Generating src/interfaces/ecpg/test/thread/prep.c with a custom command
+[1997/2014] Compiling C object src/interfaces/ecpg/test/sql/twophase.p/meson-generated_.._twophase.c.o
+[1998/2014] Compiling C object src/interfaces/ecpg/test/sql/sqljson_jsontable.p/meson-generated_.._sqljson_jsontable.c.o
+[1999/2014] Generating src/interfaces/ecpg/test/thread/alloc.c with a custom command
+[2000/2014] Generating src/interfaces/ecpg/test/thread/descriptor.c with a custom command
+[2001/2014] Compiling C object src/interfaces/ecpg/test/sql/sqljson.p/meson-generated_.._sqljson.c.o
+[2002/2014] Compiling C object src/interfaces/ecpg/test/thread/thread.p/meson-generated_.._thread.c.o
+[2003/2014] Compiling C object src/interfaces/ecpg/test/thread/thread_implicit.p/meson-generated_.._thread_implicit.c.o
+[2004/2014] Linking target src/interfaces/ecpg/test/sql/sqljson_jsontable
+[2005/2014] Linking target src/interfaces/ecpg/test/thread/thread
+[2006/2014] Compiling C object src/interfaces/ecpg/test/thread/prep.p/meson-generated_.._prep.c.o
+[2007/2014] Linking target src/interfaces/ecpg/test/sql/sqljson
+[2008/2014] Linking target src/interfaces/ecpg/test/thread/thread_implicit
+[2009/2014] Linking target src/interfaces/ecpg/test/sql/twophase
+[2010/2014] Compiling C object src/interfaces/ecpg/test/thread/descriptor.p/meson-generated_.._descriptor.c.o
+[2011/2014] Compiling C object src/interfaces/ecpg/test/thread/alloc.p/meson-generated_.._alloc.c.o
+[2012/2014] Linking target src/interfaces/ecpg/test/thread/prep
+[2013/2014] Linking target src/interfaces/ecpg/test/thread/descriptor
+[2014/2014] Linking target src/interfaces/ecpg/test/thread/alloc

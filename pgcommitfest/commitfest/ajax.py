@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import re
 import textwrap
+from datetime import datetime
 
 import requests
 
@@ -183,24 +184,58 @@ def deleteAnnotation(request):
     return "OK"
 
 
-def parse_and_add_attachments(threadinfo, mailthread):
+def parse_and_add_attachments(threadinfo, mailthread, patch, user):
+    # Save the messageid containing the most recent patchset to both
+    # the thread it exists on and, among the threads, to the patch itself.
+    thread_patchset = None
+    # Sorted threads, oldest to newest, so capture the last one with a patch
     for t in threadinfo:
-        if len(t["atts"]):
-            # One or more attachments. For now, we're only actually going
-            # to store and process the first one, even though the API gets
-            # us all of them.
-            MailThreadAttachment.objects.get_or_create(
+        for a in t["atts"]:
+            if a["is_patch"]:
+                thread_patchset = t
+
+            mta, created = MailThreadAttachment.objects.get_or_create(
                 mailthread=mailthread,
                 messageid=t["msgid"],
+                attachmentid=a["id"],
                 defaults={
                     "date": t["date"],
                     "author": t["from"],
-                    "attachmentid": t["atts"][0]["id"],
-                    "filename": t["atts"][0]["name"],
+                    "filename": a["name"],
+                    "ispatch": a["is_patch"],
+                    "contenttype": a["content_type"],
                 },
             )
-        # In theory we should remove objects if they don't have an
-        # attachment, but how could that ever happen? Ignore for now.
+            PatchHistory(
+                patch=patch,
+                by=user,
+                what="Linked attachment %s %s"
+                % (a["id"], "created" if created else "gotten"),
+            ).save_and_notify()
+        PatchHistory(
+            patch=patch, by=user, what="Linked Message %s" % t["msgid"]
+        ).save_and_notify()
+
+    if thread_patchset:
+        mailthread.patchsetmsgid = thread_patchset["msgid"]
+        mailthread.save()
+        PatchHistory(
+            patch=patch,
+            by=user,
+            what="New Thread Patch Set Message %s" % thread_patchset["msgid"],
+        ).save_and_notify()
+
+        if patch.patchset_messageid != thread_patchset[
+            "msgid"
+        ] or patch.patchset_messagedate > datetime.strptime(thread_patchset["date"]):
+            patch.patchset_messagedate = thread_patchset["date"]
+            patch.patchset_messageid = thread_patchset["msgid"]
+            patch.save()
+            PatchHistory(
+                patch=patch,
+                by=user,
+                what="Updated Patch Set Message Id to %s" % thread_patchset["msgid"],
+            ).save_and_notify()
 
 
 @transaction.atomic
@@ -249,7 +284,7 @@ def doAttachThread(cf, patch, msgid, user):
         m.save()
         m.patches.add(patch)
         m.save()
-        parse_and_add_attachments(r, m)
+        thread = m
 
     PatchHistory(
         patch=patch, by=user, what="Attached mail thread %s" % r[0]["msgid"]
@@ -257,7 +292,7 @@ def doAttachThread(cf, patch, msgid, user):
     patch.update_lastmail()
     patch.set_modified()
     patch.save()
-
+    parse_and_add_attachments(r, thread, patch, user)
     return "OK"
 
 

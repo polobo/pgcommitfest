@@ -15,5 +15,12 @@
             "startdate": "2025-04-01",
             "enddate": "2025-04-30"
         }
-}
+    },
+    {
+        "model": "commitfest.cfbotqueue",
+        "pk": 1,
+        "fields": {
+            "name": "Default Queue"
+        }
+    }
 ]

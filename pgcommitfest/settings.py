@@ -166,6 +166,9 @@ HACKERS_EMAIL = "pgsql-hackers-testing@localhost"
 # Email address for outgoing system messages
 NOTIFICATION_FROM = "webmaster@postgresql.org"
 
+FILE_FETCH_URL_BASE = ARCHIVES_BASE + "/message-id/attachment/"
+LOCAL_PATCH_BURNER_DIR = "/tmp/patchburner/"
+
 # Load local settings overrides
 try:
     from .local_settings import *  # noqa: F403
