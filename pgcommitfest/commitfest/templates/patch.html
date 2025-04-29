@@ -80,6 +80,10 @@
     <td>{%if patch.lastmail%}{{patch.lastmail}} ({% cfwhen patch.lastmail %}){%endif%}</td>
    </tr>
    <tr>
+    <th style="white-space: nowrap;">Latest patch set</th>
+    <td>{%if patch.patchset_messageid%}{{patch.patchset_messagedate}} ({% cfwhen patch.patchset_messagedate %}) on {{patch.patchset_messageid}}{%endif%}</td>
+   </tr>
+   <tr>
     <th>Status</th>
     <td>{%for c in patch_commitfests %}
      <div style="margin-bottom: 3px;"><a href="/{{c.commitfest.id}}/">{{c.commitfest}}</a>: <span class="label label-{{c.status|patchstatuslabel}}">{{c.statusstring}}</span></div>
@@ -121,16 +125,18 @@
     {%endif%}
     <dl>
      {%for t in patch.mailthread_set.all%}
-      <dt><a href="https://www.postgresql.org/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
+      <dt><a href="{{settings.ARCHIVES_BASE}}/message-id/flat/{{t.messageid}}">{{t.subject}}</a> <button type="button" class="close close-nofloat" title="Detach this thread" onclick="detachThread({{cf.id}},{{patch.id}},'{{t.messageid}}')">&times;</button></dt>
       <dd>
-       First at <a href="https://www.postgresql.org/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
-       Latest at <a href="https://www.postgresql.org/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
+       First message at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.messageid}}">{{t.firstmessage}}</a> by {{t.firstauthor|hidemail}}<br/>
+       Latest message at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{t.latestmsgid}}">{{t.latestmessage}}</a> by {{t.latestauthor|hidemail}}<br/>
        {%for ta in t.mailthreadattachment_set.all%}
         {%if forloop.first%}
-         Latest attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
+         Latest files at <a href="{{settings.ARCHIVES_BASE}}/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#att{{t.pk}}" title="Show all attachments"><i class="glyphicon glyphicon-plus"></i></button>
          <div id="att{{t.pk}}" class="collapse">
         {%endif%}
-        &nbsp;&nbsp;&nbsp;&nbsp;Attachment (<a href="https://www.postgresql.org/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a>) at <a href="https://www.postgresql.org/message-id/{{ta.messageid}}">{{ta.date}}</a> from {{ta.author|hidemail}} (Patch: {{ta.ispatch|yesno:"Yes,No,Pending check"}})<br/>
+        {%if True %}
+         &nbsp;&nbsp;&nbsp;&nbsp;{{ta.ispatch|yesno:"Patch,File,Unknown"}} <a href="{{settings.ARCHIVES_BASE}}/message-id/attachment/{{ta.attachmentid}}/{{ta.filename}}">{{ta.filename}}</a> ({{ta.contenttype}})<br/>
+        {%endif%}
         {%if forloop.last%}</div>{%endif%}
        {%endfor%}
        <div>

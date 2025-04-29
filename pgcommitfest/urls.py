@@ -3,18 +3,18 @@ from django.urls import re_path
 
 import pgcommitfest.auth
 import pgcommitfest.commitfest.ajax as ajax
+import pgcommitfest.commitfest.apiv1 as apiv1
 import pgcommitfest.commitfest.lookups as lookups
 import pgcommitfest.commitfest.reports as reports
 import pgcommitfest.commitfest.views as views
 import pgcommitfest.userprofile.views
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
 admin.autodiscover()
 
 
 urlpatterns = [
     re_path(r"^$", views.home),
+    re_path(r"^api/test/cfapp/create_patch$", apiv1.create_patch),
     re_path(r"^me/$", views.me),
     re_path(r"^archive/$", views.archive),
     re_path(r"^activity(?P<rss>\.rss)?/", views.activity),

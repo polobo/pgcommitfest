@@ -1,0 +1,19 @@
+[
+    {
+        "model": "commitfest.topic",
+        "pk": 1,
+        "fields": {
+            "topic": "Not Classified"
+        }
+    },
+    {
+        "model": "commitfest.commitfest",
+        "pk": 1,
+        "fields": {
+            "name": "2025-04",
+            "status": 2,
+            "startdate": "2025-04-01",
+            "enddate": "2025-04-30"
+        }
+}
+]

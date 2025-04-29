@@ -153,6 +153,14 @@ class Patch(models.Model, DiffableModel):
     # that's attached to this message.
     lastmail = models.DateTimeField(blank=True, null=True)
 
+    # Pointer to the threadid/messageid containing the most recent patchset
+    patchset_messageid = models.CharField(
+        max_length=1000, blank=False, null=True, db_index=False
+    )
+    # Cache the timestamp of the patchset message to easily determine
+    # whether a new patchset message should replace it.
+    patchset_messagedate = models.DateTimeField(blank=True, null=True)
+
     map_manytomany_for_diff = {
         "authors": "authors_string",
         "reviewers": "reviewers_string",
@@ -207,6 +215,26 @@ class Patch(models.Model, DiffableModel):
             self.lastmail = None
         else:
             self.lastmail = max(threads, key=lambda t: t.latestmessage).latestmessage
+
+    # XXX: make messageid an optional input to return a non-current patchset or to
+    # facilitate confirmation that the current patch is the one being worked on...
+    def get_attachments(self):
+        """
+        Return the actual attachments for the patch.
+        """
+        return [
+            {
+                "attachmentid": attachment.attachmentid,
+                "filename": attachment.filename,
+                "contenttype": attachment.contenttype,
+                "ispatch": attachment.ispatch,
+                "author": attachment.author,
+                "date": attachment.date,
+            }
+            for attachment in MailThreadAttachment.objects.filter(
+                mailthread__patches=self, messageid=self.patchset_messageid
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -391,6 +419,7 @@ class MailThread(models.Model):
     latestauthor = models.CharField(max_length=500, null=False, blank=False)
     latestsubject = models.CharField(max_length=500, null=False, blank=False)
     latestmsgid = models.CharField(max_length=1000, null=False, blank=False)
+    patchsetmsgid = models.CharField(max_length=1000, null=True, blank=False)
 
     def __str__(self):
         return self.subject
@@ -409,13 +438,15 @@ class MailThreadAttachment(models.Model):
     date = models.DateTimeField(null=False, blank=False)
     author = models.CharField(max_length=500, null=False, blank=False)
     ispatch = models.BooleanField(null=True)
+    contenttype = models.CharField(max_length=1000, null=True, blank=False)
 
     class Meta:
-        ordering = ("-date",)
+        ordering = ("-date", "messageid", "ispatch", "filename", "attachmentid")
         unique_together = (
             (
                 "mailthread",
                 "messageid",
+                "attachmentid",
             ),
         )
 

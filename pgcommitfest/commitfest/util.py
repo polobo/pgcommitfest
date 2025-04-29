@@ -1,5 +1,9 @@
 import django.db.models.fields.related
 from django.forms.models import model_to_dict
+from django.http import HttpResponse
+
+import json
+from datetime import datetime
 
 
 class DiffableModel(object):
@@ -44,3 +48,18 @@ class DiffableModel(object):
         fields = [field.name for field in self._meta.fields]
         fields.extend([field.name for field in self._meta.many_to_many])
         return model_to_dict(self, fields=fields)
+
+
+def datetime_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+    raise TypeError("Type not serializable")
+
+
+def apiResponse(request, payload, status=200, content_type="application/json"):
+    response = HttpResponse(
+        json.dumps(payload, default=datetime_serializer), status=status
+    )
+    response["Content-Type"] = content_type
+    response["Access-Control-Allow-Origin"] = "*"
+    return response

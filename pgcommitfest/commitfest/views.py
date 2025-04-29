@@ -708,6 +708,7 @@ def patch(request, patchid):
                 {"title": cf.title, "href": "/%s/" % cf.pk},
             ],
             "userprofile": getattr(request.user, "userprofile", UserProfile()),
+            "settings": settings,
         },
     )
 
