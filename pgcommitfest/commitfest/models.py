@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import connection, models
 from django.shortcuts import get_object_or_404
 
+import json
 from datetime import datetime
 
 from pgcommitfest.userprofile.models import UserProfile
 
-from .util import DiffableModel
+from .util import DiffableModel, datetime_serializer
 
 
 # We have few enough of these, and it's really the only thing we
@@ -153,6 +154,14 @@ class Patch(models.Model, DiffableModel):
     # that's attached to this message.
     lastmail = models.DateTimeField(blank=True, null=True)
 
+    # Pointer to the threadid/messageid containing the most recent patchset
+    patchset_messageid = models.CharField(
+        max_length=1000, blank=False, null=True, db_index=False
+    )
+    # Cache the timestamp of the patchset message to easily determine
+    # whether a new patchset message should replace it.
+    patchset_messagedate = models.DateTimeField(blank=True, null=True)
+
     map_manytomany_for_diff = {
         "authors": "authors_string",
         "reviewers": "reviewers_string",
@@ -207,6 +216,26 @@ class Patch(models.Model, DiffableModel):
             self.lastmail = None
         else:
             self.lastmail = max(threads, key=lambda t: t.latestmessage).latestmessage
+
+    # XXX: make messageid an optional input to return a non-current patchset or to
+    # facilitate confirmation that the current patch is the one being worked on...
+    def get_attachments(self):
+        """
+        Return the actual attachments for the patch.
+        """
+        return [
+            {
+                "attachmentid": attachment.attachmentid,
+                "filename": attachment.filename,
+                "contenttype": attachment.contenttype,
+                "ispatch": attachment.ispatch,
+                "author": attachment.author,
+                "date": attachment.date,
+            }
+            for attachment in MailThreadAttachment.objects.filter(
+                mailthread__patches=self, messageid=self.patchset_messageid
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -391,6 +420,7 @@ class MailThread(models.Model):
     latestauthor = models.CharField(max_length=500, null=False, blank=False)
     latestsubject = models.CharField(max_length=500, null=False, blank=False)
     latestmsgid = models.CharField(max_length=1000, null=False, blank=False)
+    patchsetmsgid = models.CharField(max_length=1000, null=True, blank=False)
 
     def __str__(self):
         return self.subject
@@ -409,13 +439,15 @@ class MailThreadAttachment(models.Model):
     date = models.DateTimeField(null=False, blank=False)
     author = models.CharField(max_length=500, null=False, blank=False)
     ispatch = models.BooleanField(null=True)
+    contenttype = models.CharField(max_length=1000, null=True, blank=False)
 
     class Meta:
-        ordering = ("-date",)
+        ordering = ("-date", "messageid", "ispatch", "filename", "attachmentid")
         unique_together = (
             (
                 "mailthread",
                 "messageid",
+                "attachmentid",
             ),
         )
 
@@ -459,6 +491,7 @@ class PendingNotification(models.Model):
 
 class CfbotBranch(models.Model):
     STATUS_CHOICES = [
+        ("new", "New"),
         ("testing", "Testing"),
         ("finished", "Finished"),
         ("failed", "Failed"),
@@ -472,8 +505,7 @@ class CfbotBranch(models.Model):
     branch_name = models.TextField(null=False)
     commit_id = models.TextField(null=True, blank=True)
     apply_url = models.TextField(null=False)
-    # Actually a postgres enum column
-    status = models.TextField(choices=STATUS_CHOICES, null=False)
+    status = models.CharField(max_length=100, null=False)
     needs_rebase_since = models.DateTimeField(null=True, blank=True)
     failing_since = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -484,6 +516,7 @@ class CfbotBranch(models.Model):
     first_deletions = models.IntegerField(null=True, blank=True)
     all_additions = models.IntegerField(null=True, blank=True)
     all_deletions = models.IntegerField(null=True, blank=True)
+    base_commit_sha = models.TextField(null=True, blank=False)
 
     def save(self, *args, **kwargs):
         """Only used by the admin panel to save empty commit id as NULL
@@ -494,6 +527,85 @@ class CfbotBranch(models.Model):
         if not self.commit_id:
             self.commit_id = None
         super(CfbotBranch, self).save(*args, **kwargs)
+
+
+class CfbotBranchHistory(models.Model):
+    id = models.BigAutoField(primary_key=True)  # Auto-numbered primary key
+    patch_id = models.IntegerField(null=False)
+    branch_id = models.IntegerField(null=False)
+    branch_name = models.TextField(null=False)
+    commit_id = models.TextField(null=True, blank=True)
+    apply_url = models.TextField(null=False)
+    status = models.TextField(null=False)
+    needs_rebase_since = models.DateTimeField(null=True, blank=True)
+    failing_since = models.DateTimeField(null=True, blank=True)
+    created = models.DateTimeField()
+    modified = models.DateTimeField()
+    version = models.TextField(null=True, blank=True)
+    patch_count = models.IntegerField(null=True, blank=True)
+    first_additions = models.IntegerField(null=True, blank=True)
+    first_deletions = models.IntegerField(null=True, blank=True)
+    all_additions = models.IntegerField(null=True, blank=True)
+    all_deletions = models.IntegerField(null=True, blank=True)
+    task_count = models.IntegerField(null=True, blank=True)
+    base_commit_sha = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return (
+            f"Branch History for Patch ID {self.patch_id}, Branch ID {self.branch_id}"
+        )
+
+    def add_branch_to_history(history_branch):
+        cached_tasks = CfbotTask.objects.filter(branch_id=history_branch.branch_id)
+        taskarr = [
+            {
+                "task_id": task.task_id,
+                "task_name": task.task_name,
+                "status": task.status,
+                "created": task.created.isoformat(),
+                "modified": task.modified.isoformat(),
+                "payload": task.payload,
+            }
+            for task in cached_tasks
+        ]
+
+        # Record all processing that happens in the history, even no-ops
+        history = CfbotBranchHistory.objects.create(
+            patch_id=history_branch.patch_id,
+            branch_id=history_branch.branch_id,
+            branch_name=history_branch.branch_name,
+            commit_id=history_branch.commit_id,
+            apply_url=history_branch.apply_url,
+            status=history_branch.status,
+            needs_rebase_since=history_branch.needs_rebase_since,
+            failing_since=history_branch.failing_since,
+            created=history_branch.created,
+            modified=history_branch.modified,
+            version=history_branch.version,
+            patch_count=history_branch.patch_count,
+            first_additions=history_branch.first_additions,
+            first_deletions=history_branch.first_deletions,
+            all_additions=history_branch.all_additions,
+            all_deletions=history_branch.all_deletions,
+            base_commit_sha=history_branch.base_commit_sha,
+            task_count=len(taskarr),
+        )
+
+        # Insert tasks into cfbotbranchhistorytask
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO commitfest_cfbotbranchhistorytask (history_id, branch_tasks)
+                VALUES (%s, %s)
+                """,
+                [history.id, json.dumps(taskarr, default=datetime_serializer)],
+            )
+
+        return history
+
+    class Meta:
+        verbose_name_plural = "Cfbot Branch Histories"
+        ordering = ("-modified",)
 
 
 class CfbotTask(models.Model):
@@ -507,6 +619,7 @@ class CfbotTask(models.Model):
         ("SCHEDULED", "Scheduled"),
         ("ABORTED", "Aborted"),
         ("ERRORED", "Errored"),
+        ("IGNORED", "Ignored"),
     ]
 
     # This id is only used by Django. Using text type for primary keys, has
@@ -517,7 +630,7 @@ class CfbotTask(models.Model):
     # given that we might need to change CI providers at some point, and that
     # CI provider might use e.g. UUIDs, we prefer to consider the format of the
     # ID opaque and store it as text.
-    task_id = models.TextField(unique=True)
+    task_id = models.TextField(unique=False)
     task_name = models.TextField(null=False)
     patch = models.ForeignKey(
         Patch, on_delete=models.CASCADE, related_name="cfbot_tasks"
@@ -528,3 +641,39 @@ class CfbotTask(models.Model):
     status = models.TextField(choices=STATUS_CHOICES, null=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    payload = models.JSONField(null=True, blank=True)
+
+    def is_done(self):
+        """
+        Check if the task is in a terminal state.
+        """
+        return self.status in {"FAILED", "COMPLETED", "ABORTED", "ERRORED", "IGNORED"}
+
+    def is_failure(self):
+        """
+        Check if the task is in a failure state.
+        """
+        return self.status in {"ABORTED", "ERRORED", "FAILED"}
+
+
+class CfbotTaskCommand(models.Model):
+    task = models.ForeignKey(
+        CfbotTask, null=False, blank=False, on_delete=models.CASCADE
+    )
+    name = models.TextField(null=False)
+    status = models.TextField(null=False)
+    type = models.TextField(null=False)
+    duration = models.IntegerField(null=True)
+    log = models.TextField(null=True, blank=True)
+    payload = models.JSONField(null=True, blank=True)
+
+
+class CfbotTaskArtifact(models.Model):
+    task = models.ForeignKey(
+        CfbotTask, null=False, blank=False, on_delete=models.CASCADE
+    )
+    name = models.TextField(null=False)
+    path = models.TextField(null=False)
+    size = models.IntegerField(null=False)
+    body = models.TextField(null=True, blank=True)
+    payload = models.JSONField(null=True, blank=True)

@@ -1,0 +1,345 @@
+The Meson build system
+Version: 0.61.2
+Source dir: /home/davidj/cfapp-temp/postgres
+Build dir: /home/davidj/cfapp-temp/postgres/build
+Build type: native build
+Project name: postgresql
+Project version: 18devel
+C compiler for the host machine: cc (gcc 11.4.0 "cc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0")
+C linker for the host machine: cc ld.bfd 2.38
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Run-time dependency threads found: YES
+Program perl found: YES (/usr/bin/perl)
+Program python3 found: YES (/home/davidj/pgcommitfest/env/bin/python3)
+Program flex found: YES (/usr/bin/flex)
+Program bison found: YES 3.8.2 (/usr/bin/bison)
+Program sed found: YES (/usr/bin/sed)
+Program prove found: YES (/usr/bin/prove)
+Program tar found: YES (/usr/bin/tar)
+Program gzip found: YES (/usr/bin/gzip)
+Program lz4 found: NO
+Program openssl found: YES (/usr/bin/openssl)
+Program zstd found: YES (/usr/bin/zstd)
+Program dtrace skipped: feature dtrace disabled
+Program config/missing found: YES (/home/davidj/cfapp-temp/postgres/config/missing)
+Program cp found: YES (/usr/bin/cp)
+Program xmllint found: YES (/usr/bin/xmllint)
+Program xsltproc found: YES (/usr/bin/xsltproc)
+Program wget found: YES (/usr/bin/wget)
+Program /usr/bin/meson found: YES (/usr/bin/meson)
+Check usable header "bsd_auth.h" : NO
+Check usable header "dns_sd.h" : NO
+Program fop found: YES (/usr/bin/fop)
+Found pkg-config: /usr/bin/pkg-config (0.29.2)
+Did not find CMake 'cmake'
+Found CMake: NO
+Run-time dependency krb5-gssapi found: NO (tried pkgconfig and cmake)
+Library gssapi_krb5 found: NO
+Run-time dependency ldap found: NO (tried pkgconfig)
+Has header "ldap.h" : NO
+Compiler for language cpp skipped: feature llvm disabled
+Run-time dependency icu-uc found: NO (tried pkgconfig and cmake)
+Run-time dependency icu found: NO (tried cmake)
+Run-time dependency libcurl found: NO (tried pkgconfig and cmake)
+Run-time dependency numa found: NO (tried pkgconfig and cmake)
+Library numa found: NO
+Has header "numa.h" with dependency -lnuma: NO
+Run-time dependency liburing found: NO (tried pkgconfig and cmake)
+Run-time dependency libxml-2.0 found: NO (tried pkgconfig and cmake)
+Run-time dependency libxml2 found: NO (tried cmake)
+Run-time dependency libxslt found: NO (tried pkgconfig and cmake)
+Run-time dependency libxslt found: NO (tried cmake)
+Run-time dependency liblz4 found: NO (tried pkgconfig and cmake)
+Run-time dependency lz4 found: NO (tried cmake)
+Run-time dependency tcl found: NO (tried pkgconfig and cmake)
+Library tcl found: NO
+Has header "tcl.h" with dependency -ltcl: NO
+Run-time dependency pam found: NO (tried pkgconfig and cmake)
+Library pam found: NO
+Has header "perl.h" : YES
+Message: CCFLAGS recommended by perl: -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fwrapv -fno-strict-aliasing -pipe -I/usr/local/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+Message: CCFLAGS for embedding perl: -I/usr/lib/x86_64-linux-gnu/perl/5.34/CORE -DDEBIAN
+Message: LDFLAGS for embedding perl: "-L/usr/lib/x86_64-linux-gnu/perl/5.34/CORE -lperl -ldl -lm -lpthread -lc -lcrypt"
+Checking if "libperl" : links: YES
+Program /home/davidj/pgcommitfest/env/bin/python3 found: YES (/home/davidj/pgcommitfest/env/bin/python3)
+WARNING: Python files installed by Meson might not be found by python interpreter.
+ This warning can be avoided by setting "python.platlibdir" option.
+WARNING: Python files installed by Meson might not be found by python interpreter.
+ This warning can be avoided by setting "python.purelibdir" option.
+Check usable header "Python.h" with dependency python: YES
+Run-time dependency readline found: YES 8.1
+Has header "readline/history.h" with dependency readline: YES
+Has header "readline/readline.h" with dependency readline: YES
+Checking for function "append_history" with dependency readline: YES
+Checking for function "history_truncate_file" with dependency readline: YES
+Checking for function "rl_completion_matches" with dependency readline: YES
+Checking for function "rl_filename_completion_function" with dependency readline: YES
+Checking for function "rl_reset_screen_size" with dependency readline: YES
+Checking for function "rl_variable_bind" with dependency readline: YES
+Header <readline/readline.h> has symbol "rl_completion_suppress_quote" with dependency readline: YES
+Header <readline/readline.h> has symbol "rl_filename_quote_characters" with dependency readline: YES
+Header <readline/readline.h> has symbol "rl_filename_quoting_function" with dependency readline: YES
+Run-time dependency libselinux found: NO (tried pkgconfig and cmake)
+Run-time dependency libsystemd found: NO (tried pkgconfig and cmake)
+Run-time dependency openssl found: YES 3.0.2
+Has header "openssl/ssl.h" with dependency openssl: YES
+Has header "openssl/err.h" with dependency openssl: YES
+Checking for function "CRYPTO_new_ex_data" with dependency openssl: YES
+Checking for function "SSL_new" with dependency openssl: YES
+Checking for function "SSL_CTX_set_ciphersuites" with dependency openssl: YES
+Checking for function "SSL_CTX_set_cert_cb" with dependency openssl: YES
+Checking for function "X509_get_signature_info" with dependency openssl: YES
+Checking for function "SSL_CTX_set_num_tickets" with dependency openssl: YES
+Checking for function "SSL_CTX_set_keylog_callback" with dependency openssl: YES
+Run-time dependency zlib found: YES 1.2.11
+Has header "zlib.h" with dependency zlib: YES
+Run-time dependency libzstd found: NO (tried pkgconfig and cmake)
+Run-time dependency zstd found: NO (tried cmake)
+Checking if "c99" compiles: YES
+Checking for alignment of "short" : 2
+Checking for alignment of "int" : 4
+Checking for alignment of "long" : 8
+Checking for alignment of "double" : 8
+Checking for alignment of "int64_t" : 8
+Checking for size of "long" : 8
+Checking for size of "long long" : 8
+Checking for size of "void *" : 8
+Checking for size of "size_t" : 8
+Checking if "__int128" : links: YES
+Checking if "__int128 alignment bug" runs: YES
+Checking for alignment of "__int128" : 16
+Checking if "computed goto" compiles: YES
+Checking if "_Static_assert" compiles: YES
+Compiler for C supports arguments -Werror=format: YES
+Compiler for C supports arguments -Werror=ignored-attributes: YES
+Checking if "format gnu_printf" compiles: YES
+Compiler for C supports function attribute visibility:default: YES
+Compiler for C supports function attribute visibility:hidden: YES
+Checking for function "__builtin_bswap16" : YES
+Checking for function "__builtin_bswap32" : YES
+Checking for function "__builtin_bswap64" : YES
+Checking for function "__builtin_clz" : YES
+Checking for function "__builtin_ctz" : YES
+Checking for function "__builtin_constant_p" : YES
+Checking for function "__builtin_frame_address" : YES
+Checking for function "__builtin_popcount" : YES
+Checking for function "__builtin_unreachable" : YES
+Checking if "__builtin_types_compatible_p" compiles: YES
+Checking if "__builtin_mul_overflow" : links: YES
+Checking if "__get_cpuid" : links: YES
+Checking if "__get_cpuid_count" : links: YES
+Compiler for C supports arguments -fno-strict-aliasing: YES
+Compiler for C supports arguments -fwrapv: YES
+Compiler for C supports arguments -fexcess-precision=standard: YES
+Compiler for C supports arguments -ftree-vectorize: YES
+Compiler for C supports arguments -funroll-loops: YES
+Compiler for C supports arguments -Wmissing-prototypes: YES
+Compiler for C supports arguments -Wpointer-arith: YES
+Compiler for C supports arguments -Werror=vla: YES
+Compiler for C supports arguments -Werror=unguarded-availability-new: NO
+Compiler for C supports arguments -Wendif-labels: YES
+Compiler for C supports arguments -Wmissing-format-attribute: YES
+Compiler for C supports arguments -Wimplicit-fallthrough=3: YES
+Compiler for C supports arguments -Wcast-function-type: YES
+Compiler for C supports arguments -Wshadow=compatible-local: YES
+Compiler for C supports arguments -Wformat-security: YES
+Compiler for C supports arguments -Wdeclaration-after-statement: YES
+Compiler for C supports arguments -Wmissing-variable-declarations: NO
+Compiler for C supports arguments -Wunused-command-line-argument: NO
+Compiler for C supports arguments -Wcompound-token-split-by-macro: NO
+Compiler for C supports arguments -Wformat-truncation: YES
+Compiler for C supports arguments -Wstringop-truncation: YES
+Compiler for C supports arguments -Wcast-function-type-strict: NO
+Compiler for C supports arguments -Wall: YES
+Compiler for C supports arguments -g: YES
+Compiler for C supports arguments -O2: YES
+Checking if "__sync_lock_test_and_set(char)" : links: YES
+Checking if "__sync_lock_test_and_set(int32)" : links: YES
+Checking if "__sync_val_compare_and_swap(int32)" : links: YES
+Checking if "__sync_val_compare_and_swap(int64)" : links: YES
+Checking if " __atomic_compare_exchange_n(int32)" : links: YES
+Checking if " __atomic_compare_exchange_n(int64)" : links: YES
+Checking if "XSAVE intrinsics" : links: YES
+Checking if "AVX-512 popcount" : links: YES
+Checking if "SSE 4.2 CRC32C" : links: YES
+Fetching value of define "__SSE4_2__" :
+Checking if "AVX-512 CRC32C" : links: YES
+Checking if "x86_64: popcntq instruction" compiles: YES
+Has header "atomic.h" : NO
+Has header "copyfile.h" : NO
+Has header "crtdefs.h" : NO
+Has header "execinfo.h" : YES
+Has header "getopt.h" : YES
+Has header "ifaddrs.h" : YES
+Has header "mbarrier.h" : NO
+Has header "strings.h" : YES
+Has header "sys/epoll.h" : YES
+Has header "sys/event.h" : NO
+Has header "sys/personality.h" : YES
+Has header "sys/prctl.h" : YES
+Has header "sys/procctl.h" : NO
+Has header "sys/signalfd.h" : YES
+Has header "sys/ucred.h" : NO
+Has header "termios.h" : YES
+Has header "ucred.h" : NO
+Has header "xlocale.h" : NO
+Checking if "test whether F_FULLFSYNC is declared" compiles: NO
+Checking if "test whether fdatasync is declared" compiles: YES
+Checking if "test whether posix_fadvise is declared" compiles: YES
+Checking if "test whether strlcat is declared" compiles: NO
+Checking if "test whether strlcpy is declared" compiles: NO
+Checking if "test whether strnlen is declared" compiles: YES
+Checking if "test whether strsep is declared" compiles: YES
+Checking if "test whether timingsafe_bcmp is declared" compiles: NO
+Checking if "test whether preadv is declared" compiles: YES
+Checking if "test whether pwritev is declared" compiles: YES
+Checking if "test whether strchrnul is declared" compiles: YES
+Checking for type "struct option" : YES
+Checking if "opterr" : links: YES
+Checking if "optreset" : links: NO
+Checking for type "socklen_t" : YES
+Checking whether type "struct sockaddr" has member "sa_len" : NO
+Checking whether type "struct tm" has member "tm_zone" : YES
+Checking if "global variable `timezone' exists" compiles: YES
+Checking for type "union semun" : NO
+Checking if "strerror_r" compiles: NO
+Checking if "typeof" compiles: YES
+Library m found: YES
+Library rt found: YES
+Library dl found: YES
+Library util found: YES
+Library getopt found: NO
+Library gnugetopt found: NO
+Library execinfo found: NO
+Checking for function "backtrace_symbols" : YES
+Checking for function "clock_gettime" : YES
+Checking for function "copyfile" : NO
+Checking for function "copy_file_range" : YES
+Checking for function "dlsym" : YES
+Checking for function "elf_aux_info" : NO
+Checking for function "explicit_bzero" : YES
+Checking for function "getauxval" : YES
+Checking for function "getifaddrs" : YES
+Checking for function "getopt" : YES
+Checking for function "getopt_long" : YES
+Checking for function "getpeereid" : NO
+Checking for function "getpeerucred" : NO
+Checking for function "inet_aton" : YES
+Checking for function "inet_pton" : YES
+Checking for function "kqueue" : NO
+Checking for function "localeconv_l" : NO
+Checking for function "mbstowcs_l" : NO
+Checking for function "memset_s" : NO
+Checking for function "mkdtemp" : YES
+Checking for function "posix_fadvise" : YES
+Checking for function "posix_fallocate" : YES
+Checking for function "ppoll" : YES
+Checking for function "pthread_barrier_wait" : YES
+Checking for function "pthread_is_threaded_np" : NO
+Checking for function "pthread_is_threaded_np" with dependency threads: NO
+Checking for function "sem_init" : YES
+Checking for function "setproctitle" : NO
+Checking for function "setproctitle" with dependency -lutil: NO
+Checking for function "setproctitle_fast" : NO
+Checking for function "shm_open" : YES
+Checking for function "shm_unlink" : YES
+Checking for function "shmget" : YES
+Checking for function "socket" : YES
+Checking for function "strerror_r" : YES
+Checking for function "strlcat" : NO
+Checking for function "strlcpy" : NO
+Checking for function "strnlen" : YES
+Checking for function "strsep" : YES
+Checking for function "strsignal" : YES
+Checking for function "sync_file_range" : YES
+Checking for function "syncfs" : YES
+Checking for function "timingsafe_bcmp" : NO
+Checking for function "uselocale" : YES
+Checking for function "wcstombs_l" : NO
+Checking for function "syslog" : YES
+Check usable header "syslog.h" : YES
+Program msgfmt found: NO
+Configuring pg_config.h using configuration
+Compiler for C supports arguments -fPIC: YES
+Compiler for C supports link arguments -Wl,--as-needed: YES
+Configuring pg_config_paths.h using configuration
+Configuring ecpg_config.h using configuration
+Program strip found: YES (/usr/bin/strip)
+Compiler for C supports link arguments -Wl,--export-dynamic: YES
+Program ar found: YES (/usr/bin/ar)
+Program gawk found: YES (/usr/bin/gawk)
+Configuring Makefile.global using configuration
+Configuring version.sgml using configuration
+Program pandoc found: NO
+Program db2x_xsltproc found: NO
+Program db2x_texixml found: NO
+Program makeinfo found: NO
+Message: checking for file conflicts between source and build directory
+Program git found: YES (/usr/bin/git)
+Program bzip2 found: YES (/usr/bin/bzip2)
+Build targets in project: 452
+NOTICE: Future-deprecated features used:
+ * 0.55.0: {'ExternalProgram.path'}
+ * 0.56.0: {'meson.source_root', 'meson.build_root'}
+
+postgresql 18devel
+
+  Data layout
+    data block size        : 8 kB
+    WAL block size         : 8 kB
+    segment size           : 1 GB
+
+  System
+    host system            : linux x86_64
+    build system           : linux x86_64
+
+  Compiler
+    linker                 : ld.bfd
+    C compiler             : gcc 11.4.0
+
+  Compiler Flags
+    CPP FLAGS              : -D_GNU_SOURCE
+    C FLAGS, functional    : -fno-strict-aliasing -fwrapv -fexcess-precision=standard
+    C FLAGS, warnings      : -Wmissing-prototypes -Wpointer-arith -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=3 -Wcast-function-type -Wshadow=compatible-local -Wformat-security -Wdeclaration-after-statement -Wno-format-truncation -Wno-stringop-truncation
+    C FLAGS, modules       : -fvisibility=hidden
+    C FLAGS, user specified:
+    LD FLAGS               :
+
+  Programs
+    bison                  : /usr/bin/bison 3.8.2
+    dtrace                 : NO
+    flex                   : /usr/bin/flex 2.6.4
+
+  External libraries
+    bonjour                : NO
+    bsd_auth               : NO
+    docs                   : YES
+    docs_pdf               : YES
+    gss                    : NO
+    icu                    : NO
+    ldap                   : NO
+    libcurl                : NO
+    libnuma                : NO
+    liburing               : NO
+    libxml                 : NO
+    libxslt                : NO
+    llvm                   : NO
+    lz4                    : NO
+    nls                    : NO
+    openssl                : YES 3.0.2
+    pam                    : NO
+    plperl                 : YES 5.34.0
+    plpython               : YES 3.10
+    pltcl                  : NO
+    readline               : YES 8.1
+    selinux                : NO
+    systemd                : NO
+    uuid                   : NO
+    zlib                   : YES 1.2.11
+    zstd                   : NO
+
+  User defined options
+    prefix                 : /home/davidj/cfapp-temp/work/install
+
+Found ninja-1.10.1 at /usr/bin/ninja

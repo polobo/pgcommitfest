@@ -67,6 +67,17 @@ following command to create a super user:
 ./manage.py createsuperuser
 ```
 
+#### Setup Patchburner
+To experiment with local compiling and testing of patches setup the following:
+
+```
+mkdir {settings.LOCAL_PATCH_BURNER_DIR}
+cd {settings.LOCAL_PATCH_BURNER_DIR}
+mkdir template
+cd template
+git clone {some postgres repository - creates directory named "postgres"}
+```
+
 #### Start application
 Finally, you're ready to start the application:
 

@@ -155,6 +155,8 @@ LOGIN_URL = "/account/login/"
 ARCHIVES_TIMEOUT = 10  # Seconds to wait for calls to the archives
 ARCHIVES_SERVER = "localhost"
 ARCHIVES_PORT = "8001"
+ARCHIVES_PROTO = "https" if ARCHIVES_PORT == "443" else "http"
+ARCHIVES_BASE = ARCHIVES_PROTO + "://" + ARCHIVES_SERVER + ":" + ARCHIVES_PORT
 ARCHIVES_HOST = "archives.postgresql.org"  # Host: header to send
 ARCHIVES_APIKEY = None
 
@@ -163,6 +165,9 @@ HACKERS_EMAIL = "pgsql-hackers-testing@localhost"
 
 # Email address for outgoing system messages
 NOTIFICATION_FROM = "webmaster@postgresql.org"
+
+FILE_FETCH_URL_BASE = ARCHIVES_BASE + "/message-id/attachment/"
+LOCAL_PATCH_BURNER_DIR = "/tmp/patchburner/"
 
 # Load local settings overrides
 try:
