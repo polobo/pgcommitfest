@@ -172,13 +172,15 @@ class BranchManager:
                 patch_count = 0
                 fail_count = 0
                 try:
-                    for position, attachment in enumerate(attachments, start=1):
+                    for idx, attachment in enumerate(attachments):
                         attachment["date"] = attachment[
                             "date"
                         ].isoformat()  # XXX: hack for JSONField usage
                         if attachment.get("ispatch") and fail_count == 0:
                             patch_count += 1
-                            result = self.download_and_save(download_task, attachment)
+                            result = self.download_and_save(
+                                download_task, attachment, idx + 1, idx + 1
+                            )
                             if not result:
                                 fail_count += 1
                             command = CfbotTaskCommand.objects.create(
@@ -188,6 +190,7 @@ class BranchManager:
                                 type="Patchset File",
                                 duration=0,
                                 payload=attachment,
+                                position=idx + 1,
                             )
 
                         else:
@@ -357,7 +360,7 @@ class BranchManager:
         def initialize_directories(self, branch):
             raise NotImplementedError("Abstract Method")
 
-        def download_and_save(self, attachment):
+        def download_and_save(self, download_task, attachment, idx):
             raise NotImplementedError("Abstract Method")
 
         def perform_apply(self, filename, payload):
@@ -511,11 +514,9 @@ class BranchManager:
             """
             tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
             if any(task.is_failure() for task in tasks):
-                failed = True
-            else:
-                failed = False
+                return True
 
-            return failed
+            return False
 
         def signal_done_cb(self, branch, compile_task, compile_result):
             compile_task.payload = {
@@ -578,7 +579,7 @@ class BranchManager:
             # Loop through tasks and update the *_is_done booleans appropriately
             tasks = CfbotTask.objects.filter(branch_id=branch.branch_id)
             for task in tasks:
-                if task.task_name == "Run Test":
+                if task.task_name == "Framework Hook":
                     test_is_done = task.is_done()
                 elif task.task_name == "Test":
                     testing_is_done = task.is_done()
@@ -597,8 +598,8 @@ class BranchManager:
             if test_is_done is None:
                 # Create "Test" task
                 test_task = CfbotTask.objects.create(
-                    task_id=f"Meson Test {branch.branch_name}",
-                    task_name="Run Test",
+                    task_id=f"Test Hook for {branch.branch_name}",
+                    task_name="Framework Hook",
                     patch=branch.patch,
                     branch_id=branch.branch_id,
                     position=2,
@@ -643,6 +644,9 @@ class BranchManager:
             test_task.payload = {
                 "stdout": test_result.stdout,
                 "stderr": test_result.stderr,
+                "content": test_result.content
+                if hasattr(test_result, "content")
+                else None,
             }
             test_task.status = "COMPLETED" if test_result.returncode == 0 else "FAILED"
             test_task.save()

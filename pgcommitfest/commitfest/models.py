@@ -620,6 +620,8 @@ class CfbotTask(models.Model):
         ("ABORTED", "Aborted"),
         ("ERRORED", "Errored"),
         ("IGNORED", "Ignored"),
+        ("SKIPPED", "Skipped"),
+        ("PAUSED", "Paused"),
     ]
 
     # This id is only used by Django. Using text type for primary keys, has
@@ -647,7 +649,15 @@ class CfbotTask(models.Model):
         """
         Check if the task is in a terminal state.
         """
-        return self.status in {"FAILED", "COMPLETED", "ABORTED", "ERRORED", "IGNORED"}
+        return self.status in {
+            "FAILED",
+            "COMPLETED",
+            "ABORTED",
+            "ERRORED",
+            "IGNORED",
+            "SKIPPED",
+            "PAUSED",
+        }
 
     def is_failure(self):
         """
@@ -666,6 +676,7 @@ class CfbotTaskCommand(models.Model):
     duration = models.IntegerField(null=True)
     log = models.TextField(null=True, blank=True)
     payload = models.JSONField(null=True, blank=True)
+    position = models.IntegerField(null=True)
 
 
 class CfbotTaskArtifact(models.Model):
@@ -677,3 +688,5 @@ class CfbotTaskArtifact(models.Model):
     size = models.IntegerField(null=False)
     body = models.TextField(null=True, blank=True)
     payload = models.JSONField(null=True, blank=True)
+    artifact_position = models.IntegerField(null=True)
+    file_position = models.IntegerField(null=True)

@@ -4,10 +4,13 @@ import os
 import time
 from datetime import datetime
 
+from pgcommitfest.commitfest.apiv1 import doCreateBranch
+from pgcommitfest.commitfest.branchmanager_template import BranchManager
+from pgcommitfest.commitfest.cfbot_queue import CfbotQueue
 from pgcommitfest.commitfest.models import (
-    CommitFest,
     CfbotBranch,
     CfbotTaskArtifact,
+    CommitFest,
     MailThread,
     MailThreadAttachment,
     Patch,
@@ -15,9 +18,6 @@ from pgcommitfest.commitfest.models import (
     TargetVersion,
     Topic,
 )
-from pgcommitfest.commitfest.cfbot_queue import CfbotQueue
-from pgcommitfest.commitfest.branchmanager_template import BranchManager
-from pgcommitfest.commitfest.apiv1 import doCreateBranch
 
 
 def create_patches():
@@ -173,7 +173,7 @@ class TestPatchApplier(BranchManager.PatchApplierTemplate):
     def do_apply_async(self, branch, apply_task, signal_done):
         return
 
-    def download_and_save(self, download_task, attachment):
+    def download_and_save(self, download_task, attachment, artifact_index, file_idx):
         fixture_file = os.path.join(
             settings.BASE_DIR,
             "commitfest/fixtures/alpha/patchset/v1-0001-patch.patch",
@@ -185,6 +185,8 @@ class TestPatchApplier(BranchManager.PatchApplierTemplate):
             size=os.path.getsize(fixture_file),
             body=None,
             payload=attachment,
+            artifact_position=artifact_index,
+            file_position=file_idx,
         )
         attachment["download_result"] = "Success"
         return True
@@ -235,9 +237,7 @@ class TestPatchCompiler(BranchManager.PatchCompilerTemplate):
 
     def do_compile_async(self, branch, compile_task, signal_done):
         with open(
-            os.path.join(
-                settings.BASE_DIR, "commitfest/fixtures/alpha/configure.out"
-            ),
+            os.path.join(settings.BASE_DIR, "commitfest/fixtures/alpha/configure.out"),
             "r",
         ) as stdout_file:
             compile_result = type(
@@ -250,9 +250,7 @@ class TestPatchCompiler(BranchManager.PatchCompilerTemplate):
 
     def do_configure_sync(self, branch):
         with open(
-            os.path.join(
-                settings.BASE_DIR, "commitfest/fixtures/alpha/configure.out"
-            ),
+            os.path.join(settings.BASE_DIR, "commitfest/fixtures/alpha/configure.out"),
             "r",
         ) as stdout_file:
             configure_result = type(

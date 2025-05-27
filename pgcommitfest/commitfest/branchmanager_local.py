@@ -151,7 +151,7 @@ class LocalPatchApplier(branchmanager_template.BranchManager.PatchApplierTemplat
             check=True,
         )
 
-    def download_and_save(self, download_task, attachment):
+    def download_and_save(self, download_task, attachment, idx):
         """
         Retrieve the contents at url_path and write them to a file in the working directory.
         """
@@ -178,6 +178,7 @@ class LocalPatchApplier(branchmanager_template.BranchManager.PatchApplierTemplat
                 size=os.path.getsize(file_path),
                 body=None,
                 payload=attachment,
+                position=idx,
             )
             return True
         except Exception as e:

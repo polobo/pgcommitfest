@@ -161,6 +161,15 @@ def add_test_data(request):
 
 @csrf_exempt
 @require_POST
+def process_cirrusci(request):
+    from .fixtures.cirrusci_alpha import load
+
+    load.create_patches()
+    return apiResponse(request, {"message": "Cirrus CI build processed."})
+
+
+@csrf_exempt
+@require_POST
 def remove_all_patches(request):
     """
     Remove all patches.
@@ -477,6 +486,7 @@ def fetch_task_commands(request, task_id):
             "type": command.type,
             "duration": command.duration,
             "log": command.log,
+            "position": command.position,
         }
         for command in commands
     ]
@@ -494,6 +504,8 @@ def fetch_task_artifacts(request, task_id):
             "name": artifact.name,
             "path": artifact.path,
             "size": artifact.size,
+            "artifact_position": artifact.artifact_position,
+            "file_position": artifact.file_position,
         }
         for artifact in artifacts
     ]

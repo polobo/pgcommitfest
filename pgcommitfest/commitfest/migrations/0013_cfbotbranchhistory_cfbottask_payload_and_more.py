@@ -44,8 +44,8 @@ class Migration(migrations.Migration):
             field=models.JSONField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='cfbotbranch',
-            name='base_commit_sha',
+            model_name="cfbotbranch",
+            name="base_commit_sha",
             field=models.TextField(null=True),
         ),
         migrations.AlterField(

@@ -31,6 +31,7 @@ urlpatterns = [
     re_path(r"^api/v1/cfbot/branch_history$", apiv1.fetch_branch_history),
     re_path(r"^api/test/cfbot/clear_queue$", apiv1.clear_queue),
     re_path(r"^api/test/cfbot/add_test_data$", apiv1.add_test_data),
+    re_path(r"^api/test/cfbot/process_cirrusci$", apiv1.process_cirrusci),
     re_path(r"^api/test/cfbot/clear_branch_table$", apiv1.clear_branch_table),
     re_path(r"^api/test/cfbot/create_branch$", apiv1.create_branch),
     re_path(r"^api/test/cfbot/clear_branch_history$", apiv1.clear_branch_history),

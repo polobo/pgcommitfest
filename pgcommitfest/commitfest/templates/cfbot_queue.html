@@ -7,6 +7,7 @@
    <div id="open-patches" style="margin-bottom: 20px;">
     <button id="remove-all-patches-btn">Remove All Patches</button>
     <button id="add-test-data-btn">Add Test Data</button>
+    <button id="process-cirrusci-btn">Process CirrusCI Build</button>
     <button id="reload-patches-btn">Reload Patches</button>
     <h3>Open Patches</h3>
     <table border="1" id="open-patches-table" style="margin-bottom: 20px;">
@@ -168,6 +169,7 @@
       <th>Status</th>
       <th>Type</th>
       <th>Duration</th>
+      <th>Position</th>
      </tr>
     </thead>
     <tbody>
@@ -180,6 +182,8 @@
       <th>Name</th>
       <th>Path</th>
       <th>Size</th>
+      <th>Artifact Position</th>
+      <th>File Position</th>
      </tr>
     </thead>
     <tbody>
@@ -509,7 +513,7 @@
     fetch(`/api/v1/cfbot/task/${taskId}/artifacts`)
      .then(response => response.json())
      .then(data => {
-      const tableBody = document.getElementById("cfbot-task-artifacts-table");
+      const tableBody = document.getElementById("cfbot-task-artifacts-table").getElementsByTagName("tbody")[0];
       tableBody.innerHTML = ""; // Clear existing rows
 
       if (data.artifacts && data.artifacts.length > 0) {
@@ -519,12 +523,14 @@
                                 <td>${artifact.name}</td>
                                 <td>${artifact.path}</td>
                                 <td>${artifact.size}</td>
+                                <td>${artifact.artifact_position ?? ''}</td>
+                                <td>${artifact.file_position ?? ''}</td>
                             `;
         tableBody.appendChild(row);
        });
       } else {
        const row = document.createElement("tr");
-       row.innerHTML = `<td colspan="3">No artifacts available</td>`;
+       row.innerHTML = `<td colspan="5">No artifacts available</td>`;
        tableBody.appendChild(row);
       }
      })
@@ -537,8 +543,8 @@
     fetch(`/api/v1/cfbot/task/${taskId}/commands`)
      .then(response => response.json())
      .then(data => {
-      const tableBody = document.getElementById("cfbot-task-commands-table");
-      tableBody.innerHTML = ""; // Clear existing rows
+      const tableBody = document.getElementById("cfbot-task-commands-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = ""; // Clear only the body, not the header
 
       if (data.commands && data.commands.length > 0) {
        data.commands.forEach(command => {
@@ -548,12 +554,13 @@
                                 <td>${command.status}</td>
                                 <td>${command.type}</td>
                                 <td>${command.duration}</td>
+                                <td>${command.position ?? ''}</td>
                             `;
         tableBody.appendChild(row);
        });
       } else {
        const row = document.createElement("tr");
-       row.innerHTML = `<td colspan="4">No commands available</td>`;
+       row.innerHTML = `<td colspan="5">No commands available</td>`;
        tableBody.appendChild(row);
       }
      })
@@ -779,6 +786,33 @@
     });
    }
 
+   function setupProcessCirrusCIButton() {
+    document.getElementById("process-cirrusci-btn").addEventListener("click", function () {
+     fetch("/api/test/cfbot/process_cirrusci", {
+      method: "POST",
+     })
+      .then(response => response.json())
+      .then(data => {
+       const responseMessage = document.getElementById("response-message");
+       if (data.message) {
+        responseMessage.textContent = data.message;
+        responseMessage.style.color = "green";
+       } else if (data.error) {
+        responseMessage.textContent = data.error;
+        responseMessage.style.color = "red";
+       }
+
+       reloadAllTables(); // Refresh the queue table
+      })
+      .catch(error => {
+       const responseMessage = document.getElementById("response-message");
+       responseMessage.textContent = "An error occurred while adding test data.";
+       responseMessage.style.color = "red";
+       console.error("Error:", error);
+      });
+    });
+   }
+
    function setupClearBranchTableButton() {
     document.getElementById("clear-branch-table-btn").addEventListener("click", function () {
      fetch("/api/test/cfbot/clear_branch_table", {
@@ -950,6 +984,7 @@
     setupGetAndMoveButton();
     setupClearQueueButton();
     setupAddTestDataButton();
+    setupProcessCirrusCIButton();
     setupClearBranchTableButton();
     setupCreateBranchButton();
     setupPeekButton();
