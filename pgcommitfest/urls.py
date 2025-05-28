@@ -4,7 +4,6 @@ from django.urls import re_path
 import pgcommitfest.auth
 import pgcommitfest.commitfest.ajax as ajax
 import pgcommitfest.commitfest.apiv1 as apiv1
-import pgcommitfest.commitfest.apiv1 as apiv1
 import pgcommitfest.commitfest.lookups as lookups
 import pgcommitfest.commitfest.reports as reports
 import pgcommitfest.commitfest.views as views
@@ -39,6 +38,8 @@ urlpatterns = [
     # displays an empty cfbot_queue.html page which then loads via endpoints
     re_path(r"^cfbot_queue/$", views.cfbot_queue),
     re_path(r"^api/v1/commitfest/active$", apiv1.active_commitfests),
+    re_path(r"^api/v1/commitfest/open$", apiv1.open_cfs),
+    re_path(r"^api/v1/commitfest/(?P<commitfest_id>\d+)$", apiv1.cf_patches),
     re_path(r"^workflow/$", views.workflow),
     re_path(r"^workflow-reference/$", views.workflow_reference),
     re_path(r"^me/$", views.me),

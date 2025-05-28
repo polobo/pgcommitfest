@@ -3,7 +3,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("commitfest", "0010_add_failing_since_column"),
+        ("commitfest", "0015_cfbottaskartifact_artifact_position_and_more"),
     ]
     operations = [
         migrations.RunSQL(

@@ -3,7 +3,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("commitfest", "0011_add_status_related_constraints"),
+        ("commitfest", "0016_add_status_related_constraints"),
     ]
     operations = [
         migrations.AlterField(

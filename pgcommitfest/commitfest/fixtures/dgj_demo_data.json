@@ -1,0 +1,59 @@
+[
+    {
+        "model": "commitfest.patch",
+        "pk": 1,
+        "fields": {
+            "name": "Test DGJ Multi-Author and Reviewer",
+            "topic": 1,
+            "wikilink": "",
+            "gitlink": "",
+            "targetversion": 1,
+            "committer": 4,
+            "created": "2025-02-01T00:00",
+            "modified": "2025-02-01T00:00",
+            "lastmail": "2025-02-01T00:00",
+            "authors": [6,3],
+            "reviewers": [7,1],
+            "subscribers": [],
+            "mailthread_set": [8]
+        }
+    },
+    {
+        "model": "commitfest.patchoncommitfest",
+        "pk": 1,
+        "fields": {
+            "patch": 1,
+            "commitfest": 1,
+            "enterdate": "2025-02-01T00:00:00",
+            "leavedate": null,
+            "status": 1
+        }
+    },
+    {
+        "model": "commitfest.mailthread",
+        "pk": 8,
+        "fields": {
+            "messageid": "dgj-example@message-08",
+            "subject": "Test DGJ Multi-Author and Reviewer",
+            "firstmessage": "2025-02-01T00:00",
+            "firstauthor": "test@test.com",
+            "latestmessage": "2025-02-01T00:00",
+            "latestauthor": "test@test.com",
+            "latestsubject": "Test DGJ Multi-Author and Reviewer",
+            "latestmsgid": "dgj-example@message-08"
+        }
+    },
+    {
+        "model": "commitfest.mailthreadattachment",
+        "pk": 8,
+        "fields": {
+            "messageid": "dgj-example@message-08",
+            "attachmentid": 1,
+            "filename": "v1-0001-content.patch",
+            "date": "2025-02-01T00:00",
+            "author": "test@test.com",
+            "ispatch": true,
+            "mailthread_id": 8
+        }
+    }
+]

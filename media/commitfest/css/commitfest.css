@@ -174,3 +174,23 @@ div.form-group div.controls input.threadpick-input {
 #workflow-schedule-table tr:hover {
     background-color: #f1f1f1;
 }
+
+.workflow table.table {
+    width: auto;
+}
+
+#keyvalue-table {
+    display: none;
+}
+
+#keyvalue-table.collapse.in {
+    display: table;
+}
+
+#history-table {
+    display: none;
+}
+
+#history-table.collapse.in {
+    display: table;
+}

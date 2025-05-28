@@ -1,5 +1,26 @@
 [
     {
+        "model": "commitfest.committer",
+        "pk": 1,
+        "fields": {
+            "active": true
+        }
+    },
+    {
+        "model": "commitfest.committer",
+        "pk": 4,
+        "fields": {
+            "active": true
+        }
+    },
+    {
+        "model": "commitfest.committer",
+        "pk": 5,
+        "fields": {
+            "active": false
+        }
+    },
+    {
         "model": "commitfest.topic",
         "pk": 1,
         "fields": {
@@ -7,8 +28,81 @@
         }
     },
     {
+        "model": "commitfest.targetversion",
+        "pk": 1,
+        "fields": {
+            "version": "18"
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 1,
+        "fields": {
+            "statusstring": "Needs review",
+            "sortkey": 10
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 2,
+        "fields": {
+            "statusstring": "Waiting on Author",
+            "sortkey": 15
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 3,
+        "fields": {
+            "statusstring": "Ready for Committer",
+            "sortkey": 20
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 4,
+        "fields": {
+            "statusstring": "Committed",
+            "sortkey": 25
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 5,
+        "fields": {
+            "statusstring": "Moved to next CF",
+            "sortkey": 30
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 6,
+        "fields": {
+            "statusstring": "Rejected",
+            "sortkey": 50
+        }
+    },
+    {
+        "model": "commitfest.patchstatus",
+        "pk": 7,
+        "fields": {
+            "statusstring": "Returned with Feedback",
+            "sortkey": 50
+        }
+    },
+    {
         "model": "commitfest.commitfest",
         "pk": 1,
+        "fields": {
+            "name": "Drafts PG19",
+            "status": 5,
+            "startdate": "2024-09-01",
+            "enddate": "2025-08-31"
+        }
+    },
+    {
+        "model": "commitfest.commitfest",
+        "pk": 2,
         "fields": {
             "name": "2025-04",
             "status": 2,

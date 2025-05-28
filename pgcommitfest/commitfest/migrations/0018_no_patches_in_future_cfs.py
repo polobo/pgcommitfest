@@ -3,7 +3,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("commitfest", "0012_add_parked_cf_status"),
+        ("commitfest", "0017_add_parked_cf_status"),
     ]
     operations = [
         migrations.RunSQL(

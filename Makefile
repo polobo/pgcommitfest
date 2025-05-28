@@ -23,4 +23,5 @@ init-dev:
 	./manage.py migrate
 	./manage.py loaddata auth_data.json
 	./manage.py loaddata minimal_data.json
+	./manage.py loaddata dgj_demo_data.json
 	./run_dev.py
